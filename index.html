@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>持股損益追蹤 — 王川銘</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#ffffff;--bg2:#f5f7f9;--bg3:#eef1f4;--text:#1a1a1a;--text2:#666;--text3:#999;--border:#e0e0e0;--border2:#d0d0d0;--up:#d93025;--dn:#1d8a4f;--teal:#1a6b6b;--teal2:#2a8a8a;--teal3:#e6f4f4;--radius:8px;}
+body{font-family:-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+.app{max-width:1100px;margin:0 auto;padding:16px;}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.topbar h1{font-size:20px;font-weight:600;}
+.sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.act{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.btn{font-size:12px;padding:5px 12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);cursor:pointer;white-space:nowrap;}
+.btn:hover{background:var(--bg2);}
+.btn.prim{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn.prim:hover{background:var(--teal2);}
+.btn.green{background:#1d8a4f;color:#fff;border-color:#1d8a4f;}
+.btn.green:hover{background:#166b3e;}
+.sync-bar{display:flex;align-items:center;gap:8px;background:var(--teal3);border:1px solid var(--teal2);border-radius:8px;padding:8px 12px;margin-bottom:12px;flex-wrap:wrap;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);}
+.sync-dot.ok{background:#1d8a4f;}.sync-dot.err{background:#d93025;}.sync-dot.loading{background:#f0a500;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.sync-text{font-size:12px;color:var(--text2);flex:1;}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.tab{padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:500;}
+.tab:hover:not(.active){color:var(--text);}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px;}
+.metric{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;border:1px solid var(--border);}
+.mlabel{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.mval{font-size:17px;font-weight:600;}
+.up{color:var(--up);}.dn{color:var(--dn);}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);}
+table{width:100%;border-collapse:collapse;}
+thead th{font-size:11px;font-weight:600;color:var(--text2);padding:8px 8px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;background:var(--bg2);}
+thead th:first-child{text-align:left;}
+thead th:hover{color:var(--teal);}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--teal3);}
+td{padding:7px 8px;text-align:right;font-size:12px;}
+td:first-child{text-align:left;}
+.sname{font-weight:600;font-size:12px;}.scode{font-size:10px;color:var(--text3);}
+.ebtn{font-size:11px;padding:2px 7px;border:1px solid var(--border2);border-radius:4px;background:transparent;color:var(--text2);cursor:pointer;}
+.sec-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 6px;}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:11px;}
+.bar-label{width:68px;color:var(--text2);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+.bar-track{flex:1;height:16px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width .4s;}
+.bar-val{width:100px;font-size:10px;flex-shrink:0;}
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:12px;}
+.hist-card{border:1px solid var(--border);border-radius:var(--radius);padding:10px;cursor:pointer;transition:all .15s;background:var(--bg);}
+.hist-card:hover,.hist-card.active{border-color:var(--teal);background:var(--teal3);}
+.hist-date{font-size:12px;font-weight:600;color:var(--teal);}
+.hist-mv{font-size:13px;font-weight:600;margin-top:2px;}
+.hist-pnl{font-size:11px;margin-top:1px;}
+.hist-detail{border:1px solid var(--border);border-radius:var(--radius);padding:12px;background:var(--bg2);margin-bottom:12px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;width:320px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+.modal h2{font-size:15px;font-weight:600;margin-bottom:14px;}
+.frow{margin-bottom:10px;}
+.frow label{display:block;font-size:11px;color:var(--text2);margin-bottom:3px;}
+.frow input{width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);}
+.fact{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
+.delbtn{font-size:11px;padding:5px 10px;border:1px solid #d93025;border-radius:6px;background:transparent;color:#d93025;cursor:pointer;margin-right:auto;}
+.price-badge{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;background:var(--teal3);color:var(--teal);margin-left:4px;vertical-align:middle;}
+.price-stale{background:#fff3cd;color:#856404;}
+.footer{font-size:11px;color:var(--text3);margin-top:14px;text-align:right;}
+.notice{font-size:11px;color:var(--text2);background:#fff8e1;border:1px solid #ffe082;border-radius:6px;padding:8px 12px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="sub">王川銘 · 證–6160–1917560</div>
+      <h1>持股損益追蹤</h1>
+    </div>
+    <div class="act">
+      <button class="btn green" onclick="fetchPrices()" id="syncBtn">⟳ 更新股價</button>
+      <button class="btn" onclick="exportCSV()">↓ 匯出CSV</button>
+      <button class="btn prim" onclick="openAdd()">＋ 新增</button>
+    </div>
+  </div>
+
+  <div class="sync-bar">
+    <div class="sync-dot" id="syncDot"></div>
+    <div class="sync-text" id="syncText">尚未同步。點擊「更新股價」取得最新價格（需要網路）。</div>
+    <button class="btn" style="font-size:11px;padding:3px 8px;" onclick="saveSnapshot()">📷 手動備份今日</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab1" onclick="switchTab(1)">未實現損益</div>
+    <div class="tab" id="tab2" onclick="switchTab(2)">投資損益分析</div>
+    <div class="tab" id="tab3" onclick="switchTab(3)">歷史記錄</div>
+  </div>
+
+  <div id="page1">
+    <div class="metrics" id="m1"></div>
+    <div style="position:relative;height:210px;margin-bottom:12px;"><canvas id="pie1"></canvas></div>
+    <div class="sec-title">持股明細（點欄位排序 · 點列編輯）</div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th style="width:84px;text-align:left;">商品</th>
+        <th style="width:56px;" onclick="sort1('shares')">存股數</th>
+        <th style="width:64px;" onclick="sort1('price')">市價</th>
+        <th style="width:72px;" onclick="sort1('mv')">市值</th>
+        <th style="width:68px;" onclick="sort1('be')">損益兩平</th>
+        <th style="width:68px;" onclick="sort1('avg')">成交均價</th>
+        <th style="width:72px;" onclick="sort1('cost')">投入成本</th>
+        <th style="width:74px;" onclick="sort1('pnl')">投資損益</th>
+        <th style="width:58px;" onclick="sort1('pct')">損益%</th>
+        <th style="width:36px;"></th>
+      </tr></thead>
+      <tbody id="tb1"></tbody>
+    </table></div>
+  </div>
+
+  <div id="page2" style="display:none;">
+    <div class="metrics" id="m2"></div>
+    <div class="sec-title">各股投資損益（紅=獲利 綠=虧損）</div>
+    <div id="bars"></div>
+    <div class="chart-row">
+      <div><div class="sec-title">獲利 vs 虧損檔數</div><div style="position:relative;height:180px;"><canvas id="pie2"></canvas></div></div>
+      <div><div class="sec-title">各股報酬率%</div><div style="position:relative;height:180px;"><canvas id="bar2"></canvas></div></div>
+    </div>
+    <div class="sec-title">投資損益明細</div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th style="width:84px;text-align:left;">商品</th>
+        <th style="width:56px;" onclick="sort2('shares')">存股數</th>
+        <th style="width:64px;" onclick="sort2('price')">市價</th>
+        <th style="width:72px;" onclick="sort2('mv')">市值</th>
+        <th style="width:72px;" onclick="sort2('cost')">投入成本</th>
+        <th style="width:80px;" onclick="sort2('pnl')">投資損益</th>
+        <th style="width:62px;" onclick="sort2('pct')">報酬率%</th>
+        <th style="width:36px;"></th>
+      </tr></thead>
+      <tbody id="tb2"></tbody>
+    </table></div>
+  </div>
+
+  <div id="page3" style="display:none;">
+    <div class="notice">📋 每次點「更新股價」後會自動備份當日快照（每天一筆）。也可手動點「📷 手動備份今日」。快照資料存於本機瀏覽器，換瀏覽器不會同步。</div>
+    <div class="metrics" id="m3hist"></div>
+    <div class="sec-title">歷史日期（點選查看當日明細）</div>
+    <div class="hist-grid" id="histGrid"></div>
+    <div id="histDetail"></div>
+  </div>
+
+  <div class="footer">
+    <span id="ts">—</span> · 資料存於本機瀏覽器 · 離線可用（更新股價需網路）
+  </div>
+</div>
+
+<div class="overlay" id="ov">
+  <div class="modal">
+    <h2 id="mtitle">新增股票</h2>
+    <div class="frow"><label>股票代碼</label><input id="fc" placeholder="例：2330"/></div>
+    <div class="frow"><label>股票名稱</label><input id="fn" placeholder="例：台積電"/></div>
+    <div class="frow"><label>存股數（股）</label><input id="fs" type="number" placeholder="例：2026"/></div>
+    <div class="frow"><label>市價（手動）</label><input id="fp" type="number" placeholder="例：2310"/></div>
+    <div class="frow"><label>損益兩平價</label><input id="fb" type="number" placeholder="例：1894.82"/></div>
+    <div class="frow"><label>成交均價</label><input id="fa" type="number" placeholder="例：1883.80"/></div>
+    <div class="frow"><label>投入成本</label><input id="fk" type="number" placeholder="例：3822028"/></div>
+    <div class="fact">
+      <button class="delbtn" id="delBtn" onclick="deleteStock()" style="display:none;">🗑 刪除</button>
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn prim" onclick="saveStock()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STOCK_KEY='tw_stocks_v5', HIST_KEY='tw_stocks_history', PRICE_KEY='tw_last_prices';
+let stocks=[], editIdx=-1, s1k='mv', s1a=false, s2k='pnl', s2a=false, charts={}, lastPrices={}, selHistDate=null;
+
+const defaults=[
+  {code:'0050',name:'元大台灣50',shares:5,price:97.70,be:45.66,avg:45.40,cost:227},
+  {code:'2301',name:'光寶科',shares:4888,price:203.50,be:173.39,avg:172.38,cost:843824},
+  {code:'2308',name:'台達電',shares:18,price:2280.00,be:2232.98,avg:2220.00,cost:40016},
+  {code:'2312',name:'金寶',shares:3000,price:28.55,be:29.57,avg:29.40,cost:88325},
+  {code:'2324',name:'仁寶',shares:2000,price:29.45,be:31.88,avg:31.70,cost:63489},
+  {code:'2330',name:'台積電',shares:2026,price:2310.00,be:1894.82,avg:1883.80,cost:3822028},
+  {code:'3711',name:'日月光投控',shares:8,price:540.00,be:512.98,avg:510.00,cost:4100},
+  {code:'4585',name:'達明',shares:8,price:337.50,be:325.39,avg:323.50,cost:2591},
+  {code:'4908',name:'前鼎',shares:3000,price:238.50,be:142.99,avg:142.16,cost:427107},
+  {code:'5243',name:'乙盛-KY',shares:1008,price:107.00,be:124.50,avg:123.77,cost:124945},
+  {code:'6285',name:'啟碁',shares:17868,price:256.00,be:225.60,avg:224.29,cost:4013323},
+  {code:'6442',name:'光聖',shares:8,price:2095.00,be:2092.16,avg:2080.00,cost:16660},
+  {code:'6829',name:'千附精密',shares:2000,price:278.00,be:179.04,avg:178.00,cost:356506},
+  {code:'8033',name:'雷虎',shares:25,price:151.50,be:161.94,avg:161.00,cost:4045},
+];
+
+function load(){try{stocks=JSON.parse(localStorage.getItem(STOCK_KEY))||defaults;}catch{stocks=defaults;}try{lastPrices=JSON.parse(localStorage.getItem(PRICE_KEY))||{};}catch{lastPrices={};}}
+function save(){localStorage.setItem(STOCK_KEY,JSON.stringify(stocks));localStorage.setItem(PRICE_KEY,JSON.stringify(lastPrices));document.getElementById('ts').textContent='最後更新：'+new Date().toLocaleString('zh-TW');}
+function getHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY))||{};}catch{return{};}}
+function saveHistory(obj){localStorage.setItem(HIST_KEY,JSON.stringify(obj));}
+
+function saveSnapshot(){
+  const today=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'-');
+  const hist=getHistory(), data=enrich();
+  hist[today]={stocks:data.map(s=>({...s})),totalMv:data.reduce((a,s)=>a+s.mv,0),totalPnl:data.reduce((a,s)=>a+s.pnl,0),totalCost:data.reduce((a,s)=>a+s.cost,0)};
+  saveHistory(hist);
+  if(document.getElementById('page3').style.display!=='none') renderTab3();
+  setSyncStatus('ok','快照已儲存（'+today+'）');
+}
+
+async function fetchPrices(){
+  setSyncStatus('loading','正在抓取最新股價...');
+  document.getElementById('syncBtn').disabled=true;
+  let ok=0, fail=0;
+  for(const s of stocks){
+    try{
+      const res=await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${s.code}.TW?interval=1d&range=1d`);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const j=await res.json();
+      const meta=j?.chart?.result?.[0]?.meta;
+      const price=meta?.regularMarketPrice||meta?.previousClose;
+      if(price&&price>0){s.price=price;lastPrices[s.code]={price,time:Date.now()};ok++;}else{fail++;}
+    }catch{fail++;}
+    await new Promise(r=>setTimeout(r,150));
+  }
+  save();
+  setSyncStatus(ok>0?'ok':'err',ok>0?`已更新 ${ok} 檔報價${fail>0?'，'+fail+' 檔失敗':''}`:`無法連線（網路問題或市場休市），使用本機價格`);
+  document.getElementById('syncBtn').disabled=false;
+  render();
+  if(ok>0) saveSnapshot();
+}
+
+function setSyncStatus(state,msg){
+  document.getElementById('syncDot').className='sync-dot '+(state==='loading'?'loading':state==='ok'?'ok':'err');
+  document.getElementById('syncText').textContent=msg;
+}
+
+function enrich(src){return(src||stocks).map(s=>{const mv=s.shares*s.price,pnl=mv-s.cost,pct=s.cost>0?(pnl/s.cost*100):0;return{...s,mv,pnl,pct};});}
+const fmt=n=>Math.round(n).toLocaleString('zh-TW');
+const fmtf=n=>n.toLocaleString('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:2});
+const sdisplay=s=>s>=1000?(s%1000===0?(s/1000)+'張':(s/1000).toFixed(1)+'張'):s+'股';
+function priceAge(code){const p=lastPrices[code];if(!p)return'';const m=Math.floor((Date.now()-p.time)/60000);if(m<60)return`<span class="price-badge">${m}m前</span>`;if(m<1440)return`<span class="price-badge price-stale">${Math.floor(m/60)}h前</span>`;return`<span class="price-badge price-stale">${Math.floor(m/1440)}d前</span>`;}
+
+function switchTab(t){[1,2,3].forEach(i=>{document.getElementById('tab'+i).classList.toggle('active',i===t);document.getElementById('page'+i).style.display=i===t?'':'none';});if(t===2)renderTab2();if(t===3)renderTab3();}
+
+function renderTab1(){
+  const data=enrich(),totMv=data.reduce((a,s)=>a+s.mv,0),totCost=data.reduce((a,s)=>a+s.cost,0),totPnl=totMv-totCost,totPct=totCost>0?(totPnl/totCost*100):0,ups=data.filter(s=>s.pnl>0).length,pc=totPnl>=0?'up':'dn';
+  document.getElementById('m1').innerHTML=`<div class="metric"><div class="mlabel">總市值</div><div class="mval">$${fmt(totMv)}</div></div><div class="metric"><div class="mlabel">總投入成本</div><div class="mval">$${fmt(totCost)}</div></div><div class="metric"><div class="mlabel">總投資損益</div><div class="mval ${pc}">${totPnl>=0?'+':''}$${fmt(totPnl)}</div></div><div class="metric"><div class="mlabel">整體報酬率</div><div class="mval ${pc}">${totPnl>=0?'+':''}${fmtf(totPct)}%</div></div><div class="metric"><div class="mlabel">持股/獲利</div><div class="mval">${stocks.length}檔 ${ups}獲利</div></div>`;
+  const sorted=[...data].sort((a,b)=>s1a?a[s1k]-b[s1k]:b[s1k]-a[s1k]);
+  document.getElementById('tb1').innerHTML=sorted.map(s=>{const c=s.pnl>=0?'up':'dn',i=stocks.findIndex(x=>x.code===s.code);return`<tr onclick="openEdit(${i})"><td><div class="sname">${s.name}</div><div class="scode">${s.code}</div></td><td>${sdisplay(s.shares)}</td><td>${fmtf(s.price)}${priceAge(s.code)}</td><td>${fmt(s.mv)}</td><td>${fmtf(s.be)}</td><td>${fmtf(s.avg)}</td><td>${fmt(s.cost)}</td><td class="${c}">${s.pnl>=0?'+':''}${fmt(s.pnl)}</td><td class="${c}">${s.pnl>=0?'+':''}${fmtf(s.pct)}%</td><td><button class="ebtn" onclick="event.stopPropagation();openEdit(${i})">✏</button></td></tr>`;}).join('');
+  const top=[...data].sort((a,b)=>b.mv-a.mv).slice(0,9),rest=data.slice(9).reduce((a,s)=>a+s.mv,0);
+  const colors=['#378ADD','#1D9E75','#D85A30','#D4537E','#7F77DD','#639922','#BA7517','#E24B4A','#888780','#B4B2A9'];
+  if(charts.pie1)charts.pie1.destroy();
+  charts.pie1=new Chart(document.getElementById('pie1'),{type:'doughnut',data:{labels:[...top.map(s=>s.name),...(rest>0?['其他']:[])],datasets:[{data:[...top.map(s=>s.mv),...(rest>0?[rest]:[])],backgroundColor:colors,borderWidth:1,borderColor:'rgba(200,200,200,0.3)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:9,padding:5}},tooltip:{callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return` ${ctx.label}: $${fmt(ctx.parsed)} (${(ctx.parsed/t*100).toFixed(1)}%)`;},}}},cutout:'55%'}});
+}
+
+function renderTab2(){
+  const data=enrich(),totPnl=data.reduce((a,s)=>a+s.pnl,0),totCost=data.reduce((a,s)=>a+s.cost,0);
+  const best=data.reduce((a,s)=>s.pnl>a.pnl?s:a,data[0]),worst=data.reduce((a,s)=>s.pnl<a.pnl?s:a,data[0]),pc=totPnl>=0?'up':'dn';
+  document.getElementById('m2').innerHTML=`<div class="metric"><div class="mlabel">總投資損益</div><div class="mval ${pc}">${totPnl>=0?'+':''}$${fmt(totPnl)}</div></div><div class="metric"><div class="mlabel">整體報酬率</div><div class="mval ${pc}">${fmtf(totPnl/totCost*100)}%</div></div><div class="metric"><div class="mlabel">最大獲利</div><div class="mval up">${best.name} +${fmtf(best.pct)}%</div></div><div class="metric"><div class="mlabel">最大虧損</div><div class="mval dn">${worst.name} ${fmtf(worst.pct)}%</div></div>`;
+  const sorted=[...data].sort((a,b)=>b.pnl-a.pnl),maxAbs=Math.max(...sorted.map(s=>Math.abs(s.pnl)));
+  document.getElementById('bars').innerHTML=sorted.map(s=>{const w=maxAbs>0?(Math.abs(s.pnl)/maxAbs*100):0,col=s.pnl>=0?'var(--up)':'var(--dn)',sign=s.pnl>=0?'+':'';return`<div class="bar-row"><div class="bar-label" title="${s.name}">${s.name}</div><div class="bar-track"><div class="bar-fill" style="width:${w.toFixed(1)}%;background:${col};"></div></div><div class="bar-val" style="color:${col};">${sign}${fmt(s.pnl)} (${sign}${fmtf(s.pct)}%)</div></div>`;}).join('');
+  const ups=data.filter(s=>s.pnl>0),dns=data.filter(s=>s.pnl<=0);
+  if(charts.pie2)charts.pie2.destroy();
+  charts.pie2=new Chart(document.getElementById('pie2'),{type:'doughnut',data:{labels:[`獲利 ${ups.length}檔`,`虧損 ${dns.length}檔`],datasets:[{data:[ups.length,dns.length],backgroundColor:['#d93025','#1d8a4f'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:9,padding:5}}},cutout:'50%'}});
+  const s2=[...data].sort((a,b)=>b.pct-a.pct);
+  if(charts.bar2)charts.bar2.destroy();
+  charts.bar2=new Chart(document.getElementById('bar2'),{type:'bar',data:{labels:s2.map(s=>s.name),datasets:[{data:s2.map(s=>parseFloat(s.pct.toFixed(2))),backgroundColor:s2.map(s=>s.pct>=0?'#d93025':'#1d8a4f'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y>=0?'+':''}${ctx.parsed.y.toFixed(2)}%`}}},scales:{x:{ticks:{font:{size:9},maxRotation:50,autoSkip:false},grid:{display:false}},y:{ticks:{font:{size:9},callback:v=>`${v}%`},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+  const s3=[...data].sort((a,b)=>s2a?a[s2k]-b[s2k]:b[s2k]-a[s2k]);
+  document.getElementById('tb2').innerHTML=s3.map(s=>{const c=s.pnl>=0?'up':'dn',i=stocks.findIndex(x=>x.code===s.code);return`<tr onclick="openEdit(${i})"><td><div class="sname">${s.name}</div><div class="scode">${s.code}</div></td><td>${sdisplay(s.shares)}</td><td>${fmtf(s.price)}</td><td>${fmt(s.mv)}</td><td>${fmt(s.cost)}</td><td class="${c}">${s.pnl>=0?'+':''}${fmt(s.pnl)}</td><td class="${c}">${s.pnl>=0?'+':''}${fmtf(s.pct)}%</td><td><button class="ebtn" onclick="event.stopPropagation();openEdit(${i})">✏</button></td></tr>`;}).join('');
+}
+
+function renderTab3(){
+  const hist=getHistory(),dates=Object.keys(hist).sort((a,b)=>b.localeCompare(a));
+  if(dates.length===0){document.getElementById('m3hist').innerHTML='';document.getElementById('histGrid').innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px;">尚無歷史記錄。同步股價後會自動建立每日快照。</div>';document.getElementById('histDetail').innerHTML='';return;}
+  const latest=hist[dates[0]],oldest=hist[dates[dates.length-1]],pnlChange=latest.totalPnl-oldest.totalPnl,pc=pnlChange>=0?'up':'dn';
+  document.getElementById('m3hist').innerHTML=`<div class="metric"><div class="mlabel">有記錄天數</div><div class="mval">${dates.length} 天</div></div><div class="metric"><div class="mlabel">最新總市值</div><div class="mval">$${fmt(latest.totalMv)}</div></div><div class="metric"><div class="mlabel">最新總損益</div><div class="mval ${latest.totalPnl>=0?'up':'dn'}">${latest.totalPnl>=0?'+':''}$${fmt(latest.totalPnl)}</div></div><div class="metric"><div class="mlabel">期間損益變化</div><div class="mval ${pc}">${pnlChange>=0?'+':''}$${fmt(pnlChange)}</div></div>`;
+  document.getElementById('histGrid').innerHTML=dates.map(d=>{const h=hist[d],c=h.totalPnl>=0?'up':'dn';return`<div class="hist-card${selHistDate===d?' active':''}" onclick="showHistDetail('${d}')"><div class="hist-date">${d}</div><div class="hist-mv">$${fmt(h.totalMv)}</div><div class="hist-pnl ${c}">${h.totalPnl>=0?'+':''}$${fmt(h.totalPnl)} (${fmtf(h.totalCost>0?h.totalPnl/h.totalCost*100:0)}%)</div></div>`;}).join('');
+  if(selHistDate&&hist[selHistDate]) showHistDetail(selHistDate,true);
+}
+
+function showHistDetail(date,noRerender){
+  selHistDate=date;const hist=getHistory(),h=hist[date];if(!h)return;
+  const data=h.stocks.map(s=>{const mv=s.shares*s.price,pnl=mv-s.cost,pct=s.cost>0?(pnl/s.cost*100):0;return{...s,mv,pnl,pct};});
+  const sorted=[...data].sort((a,b)=>b.pnl-a.pnl);
+  document.getElementById('histDetail').innerHTML=`<div class="hist-detail"><div style="font-weight:600;margin-bottom:8px;color:var(--teal);">📅 ${date} 快照明細</div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--bg3);"><th style="padding:6px 8px;text-align:left;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);">商品</th>${['存股數','市價','市值','投入成本','投資損益','報酬率%'].map(h=>`<th style="padding:6px 8px;text-align:right;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead><tbody>${sorted.map((s,i)=>{const c=s.pnl>=0?'up':'dn',bg=i%2===0?'var(--bg2)':'var(--bg)';return`<tr style="background:${bg};border-bottom:1px solid var(--border);"><td style="padding:6px 8px;text-align:left;"><div class="sname">${s.name}</div><div class="scode">${s.code}</div></td><td style="padding:6px 8px;text-align:right;font-size:12px;">${sdisplay(s.shares)}</td><td style="padding:6px 8px;text-align:right;font-size:12px;">${fmtf(s.price)}</td><td style="padding:6px 8px;text-align:right;font-size:12px;">${fmt(s.mv)}</td><td style="padding:6px 8px;text-align:right;font-size:12px;">${fmt(s.cost)}</td><td style="padding:6px 8px;text-align:right;font-size:12px;" class="${c}">${s.pnl>=0?'+':''}${fmt(s.pnl)}</td><td style="padding:6px 8px;text-align:right;font-size:12px;" class="${c}">${s.pnl>=0?'+':''}${fmtf(s.pct)}%</td></tr>`;}).join('')}</tbody></table></div><div style="margin-top:8px;text-align:right;"><button class="btn" style="font-size:11px;color:#d93025;border-color:#d93025;" onclick="deleteSnapshot('${date}')">🗑 刪除此快照</button></div></div>`;
+  if(!noRerender) renderTab3();
+}
+
+function deleteSnapshot(date){if(!confirm('確定刪除 '+date+' 的快照？'))return;const hist=getHistory();delete hist[date];saveHistory(hist);selHistDate=null;renderTab3();document.getElementById('histDetail').innerHTML='';}
+function sort1(k){if(s1k===k)s1a=!s1a;else{s1k=k;s1a=false;}renderTab1();}
+function sort2(k){if(s2k===k)s2a=!s2a;else{s2k=k;s2a=false;}renderTab2();}
+function openAdd(){editIdx=-1;document.getElementById('mtitle').textContent='新增股票';['fc','fn','fs','fp','fb','fa','fk'].forEach(id=>document.getElementById(id).value='');document.getElementById('delBtn').style.display='none';document.getElementById('ov').classList.add('open');}
+function openEdit(i){editIdx=i;const s=stocks[i];document.getElementById('mtitle').textContent='編輯 — '+s.name;document.getElementById('fc').value=s.code;document.getElementById('fn').value=s.name;document.getElementById('fs').value=s.shares;document.getElementById('fp').value=s.price;document.getElementById('fb').value=s.be;document.getElementById('fa').value=s.avg;document.getElementById('fk').value=s.cost;document.getElementById('delBtn').style.display='inline-block';document.getElementById('ov').classList.add('open');}
+function closeModal(){document.getElementById('ov').classList.remove('open');}
+function deleteStock(){if(editIdx<0)return;if(!confirm('確定刪除 '+stocks[editIdx].name+' ?'))return;stocks.splice(editIdx,1);save();render();closeModal();}
+function saveStock(){const e=id=>document.getElementById(id).value,code=e('fc').trim(),name=e('fn').trim(),shares=parseFloat(e('fs')),price=parseFloat(e('fp')),be=parseFloat(e('fb')),avg=parseFloat(e('fa')),cost=parseFloat(e('fk'));if(!code||!name||isNaN(shares)||isNaN(price)||isNaN(avg)||isNaN(cost))return;const entry={code,name,shares,price,be:isNaN(be)?avg:be,avg,cost};if(editIdx>=0)stocks[editIdx]=entry;else stocks.push(entry);save();render();closeModal();}
+function exportCSV(){const data=enrich(),rows=[['代碼','名稱','存股數','市價','市值','損益兩平','成交均價','投入成本','投資損益','報酬率%']];data.forEach(s=>rows.push([s.code,s.name,s.shares,s.price.toFixed(2),s.mv.toFixed(0),s.be.toFixed(2),s.avg.toFixed(2),s.cost.toFixed(0),s.pnl.toFixed(0),s.pct.toFixed(2)+'%']));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8;'}));a.download='持股損益_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.csv';a.click();}
+function render(){renderTab1();}
+load();render();
+document.getElementById('ts').textContent='最後更新：'+new Date().toLocaleString('zh-TW');
+</script>
+</body>
+</html>
