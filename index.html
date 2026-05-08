@@ -212,23 +212,44 @@ function saveSnapshot(){
   setSyncStatus('ok','快照已儲存（'+today+'）');
 }
 
+// ── 多重 proxy，依序嘗試直到成功 ────────────────────────────────
+const PROXIES=[
+  sym => `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
+  sym => `https://query2.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
+  sym => `https://corsproxy.io/?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d')}`,
+  sym => `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d')}`,
+];
+
+async function fetchOnePrice(symbol){
+  for(const proxyFn of PROXIES){
+    try{
+      const res=await fetch(proxyFn(symbol),{signal:AbortSignal.timeout(7000)});
+      if(!res.ok) continue;
+      const j=await res.json();
+      const meta=j?.chart?.result?.[0]?.meta;
+      const price=meta?.regularMarketPrice||meta?.previousClose;
+      if(price&&price>0) return price;
+    }catch{}
+  }
+  return null;
+}
+
 async function fetchPrices(){
   setSyncStatus('loading','正在抓取最新股價...');
   document.getElementById('syncBtn').disabled=true;
   let ok=0, fail=0;
   for(const s of stocks){
-    try{
-      const res=await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${s.code}.TW?interval=1d&range=1d`);
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const j=await res.json();
-      const meta=j?.chart?.result?.[0]?.meta;
-      const price=meta?.regularMarketPrice||meta?.previousClose;
-      if(price&&price>0){s.price=price;lastPrices[s.code]={price,time:Date.now()};ok++;}else{fail++;}
-    }catch{fail++;}
-    await new Promise(r=>setTimeout(r,150));
+    const price=await fetchOnePrice(s.code+'.TW');
+    if(price){s.price=price;lastPrices[s.code]={price,time:Date.now()};ok++;}
+    else fail++;
+    await new Promise(r=>setTimeout(r,200));
   }
   save();
-  setSyncStatus(ok>0?'ok':'err',ok>0?`已更新 ${ok} 檔報價${fail>0?'，'+fail+' 檔失敗':''}`:`無法連線（網路問題或市場休市），使用本機價格`);
+  setSyncStatus(ok>0?'ok':'err',
+    ok>0
+      ? `已更新 ${ok} 檔報價${fail>0?'，'+fail+' 檔未取得':''}`
+      : `所有來源均無法連線，請稍後再試或手動更新市價`
+  );
   document.getElementById('syncBtn').disabled=false;
   render();
   if(ok>0) saveSnapshot();
