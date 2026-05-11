@@ -652,12 +652,15 @@ function renderHistContent(){
     <div class="metric"><div class="mlabel">最新市值</div><div class="mval">${fmtMv(latest.totalMv)}</div></div>
     <div class="metric"><div class="mlabel">最新損益</div><div class="mval ${latest.totalPnl>=0?'up':'dn'}">${fmtPnl(latest.totalPnl)}</div></div>
     <div class="metric"><div class="mlabel">期間變化</div><div class="mval ${pc}">${fmtPnl(pnlCh)}</div></div>`;
-  const cards=dates.map(d=>{const h=hist[d],c=h.totalPnl>=0?'up':'dn';return`<div class="hist-card${selHistDate===d?' active':''}" onclick="showHist('${d}')"><div class="hist-date">${d}</div><div class="hist-mv">${fmtMv(h.totalMv)}</div><div class="hist-pnl ${c}">${fmtPnl(h.totalPnl)} (${sgn(h.totalCost>0?h.totalPnl/h.totalCost*100:0)}${absF(Math.abs(h.totalCost>0?h.totalPnl/h.totalCost*100:0))}%)</div>${h.fxRate&&market==='US'?`<div style="font-size:10px;color:var(--text3);margin-top:2px;">匯率 ${h.fxRate.toFixed(2)}</div>`:''}</div>`;}).join('');
+  const cards=dates.map(d=>{const h=hist[d],c=h.totalPnl>=0?'up':'dn';return`<div class="hist-card${selHistDate===d?' active':''}"><div onclick="showHist('${d}')" style="cursor:pointer;"><div class="hist-date">${d}</div><div class="hist-mv">${fmtMv(h.totalMv)}</div><div class="hist-pnl ${c}">${fmtPnl(h.totalPnl)} (${sgn(h.totalCost>0?h.totalPnl/h.totalCost*100:0)}${absF(Math.abs(h.totalCost>0?h.totalPnl/h.totalCost*100:0))}%)</div>${h.fxRate&&market==='US'?`<div style="font-size:10px;color:var(--text3);margin-top:2px;">匯率 ${h.fxRate.toFixed(2)}</div>`:''}</div><div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;"><button class="btn" style="font-size:10px;padding:2px 7px;" onclick="event.stopPropagation();dlSnap('${d}','html')">🌐 網頁</button><button class="btn" style="font-size:10px;padding:2px 7px;" onclick="event.stopPropagation();dlSnap('${d}','csv')">📊 CSV</button><button class="btn" style="font-size:10px;padding:2px 7px;" onclick="event.stopPropagation();dlSnap('${d}','json')">{ } JSON</button></div></div>`;}).join('');
 
   document.getElementById('pageContent').innerHTML=`
     <div class="notice">📋 每次「⟳ 更新股價」成功後自動備份當日快照（每天一筆）。</div>
     <div class="metrics">${metrics}</div>
-    <div class="sec-title">歷史日期</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div class="sec-title" style="margin:0;">歷史日期</div>
+      <button class="btn" style="font-size:11px;" onclick="downloadAllSnaps()">⬇ 下載所有快照</button>
+    </div>
     <div class="hist-grid">${cards}</div>
     <div id="histDetailArea"></div>`;
 
@@ -679,10 +682,132 @@ function showHist(date,noRe){
   const ths=thCols.map(h=>`<th style="padding:6px 7px;text-align:right;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);">${h}</th>`).join('');
 
   const area=document.getElementById('histDetailArea');
-  if(area) area.innerHTML=`<div class="hist-detail"><div style="font-weight:600;margin-bottom:8px;color:var(--acc);">📅 ${date} 快照${market==='US'?'（匯率 '+snapFx.toFixed(2)+'）':''}</div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--bg3);"><th style="padding:6px 7px;text-align:left;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);">商品</th>${ths}</tr></thead><tbody>${rows}</tbody></table></div><div style="margin-top:8px;text-align:right;"><button class="btn" style="font-size:11px;color:#d93025;border-color:#d93025;" onclick="delSnap('${date}')">🗑 刪除此快照</button></div></div>`;
+  if(area) area.innerHTML=`<div class="hist-detail"><div style="font-weight:600;margin-bottom:8px;color:var(--acc);">📅 ${date} 快照${market==='US'?'（匯率 '+snapFx.toFixed(2)+'）':''}</div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--bg3);"><th style="padding:6px 7px;text-align:left;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);">商品</th>${ths}</tr></thead><tbody>${rows}</tbody></table></div><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:flex-end;"><span style="font-size:11px;color:var(--text3);margin-right:4px;">下載：</span><button class="btn prim" style="font-size:11px;" onclick="dlSnap('${date}','html')">🌐 HTML報表</button><button class="btn" style="font-size:11px;" onclick="dlSnap('${date}','csv')">📊 CSV試算表</button><button class="btn" style="font-size:11px;" onclick="dlSnap('${date}','json')">{ } JSON</button><button class="btn" style="font-size:11px;color:#d93025;border-color:#d93025;margin-left:8px;" onclick="delSnap('${date}')">🗑 刪除</button></div></div>`;
   if(!noRe) renderHistContent();
 }
 function delSnap(date){if(!confirm('確定刪除 '+date+'？'))return;const h=getHistory();delete h[date];saveHistory(h);selHistDate=null;renderHistContent();}
+
+// ── 下載單日快照（JSON / CSV / HTML）─────────────────────────────
+function dlSnap(date,fmt){
+  const hist=getHistory(),h=hist[date];if(!h)return;
+  const isTW=market==='TW';
+  const snapFx=h.fxRate||fxRate;
+  const data=h.stocks.map(s=>{
+    const mv=s.shares*s.price,cost=s.cost>0?s.cost:(s.shares*s.avg);
+    const pnl=mv-cost,pct=cost>0?(pnl/cost*100):0;
+    return{...s,mv,cost,pnl,pct};
+  }).sort((a,b)=>b.pnl-a.pnl);
+
+  const fn=(market==='TW'?'台股':'美股')+'快照_'+date;
+
+  if(fmt==='json'){
+    dl(fn+'.json', JSON.stringify({date,market,...h},null,2), 'application/json');
+
+  } else if(fmt==='csv'){
+    const hdr=isTW
+      ?['日期','代碼','名稱','存股數','市價','市值','投入成本','投資損益','報酬率%']
+      :['日期','代碼','名稱','股數','市價(USD)','市值(USD)','投入成本(USD)','損益(USD)','損益(TWD)','報酬率%'];
+    const rows=[hdr.join(',')];
+    data.forEach(s=>{
+      const row=isTW
+        ?[date,s.code,s.name,s.shares,fmtF(s.price),Math.round(s.mv),Math.round(s.cost),Math.round(s.pnl),fmtF(s.pct)+'%']
+        :[date,s.code,s.name,s.shares,fmtF(s.price),fmtF(s.mv),fmtF(s.cost),fmtF(s.pnl),fmtF(s.pnl*snapFx),fmtF(s.pct)+'%'];
+      rows.push(row.join(','));
+    });
+    rows.push('');
+    rows.push(isTW
+      ?['','','合計','','' ,Math.round(h.totalMv),Math.round(h.totalCost),Math.round(h.totalPnl),fmtF(h.totalCost>0?h.totalPnl/h.totalCost*100:0)+'%'].join(',')
+      :['','','合計','','',fmtF(h.totalMv),fmtF(h.totalCost),fmtF(h.totalPnl),fmtF(h.totalPnl*snapFx),fmtF(h.totalCost>0?h.totalPnl/h.totalCost*100:0)+'%'].join(',')
+    );
+    dl(fn+'.csv', '\ufeff'+rows.join('\n'), 'text/csv;charset=utf-8;');
+
+  } else if(fmt==='html'){
+    const totPct=h.totalCost>0?(h.totalPnl/h.totalCost*100):0;
+    const colUp='#c0392b', colDn='#1a7a4a', colHead='#1a6b6b';
+    const trows=data.map((s,i)=>{
+      const c=s.pnl>=0?colUp:colDn;
+      const bg=i%2===0?'#f9fafb':'#ffffff';
+      const cells=isTW
+        ?`<td>${sdisplay(s.shares)}</td><td>${fmtF(s.price)}</td><td>${Math.round(s.mv).toLocaleString()}</td><td>${Math.round(s.cost).toLocaleString()}</td><td style="color:${c};font-weight:600;">${s.pnl>=0?'+':''}${Math.round(s.pnl).toLocaleString()}</td><td style="color:${c};font-weight:600;">${s.pnl>=0?'+':''}${fmtF(s.pct)}%</td>`
+        :`<td>${s.shares.toLocaleString()}</td><td>$${fmtF(s.price)}</td><td>$${fmtF(s.mv)}</td><td>$${fmtF(s.cost)}</td><td style="color:${c};font-weight:600;">${s.pnl>=0?'+':''}$${fmtF(Math.abs(s.pnl))}</td><td style="color:${c};font-weight:600;">NT$${Math.round(s.pnl*snapFx).toLocaleString()}</td><td style="color:${c};font-weight:600;">${s.pnl>=0?'+':''}${fmtF(s.pct)}%</td>`;
+      return`<tr style="background:${bg};"><td style="text-align:left;"><strong>${s.name}</strong><br><small style="color:#888;">${s.code}</small></td>${cells}</tr>`;
+    }).join('');
+    const thCols=isTW
+      ?['商品','股數','市價','市值','投入成本','投資損益','報酬率']
+      :['商品','股數','市價(USD)','市值(USD)','成本(USD)','損益(USD)','損益(TWD)','報酬率'];
+    const ths=thCols.map(t=>`<th>${t}</th>`).join('');
+    const pnlColor=h.totalPnl>=0?colUp:colDn;
+    const html=`<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"/><title>${isTW?'台股':'美股'}快照 ${date}</title>
+<style>
+body{font-family:-apple-system,Arial,sans-serif;background:#f0f4f8;margin:0;padding:20px;color:#1a1a1a;}
+.wrap{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden;}
+.hdr{background:${colHead};color:#fff;padding:20px 24px;}
+.hdr h1{font-size:20px;margin:0 0 4px;}
+.hdr p{font-size:13px;opacity:.8;margin:0;}
+.summary{display:flex;gap:0;border-bottom:1px solid #e5e7eb;}
+.sm{flex:1;padding:14px 16px;border-right:1px solid #e5e7eb;text-align:center;}
+.sm:last-child{border-right:none;}
+.sm .label{font-size:11px;color:#888;margin-bottom:4px;}
+.sm .val{font-size:18px;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:#f3f4f6;padding:10px 12px;font-size:12px;color:#555;font-weight:600;text-align:right;border-bottom:2px solid #e5e7eb;white-space:nowrap;}
+thead th:first-child{text-align:left;}
+tbody td{padding:9px 12px;font-size:13px;text-align:right;border-bottom:1px solid #f0f0f0;}
+tbody td:first-child{text-align:left;}
+tfoot td{padding:10px 12px;font-size:13px;font-weight:700;text-align:right;background:#f9fafb;border-top:2px solid #e5e7eb;}
+tfoot td:first-child{text-align:left;}
+.footer{padding:12px 24px;font-size:11px;color:#aaa;text-align:right;}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr"><h1>${isTW?'🇹🇼 台股':'🇺🇸 美股'}持股快照</h1><p>日期：${date}${!isTW?' · 匯率 USD/TWD '+snapFx.toFixed(2):''}</p></div>
+  <div class="summary">
+    <div class="sm"><div class="label">總市值</div><div class="val">${isTW?'$'+Math.round(h.totalMv).toLocaleString():'$'+fmtF(h.totalMv)}</div></div>
+    <div class="sm"><div class="label">投入成本</div><div class="val">${isTW?'$'+Math.round(h.totalCost).toLocaleString():'$'+fmtF(h.totalCost)}</div></div>
+    <div class="sm"><div class="label">投資損益</div><div class="val" style="color:${pnlColor};">${h.totalPnl>=0?'+':''}${isTW?Math.round(h.totalPnl).toLocaleString():fmtF(h.totalPnl)}</div></div>
+    <div class="sm"><div class="label">報酬率</div><div class="val" style="color:${pnlColor};">${h.totalPnl>=0?'+':''}${fmtF(totPct)}%</div></div>
+    <div class="sm"><div class="label">持股數</div><div class="val">${data.length} 檔</div></div>
+  </div>
+  <table><thead><tr>${ths}</tr></thead><tbody>${trows}</tbody>
+  <tfoot><tr><td>合計</td>${isTW
+    ?`<td></td><td></td><td>${Math.round(h.totalMv).toLocaleString()}</td><td>${Math.round(h.totalCost).toLocaleString()}</td><td style="color:${pnlColor};">${h.totalPnl>=0?'+':''}${Math.round(h.totalPnl).toLocaleString()}</td><td style="color:${pnlColor};">${h.totalPnl>=0?'+':''}${fmtF(totPct)}%</td>`
+    :`<td></td><td></td><td>$${fmtF(h.totalMv)}</td><td>$${fmtF(h.totalCost)}</td><td style="color:${pnlColor};">${h.totalPnl>=0?'+':''}$${fmtF(Math.abs(h.totalPnl))}</td><td style="color:${pnlColor};">NT$${Math.round(h.totalPnl*snapFx).toLocaleString()}</td><td style="color:${pnlColor};">${h.totalPnl>=0?'+':''}${fmtF(totPct)}%</td>`
+  }</tr></tfoot>
+  </table>
+  <div class="footer">產生時間：${new Date().toLocaleString('zh-TW')}</div>
+</div></body></html>`;
+    dl(fn+'.html', html, 'text/html;charset=utf-8;');
+  }
+}
+
+// ── 下載所有快照 CSV ────────────────────────────────────────────
+function downloadAllSnaps(){
+  const hist=getHistory();
+  if(!Object.keys(hist).length){alert('尚無快照資料');return;}
+  const isTW=market==='TW';
+  const dates=Object.keys(hist).sort();
+  const hdr=isTW
+    ?['日期','代碼','名稱','存股數','市價','市值','投入成本','投資損益','報酬率%']
+    :['日期','代碼','名稱','股數','市價(USD)','市值(USD)','投入成本(USD)','損益(USD)','報酬率%'];
+  const rows=[hdr.join(',')];
+  dates.forEach(date=>{
+    const h=hist[date];
+    (h.stocks||[]).forEach(s=>{
+      const mv=s.shares*s.price,cost=s.cost>0?s.cost:(s.shares*s.avg),pnl=mv-cost,pct=cost>0?(pnl/cost*100):0;
+      const row=isTW
+        ?[date,s.code,s.name,s.shares,fmtF(s.price),Math.round(mv),Math.round(cost),Math.round(pnl),fmtF(pct)+'%']
+        :[date,s.code,s.name,s.shares,fmtF(s.price),fmtF(mv),fmtF(cost),fmtF(pnl),fmtF(pct)+'%'];
+      rows.push(row.join(','));
+    });
+    rows.push('');
+  });
+  dl((isTW?'台股':'美股')+'所有快照_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.csv','\ufeff'+rows.join('\n'),'text/csv;charset=utf-8;');
+}
+
+function dl(filename,content,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename;a.click();
+}
 
 // ════════════════════════════════════════════════════════════════
 // 新增 / 編輯
