@@ -6,61 +6,137 @@
 <title>每日持股匯入工具</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#0f1117;--bg2:#171b26;--bg3:#1e2333;--bg4:#252a3d;--border:#2e3550;--text:#e8eaf0;--text2:#8892b0;--text3:#4a5478;--acc:#00d4aa;--acc2:#00b891;--acc3:rgba(0,212,170,.1);--up:#ff6b6b;--dn:#00d4aa;--radius:10px;}
+:root{
+  --bg:#0f1117;
+  --bg2:#171b26;
+  --bg3:#1e2333;
+  --bg4:#252a3d;
+  --border:#2e3550;
+  --text:#e8eaf0;
+  --text2:#8892b0;
+  --text3:#4a5478;
+  --acc:#00d4aa;
+  --acc2:#00b891;
+  --acc3:rgba(0,212,170,.1);
+  --up:#ff6b6b;
+  --dn:#00d4aa;
+  --radius:10px;
+}
 body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);font-size:13px;min-height:100vh;}
+
 .app{max-width:900px;margin:0 auto;padding:20px 16px;}
-.header{margin-bottom:24px;}.header-top{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+
+/* Header */
+.header{margin-bottom:24px;}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
 .logo{width:36px;height:36px;background:var(--acc);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.header h1{font-size:20px;font-weight:700;color:var(--text);}.header p{font-size:12px;color:var(--text2);margin-top:4px;}
-.steps{display:flex;margin-bottom:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.step{flex:1;padding:10px 8px;text-align:center;font-size:11px;color:var(--text3);border-right:1px solid var(--border);transition:all .2s;}
-.step:last-child{border-right:none;}.step.active{background:var(--acc3);color:var(--acc);font-weight:600;}.step.done{color:var(--acc2);background:rgba(0,184,145,.06);}
+.header h1{font-size:20px;font-weight:700;color:var(--text);}
+.header p{font-size:12px;color:var(--text2);margin-top:4px;}
+
+/* Step indicator */
+.steps{display:flex;gap:0;margin-bottom:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.step{flex:1;padding:10px 8px;text-align:center;font-size:11px;color:var(--text3);border-right:1px solid var(--border);cursor:default;transition:all .2s;}
+.step:last-child{border-right:none;}
+.step.active{background:var(--acc3);color:var(--acc);font-weight:600;}
+.step.done{color:var(--acc2);background:rgba(0,184,145,.06);}
 .step-num{display:block;font-size:16px;margin-bottom:2px;}
+
+/* Card */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
 .card-title{font-size:13px;font-weight:600;color:var(--acc);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+
+/* Table */
 .tw{overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;}
 table{width:100%;border-collapse:collapse;}
 thead th{font-size:10px;font-weight:600;color:var(--text3);padding:8px 6px;text-align:right;border-bottom:1px solid var(--border);background:var(--bg3);white-space:nowrap;}
 thead th:first-child{text-align:left;}
-tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}tbody tr:last-child{border-bottom:none;}tbody tr:hover{background:var(--bg4);}
-td{padding:7px 6px;text-align:right;font-size:11px;}td:first-child{text-align:left;}
-.sname{font-weight:600;font-size:12px;color:var(--text);}.scode{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg4);}
+td{padding:7px 6px;text-align:right;font-size:11px;}
+td:first-child{text-align:left;}
+.sname{font-weight:600;font-size:12px;color:var(--text);}
+.scode{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
 .price-input{width:88px;padding:4px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);border-radius:5px;background:var(--bg3);color:var(--text);text-align:right;transition:border-color .15s;}
-.price-input:focus{outline:none;border-color:var(--acc);}.price-input.changed{border-color:#f0a500;background:rgba(240,165,0,.08);}
+.price-input:focus{outline:none;border-color:var(--acc);}
+.price-input.changed{border-color:#f0a500;background:rgba(240,165,0,.08);}
 .shares-input{width:72px;padding:4px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);border-radius:5px;background:var(--bg3);color:var(--text);text-align:right;transition:border-color .15s;}
-.shares-input:focus{outline:none;border-color:var(--acc);}.shares-input.changed{border-color:#7c6fcd;background:rgba(124,111,205,.08);}
+.shares-input:focus{outline:none;border-color:var(--acc);}
+.shares-input.changed{border-color:#7c6fcd;background:rgba(124,111,205,.08);}
 .cost-input{width:90px;padding:4px 6px;font-size:11px;font-family:'JetBrains Mono',monospace;border:1px solid var(--border);border-radius:5px;background:var(--bg3);color:var(--text);text-align:right;transition:border-color .15s;}
-.cost-input:focus{outline:none;border-color:var(--acc);}.cost-input.changed{border-color:#ff6b6b;background:rgba(255,107,107,.08);}
+.cost-input:focus{outline:none;border-color:var(--acc);}
+.cost-input.changed{border-color:#ff6b6b;background:rgba(255,107,107,.08);}
+
+/* Buttons */
 .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s;font-family:'Noto Sans TC',sans-serif;}
-.btn:hover{border-color:var(--acc);color:var(--acc);}.btn.prim{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600;}.btn.prim:hover{background:var(--acc2);}
-.btn.warn{background:rgba(240,165,0,.15);color:#f0a500;border-color:rgba(240,165,0,.4);}.btn.warn:hover{background:rgba(240,165,0,.25);}
+.btn:hover{border-color:var(--acc);color:var(--acc);}
+.btn.prim{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600;}
+.btn.prim:hover{background:var(--acc2);}
+.btn.warn{background:rgba(240,165,0,.15);color:#f0a500;border-color:rgba(240,165,0,.4);}
+.btn.warn:hover{background:rgba(240,165,0,.25);}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+/* Date bar */
 .date-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
 .date-label{font-size:12px;color:var(--text2);}
 .date-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--acc);background:var(--acc3);padding:4px 10px;border-radius:6px;border:1px solid rgba(0,212,170,.2);}
 .date-input{padding:4px 8px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-family:'JetBrains Mono',monospace;}
 .date-input:focus{outline:none;border-color:var(--acc);}
+
+/* Status */
 .status{padding:10px 14px;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:8px;margin-top:12px;}
 .status.ok{background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:var(--acc);}
 .status.err{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);color:#ff6b6b;}
 .status.info{background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.25);color:#f0a500;}
+
+/* Import button big */
 .import-btn{width:100%;padding:14px;font-size:14px;font-weight:700;background:var(--acc);color:#000;border:none;border-radius:var(--radius);cursor:pointer;font-family:'Noto Sans TC',sans-serif;transition:all .2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .import-btn:hover{background:var(--acc2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,212,170,.25);}
+.import-btn:active{transform:translateY(0);}
 .import-btn:disabled{background:var(--bg4);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* Target site */
+.site-info{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);}
+.site-dot{width:8px;height:8px;border-radius:50%;background:#ccc;}
+.site-dot.ready{background:var(--acc);box-shadow:0 0 6px var(--acc);}
+.site-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc);}
+
+/* Legend */
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10px;color:var(--text3);margin-bottom:8px;}
-.leg{display:flex;align-items:center;gap:4px;}.leg-dot{width:8px;height:8px;border-radius:2px;}
-.add-row-form{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;padding:10px;background:var(--bg3);border-radius:8px;margin-top:8px;}
+.leg{display:flex;align-items:center;gap:4px;}
+.leg-dot{width:8px;height:8px;border-radius:2px;}
+
+/* Diff badge */
+.diff{font-size:10px;font-family:'JetBrains Mono',monospace;}
+.diff.up{color:var(--up);}
+.diff.dn{color:var(--dn);}
+
+/* Bulk paste */
+.paste-box{width:100%;min-height:140px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;resize:vertical;}
+.paste-box:focus{outline:none;border-color:var(--acc);}
+
+/* Add row */
+.add-row-form{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;margin-top:8px;}
 .add-row-form input{flex:1;min-width:80px;padding:5px 8px;font-size:11px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);}
 .add-row-form input:focus{outline:none;border-color:var(--acc);}
-.add-row-form label{font-size:10px;color:var(--text3);white-space:nowrap;display:block;margin-bottom:2px;}
+.add-row-form label{font-size:10px;color:var(--text3);white-space:nowrap;}
+
+/* Hint */
 .hint{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.6;}
-a{color:var(--acc);text-decoration:none;}a:hover{text-decoration:underline;}
-::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+a{color:var(--acc);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
 <div class="app">
+
   <div class="header">
     <div class="header-top">
       <div class="logo">📊</div>
@@ -70,135 +146,433 @@ a{color:var(--acc);text-decoration:none;}a:hover{text-decoration:underline;}
       </div>
     </div>
   </div>
+
+  <!-- 步驟 -->
   <div class="steps" id="stepBar">
     <div class="step active" id="s1"><span class="step-num">①</span>編輯數值</div>
     <div class="step" id="s2"><span class="step-num">②</span>確認匯入</div>
     <div class="step" id="s3"><span class="step-num">③</span>完成</div>
   </div>
+
+  <!-- 目標網站狀態 -->
+  <div class="site-info">
+    <div class="site-dot ready" id="siteDot"></div>
+    <div>目標：<span class="site-url">wang2026378.github.io/stocks/</span> · localStorage key: <span style="font-family:monospace;color:#f0a500;">tw_stocks_v5</span></div>
+  </div>
+
+  <!-- 日期 -->
   <div class="date-bar">
     <span class="date-label">匯入日期：</span>
     <span class="date-val" id="todayDisplay"></span>
     <input type="date" class="date-input" id="dateInput" onchange="updateDateDisplay()"/>
   </div>
+
+  <!-- 快速貼上區（從亮點原始文字解析）-->
   <div class="card">
-    <div class="card-title">📋 持股數值編輯 <span style="font-size:10px;font-weight:400;color:var(--text3);">（黃=市價 紫=股數 紅=成本 有修改時亮色）</span></div>
+    <div class="card-title">⚡ 快速貼上（從亮點 App 複製原文）</div>
+    <p style="font-size:11px;color:var(--text2);margin-bottom:8px;">把亮點台股「未實現損益(庫存)」頁的文字直接貼進來，自動解析（含代碼、股數、現價、損益兩平、均價、成本）。</p>
+    <textarea class="paste-box" id="pasteBox" placeholder="貼上亮點台股庫存頁原文，或直接貼從 Excel 複製的內容..."></textarea>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="btn prim" onclick="parsePaste()">🔍 解析並套用</button>
+      <button class="btn" onclick="document.getElementById('pasteBox').value=''">清空</button>
+    </div>
+    <div id="parseStatus" style="display:none;"></div>
+  </div>
+
+  <!-- 持股表格 -->
+  <div class="card">
+    <div class="card-title">📋 持股數值編輯 <span style="font-size:10px;font-weight:400;color:var(--text3);">（直接修改欄位，黃=市價變動 紫=股數變動 紅=成本變動）</span></div>
     <div class="legend">
       <div class="leg"><div class="leg-dot" style="background:#f0a500;"></div>市價已修改</div>
       <div class="leg"><div class="leg-dot" style="background:#7c6fcd;"></div>股數已修改</div>
       <div class="leg"><div class="leg-dot" style="background:#ff6b6b;"></div>成本已修改</div>
     </div>
-    <div class="tw"><table id="stockTable">
-      <thead><tr>
-        <th style="width:90px;text-align:left;">商品</th>
-        <th style="width:80px;">股數</th>
-        <th style="width:90px;">市價</th>
-        <th style="width:78px;">損益兩平</th>
-        <th style="width:78px;">成交均價</th>
-        <th style="width:100px;">投入成本</th>
-        <th style="width:70px;">損益試算</th>
-      </tr></thead>
-      <tbody id="stockBody"></tbody>
-    </table></div>
+    <div class="tw">
+      <table id="stockTable">
+        <thead>
+          <tr>
+            <th style="width:90px;text-align:left;">商品</th>
+            <th style="width:80px;">股數</th>
+            <th style="width:90px;">市價</th>
+            <th style="width:78px;">損益兩平</th>
+            <th style="width:78px;">成交均價</th>
+            <th style="width:100px;">投入成本</th>
+            <th style="width:70px;">損益試算</th>
+          </tr>
+        </thead>
+        <tbody id="stockBody"></tbody>
+      </table>
+    </div>
     <div class="btn-row">
       <button class="btn" onclick="addRowForm()">＋ 新增股票</button>
       <button class="btn warn" onclick="resetAll()">↩ 還原預設</button>
     </div>
     <div id="addForm" style="display:none;"></div>
   </div>
-  <button class="import-btn" id="importBtn" onclick="doImport()">⬆ 寫入 localStorage 並匯入</button>
+
+  <!-- 匯入按鈕 -->
+  <button class="import-btn" id="importBtn" onclick="doImport()">
+    ⬆ 寫入 localStorage 並匯入
+  </button>
+  <div class="hint">⚠️ 此工具需要與 <a href="https://wang2026378.github.io/stocks/" target="_blank">wang2026378.github.io/stocks/</a> 在<strong style="color:var(--text);">同一個瀏覽器分頁群組</strong>中開啟，或使用下方「產生匯入碼」貼到目標網站的 console。</div>
+
   <div id="statusBox" style="display:none;"></div>
+
+  <!-- 替代方案：產生匯入碼 -->
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">🔧 替代方案：產生匯入碼（手動貼上）</div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">若直接匯入因跨域受阻，可複製以下程式碼，在 <a href="https://wang2026378.github.io/stocks/" target="_blank">目標網站</a> 開啟後，用 Safari「長按網址列→貼上」或分享選單中貼到書籤執行。</p>
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="btn prim" onclick="generateCode()">⚙ 產生匯入碼</button>
+      <button class="btn" onclick="copyCode()" id="copyBtn" style="display:none;">📋 複製</button>
+    </div>
+    <textarea id="codeBox" readonly style="width:100%;height:120px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--bg3);color:var(--acc);border:1px solid var(--border);border-radius:8px;resize:vertical;display:none;"></textarea>
+    <div id="bookmarkHint" style="display:none;" class="hint">
+      <strong style="color:var(--text);">📱 iOS Safari 使用方法：</strong><br>
+      1. 先將任意一個書籤儲存（例如把這個頁面加入書籤）<br>
+      2. 到「書籤」→ 長按剛才的書籤 → 「編輯」<br>
+      3. 把網址欄位改成上方複製的程式碼，並儲存<br>
+      4. 開啟 wang2026378.github.io/stocks/ 後，點那個書籤執行<br>
+      <br>
+      <strong style="color:var(--text);">💻 電腦使用方法：</strong><br>
+      在目標網站開啟，按 F12 → Console → 貼上 → Enter
+    </div>
+  </div>
+
 </div>
+
 <script>
-const DEFAULT_STOCKS=[
-  {code:'0050',name:'元大台灣50',shares:5,price:96.90,be:45.66,avg:45.40,cost:227},
-  {code:'2301',name:'光寶科',shares:5888,price:224.00,be:186.08,avg:185.00,cost:1090863},
-  {code:'2308',name:'台達電',shares:18,price:2245.00,be:2232.98,avg:2220.00,cost:40016},
-  {code:'2312',name:'金寶',shares:3000,price:29.90,be:29.57,avg:29.40,cost:88325},
-  {code:'2324',name:'仁寶',shares:2000,price:30.80,be:31.88,avg:31.70,cost:63489},
-  {code:'2330',name:'台積電',shares:2030,price:2235.00,be:1895.59,avg:1884.57,cost:3831148},
-  {code:'3711',name:'日月光投控',shares:8,price:537.00,be:512.98,avg:510.00,cost:4100},
-  {code:'4585',name:'達明',shares:8,price:342.00,be:325.39,avg:323.50,cost:2591},
-  {code:'4908',name:'前鼎',shares:1008,price:227.50,be:143.32,avg:142.49,cost:143841},
-  {code:'5243',name:'乙盛-KY',shares:108,price:107.00,be:124.72,avg:124.00,cost:13412},
-  {code:'6285',name:'啟碁',shares:19188,price:259.00,be:235.00,avg:233.64,cost:4489504},
-  {code:'6829',name:'千附精密',shares:2000,price:225.50,be:179.04,avg:178.00,cost:356506},
-  {code:'8033',name:'雷虎',shares:25,price:144.00,be:161.94,avg:161.00,cost:4045},
+// ── 預設持股資料（今日截圖數值）────────────────────────────────
+const DEFAULT_STOCKS = [
+  {code:'0050', name:'元大台灣50', shares:5,     price:96.85,  be:45.66,   avg:45.40,   cost:227},
+  {code:'2301', name:'光寶科',     shares:7048,  price:234.50, be:195.01,  avg:193.88,  cost:1368417},
+  {code:'2308', name:'台達電',     shares:18,    price:2195.00,be:2232.98, avg:2220.00, cost:40016},
+  {code:'2312', name:'金寶',       shares:3000,  price:29.45,  be:29.57,   avg:29.40,   cost:88325},
+  {code:'2324', name:'仁寶',       shares:2000,  price:29.90,  be:31.88,   avg:31.70,   cost:63489},
+  {code:'2330', name:'台積電',     shares:2030,  price:2255.00,be:1895.59, avg:1884.57, cost:3831148},
+  {code:'3711', name:'日月光投控', shares:8,     price:555.00, be:512.98,  avg:510.00,  cost:4100},
+  {code:'4585', name:'達明',       shares:8,     price:339.00, be:325.39,  avg:323.50,  cost:2591},
+  {code:'4908', name:'前鼎',       shares:1008,  price:237.00, be:143.32,  avg:142.49,  cost:143840},
+  {code:'5243', name:'乙盛-KY',    shares:108,   price:103.50, be:124.72,  avg:124.00,  cost:13411},
+  {code:'6285', name:'啟碁',       shares:18188, price:282.00, be:242.28,  avg:240.88,  cost:4387359},
+  {code:'6829', name:'千附精密',   shares:2000,  price:215.00, be:179.04,  avg:178.00,  cost:356506},
+  {code:'8033', name:'雷虎',       shares:25,    price:141.50, be:161.94,  avg:161.00,  cost:4045},
 ];
-let currentStocks=JSON.parse(JSON.stringify(DEFAULT_STOCKS));
-function initDate(){const t=new Date(),y=t.getFullYear(),m=String(t.getMonth()+1).padStart(2,'0'),d=String(t.getDate()).padStart(2,'0');document.getElementById('dateInput').value=`${y}-${m}-${d}`;updateDateDisplay();}
-function updateDateDisplay(){const v=document.getElementById('dateInput').value;if(!v)return;const[y,m,d]=v.split('-');document.getElementById('todayDisplay').textContent=`${y}/${m}/${d}`;}
+
+let currentStocks = JSON.parse(JSON.stringify(DEFAULT_STOCKS));
+
+// ── 日期 ────────────────────────────────────────────────────────
+function initDate(){
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  document.getElementById('dateInput').value = `${yyyy}-${mm}-${dd}`;
+  updateDateDisplay();
+}
+function updateDateDisplay(){
+  const v = document.getElementById('dateInput').value;
+  if(!v) return;
+  const [y,m,d] = v.split('-');
+  document.getElementById('todayDisplay').textContent = `${y}/${m}/${d}`;
+}
+
+// ── 格式化 ────────────────────────────────────────────────────────
 function fmtN(n){return Math.round(n).toLocaleString('zh-TW');}
 function fmtF(n){return parseFloat(n).toFixed(2);}
+function sdisplay(s){
+  if(s>=1000) return (s%1000===0? (s/1000)+'張' : (s/1000).toFixed(1)+'張');
+  return s+'股';
+}
+
+// ── 渲染表格 ────────────────────────────────────────────────────
 function renderTable(){
-  document.getElementById('stockBody').innerHTML=currentStocks.map((s,i)=>{
-    const mv=s.shares*s.price,pnl=mv-s.cost,pct=s.cost>0?(pnl/s.cost*100):0;
-    const def=DEFAULT_STOCKS.find(d=>d.code===s.code)||{};
-    const pc=parseFloat(s.price)!==def.price?' changed':'';
-    const sc=parseInt(s.shares)!==def.shares?' changed':'';
-    const cc=parseFloat(s.cost)!==def.cost?' changed':'';
-    return`<tr>
+  const tbody = document.getElementById('stockBody');
+  tbody.innerHTML = currentStocks.map((s,i) => {
+    const mv = s.shares * s.price;
+    const pnl = mv - s.cost;
+    const pct = s.cost > 0 ? (pnl/s.cost*100) : 0;
+    const pnlClass = pnl >= 0 ? 'up' : 'dn';
+    const def = DEFAULT_STOCKS.find(d=>d.code===s.code)||{};
+    const priceChanged = def.price !== undefined && parseFloat(s.price) !== def.price;
+    const sharesChanged = def.shares !== undefined && parseInt(s.shares) !== def.shares;
+    const costChanged = def.cost !== undefined && parseFloat(s.cost) !== def.cost;
+    return `<tr>
       <td><div class="sname">${s.name}</div><div class="scode">${s.code}</div></td>
-      <td><input class="shares-input${sc}" type="number" value="${s.shares}" oninput="onInput(this,${i},'shares')"/></td>
-      <td><input class="price-input${pc}" type="number" step="0.01" value="${s.price}" oninput="onInput(this,${i},'price')"/></td>
-      <td><input class="price-input" type="number" step="0.01" value="${s.be}" oninput="onInput(this,${i},'be')"/></td>
-      <td><input class="price-input" type="number" step="0.01" value="${s.avg}" oninput="onInput(this,${i},'avg')"/></td>
-      <td><input class="cost-input${cc}" type="number" value="${s.cost}" oninput="onInput(this,${i},'cost')"/></td>
-      <td class="${pnl>=0?'up':'dn'}" style="font-size:10px;font-family:'JetBrains Mono',monospace;" id="pnl${i}">${pnl>=0?'+':''}${fmtN(pnl)}<br><span style="opacity:.7;">${pnl>=0?'+':''}${fmtF(pct)}%</span></td>
+      <td><input class="shares-input${sharesChanged?' changed':''}" data-i="${i}" data-field="shares" type="number" value="${s.shares}" oninput="onInput(this,${i},'shares')"/></td>
+      <td><input class="price-input${priceChanged?' changed':''}" data-i="${i}" data-field="price" type="number" step="0.01" value="${s.price}" oninput="onInput(this,${i},'price')"/></td>
+      <td><input class="price-input" data-i="${i}" data-field="be" type="number" step="0.01" value="${s.be}" oninput="onInput(this,${i},'be')"/></td>
+      <td><input class="price-input" data-i="${i}" data-field="avg" type="number" step="0.01" value="${s.avg}" oninput="onInput(this,${i},'avg')"/></td>
+      <td><input class="cost-input${costChanged?' changed':''}" data-i="${i}" data-field="cost" type="number" value="${s.cost}" oninput="onInput(this,${i},'cost')"/></td>
+      <td class="${pnlClass}" style="font-size:10px;font-family:'JetBrains Mono',monospace;">${pnl>=0?'+':''}${fmtN(pnl)}<br><span style="opacity:.7;">${pnl>=0?'+':''}${fmtF(pct)}%</span></td>
     </tr>`;
   }).join('');
 }
-function onInput(el,i,field){
-  const v=parseFloat(el.value);
+
+function onInput(el, i, field){
+  const v = parseFloat(el.value);
   if(!isNaN(v)){
-    currentStocks[i][field]=field==='shares'?parseInt(el.value)||0:v;
-    const s=currentStocks[i],mv=s.shares*s.price,pnl=mv-s.cost,pct=s.cost>0?(pnl/s.cost*100):0;
-    const td=document.getElementById('pnl'+i);
-    td.className=pnl>=0?'up':'dn';td.style.cssText='font-size:10px;font-family:"JetBrains Mono",monospace;';
-    td.innerHTML=`${pnl>=0?'+':''}${fmtN(pnl)}<br><span style="opacity:.7;">${pnl>=0?'+':''}${fmtF(pct)}%</span>`;
-    const def=DEFAULT_STOCKS.find(d=>d.code===s.code)||{};
-    if(field==='price')el.className='price-input'+(v!==def.price?' changed':'');
-    if(field==='shares')el.className='shares-input'+(v!==def.shares?' changed':'');
-    if(field==='cost')el.className='cost-input'+(v!==def.cost?' changed':'');
+    currentStocks[i][field] = field==='shares'? parseInt(el.value)||0 : v;
+    // 即時更新損益欄
+    const row = el.closest('tr');
+    const s = currentStocks[i];
+    const mv = s.shares * s.price;
+    const pnl = mv - s.cost;
+    const pct = s.cost > 0 ? (pnl/s.cost*100) : 0;
+    const td = row.cells[6];
+    td.className = pnl>=0?'up':'dn';
+    td.style.cssText = 'font-size:10px;font-family:"JetBrains Mono",monospace;';
+    td.innerHTML = `${pnl>=0?'+':''}${fmtN(pnl)}<br><span style="opacity:.7;">${pnl>=0?'+':''}${fmtF(pct)}%</span>`;
+    // 顏色標記
+    const def = DEFAULT_STOCKS.find(d=>d.code===s.code)||{};
+    if(field==='price') el.className='price-input'+(v!==def.price?' changed':'');
+    if(field==='shares') el.className='shares-input'+(v!==def.shares?' changed':'');
+    if(field==='cost') el.className='cost-input'+(v!==def.cost?' changed':'');
   }
 }
-function resetAll(){if(!confirm('還原為預設值？'))return;currentStocks=JSON.parse(JSON.stringify(DEFAULT_STOCKS));renderTable();setStatus('已還原。','info');}
+
+function resetAll(){
+  if(!confirm('還原為今日截圖預設值？')) return;
+  currentStocks = JSON.parse(JSON.stringify(DEFAULT_STOCKS));
+  renderTable();
+  setStatus('已還原為今日截圖數值。', 'info');
+}
+
+// ── 快速貼上解析（亮點台股「未實現損益(庫存)」格式）──────────
+function parsePaste(){
+  const raw = document.getElementById('pasteBox').value.trim();
+  if(!raw){ alert('請先貼上亮點原文'); return; }
+
+  const stocks = [];
+
+  // 策略 1：tab 分隔（從 Excel 或網頁表格複製貼上）
+  // 動態定位「商品」欄（含 中文/4-5位數字 格式），其他欄位以相對位置取值。
+  // 實際格式範例（亮點頁面複製）：
+  //   下單  明細  元大台灣５０/0050  現股  5  96.85  484  45.66  45.40  227  237  464  104.41  5  試算  調整
+  //   ^idx0      ^idx2(商品)              ^idx4 ^idx5  ^idx6 ^idx7  ^idx8  ^idx9(成本)
+  // Excel 直接複製也支援（商品在 idx0,後續以同樣相對偏移取值）。
+  const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  for(const line of lines){
+    if(line.includes('\t')){
+      const cols = line.split('\t').map(c=>c.trim());
+      // 找含「中文/數字」的那一欄
+      let pIdx = -1, name = null, code = null;
+      for(let i=0; i<cols.length; i++){
+        const m = cols[i].match(/^(.+?)\/(\d{4,5})$/);
+        if(m){ pIdx = i; name = m[1].trim(); code = m[2]; break; }
+      }
+      if(pIdx < 0) continue;
+      // 從 pIdx 往後找:第一個純整數=股數,接著依序 市價/市值/兩平/均價/成本
+      // 跳過「現股/零股」這類非數字欄
+      const tail = cols.slice(pIdx+1).filter(c => c && c !== '現股' && c !== '零股' && c !== '試算' && c !== '調整');
+      const nums = tail.map(c => {
+        const n = parseFloat(c.replace(/,/g,''));
+        return isNaN(n) ? null : n;
+      }).filter(n => n !== null);
+      if(nums.length < 6) continue;
+      // nums = [股數, 市價, 市值, 損益兩平, 均價, 成本, 損益, 淨值, 報酬率, 可調...]
+      const shares = Math.round(nums[0]);
+      const price  = nums[1];
+      const be     = nums[3];
+      const avg    = nums[4];
+      const cost   = Math.round(nums[5]);
+      // 合理性檢查：市值 ≈ 股數 × 市價
+      const expectedMv = shares * price;
+      const reportedMv = nums[2];
+      if(reportedMv > 0 && Math.abs(expectedMv - reportedMv) / expectedMv > 0.02) continue;
+      if(isNaN(shares) || isNaN(price) || isNaN(avg) || isNaN(cost)) continue;
+      stocks.push({code, name: normalizeName(name), shares, price, be: isNaN(be)?avg:be, avg, cost});
+    }
+  }
+
+  // 策略 2：純文字（非 tab 分隔）——亮點 App 庫存頁複製格式
+  // 每檔一個「區塊」，數字以多空白或換行分隔
+  if(stocks.length === 0){
+    // 找所有「中文/數字代碼」的位置，把後面緊跟的數字解析出來
+    const blockRegex = /([^\s\/]+?)\/(\d{4,5})/g;
+    let match;
+    const positions = [];
+    while((match = blockRegex.exec(raw)) !== null){
+      positions.push({name: match[1], code: match[2], start: match.index, end: match.index + match[0].length});
+    }
+    for(let i=0; i<positions.length; i++){
+      const p = positions[i];
+      const nextStart = (i+1 < positions.length) ? positions[i+1].start : raw.length;
+      const block = raw.substring(p.end, nextStart);
+      const nums = [];
+      const numRegex = /-?[\d,]+\.?\d*/g;
+      let nm;
+      while((nm = numRegex.exec(block)) !== null){
+        const v = parseFloat(nm[0].replace(/,/g,''));
+        if(!isNaN(v)) nums.push(v);
+      }
+      // 期望順序：[庫存股數, 市價, 市值, 損益兩平價, 成交均價, 投入成本, ...]
+      if(nums.length >= 6){
+        const shares = Math.round(nums[0]);
+        const price = nums[1];
+        const be = nums[3];
+        const avg = nums[4];
+        const cost = Math.round(nums[5]);
+        // 合理性檢查：市值 ≈ 股數 × 市價
+        const expectedMv = shares * price;
+        const reportedMv = nums[2];
+        if(Math.abs(expectedMv - reportedMv) / Math.max(expectedMv, 1) < 0.01){
+          stocks.push({code: p.code, name: normalizeName(p.name), shares, price, be, avg, cost});
+        }
+      }
+    }
+  }
+
+  if(stocks.length === 0){
+    setParseStatus('❌ 無法解析任何資料。建議：(1) 從 Excel 複製整個表格貼上；或 (2) 從亮點 App 庫存頁長按複製整段文字貼上。', 'err');
+    return;
+  }
+
+  // 套用：以代碼 match 既有資料，新代碼則新增
+  let updated = 0, added = 0;
+  stocks.forEach(s => {
+    const idx = currentStocks.findIndex(c => c.code === s.code);
+    if(idx >= 0){
+      // 保留原本的 name（避免 Excel 全形數字「００５０」覆蓋成 ASCII）
+      currentStocks[idx] = {...currentStocks[idx], shares:s.shares, price:s.price, be:s.be, avg:s.avg, cost:s.cost};
+      updated++;
+    } else {
+      currentStocks.push(s);
+      added++;
+    }
+  });
+
+  renderTable();
+  setParseStatus(`✅ 解析成功！更新 ${updated} 檔，新增 ${added} 檔。請確認下方表格再匯入。`, 'ok');
+}
+
+// 全形數字/字母 → 半形（亮點 Excel 商品名稱常見「元大台灣５０」、「乙盛－ＫＹ」）
+function normalizeName(s){
+  return s.replace(/[０-９Ａ-Ｚａ-ｚ]/g, c => String.fromCharCode(c.charCodeAt(0)-0xFEE0))
+          .replace(/[－﹣]/g, '-');
+}
+
+function setParseStatus(msg, type){
+  const box = document.getElementById('parseStatus');
+  box.style.display = 'flex';
+  box.className = 'status '+type;
+  box.style.marginTop = '8px';
+  const icons = {ok:'✅',err:'❌',info:'ℹ️'};
+  box.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+}
+
+// ── 新增股票 ────────────────────────────────────────────────────
 function addRowForm(){
-  const box=document.getElementById('addForm');box.style.display='block';
-  box.innerHTML=`<div class="add-row-form">
-    <div><label>代碼</label><input id="nc" placeholder="2330"/></div>
-    <div><label>名稱</label><input id="nn" placeholder="台積電"/></div>
-    <div><label>股數</label><input id="ns" type="number" placeholder="1000"/></div>
-    <div><label>市價</label><input id="np" type="number" step="0.01" placeholder="850"/></div>
-    <div><label>損益兩平</label><input id="nb" type="number" step="0.01"/></div>
-    <div><label>成交均價</label><input id="na" type="number" step="0.01" placeholder="760"/></div>
-    <div><label>投入成本</label><input id="nk" type="number" placeholder="760000"/></div>
-    <div style="display:flex;gap:6px;"><button class="btn prim" onclick="confirmAdd()">新增</button><button class="btn" onclick="cancelAdd()">取消</button></div>
-  </div>`;
+  const box = document.getElementById('addForm');
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="add-row-form">
+      <div><label>代碼</label><input id="ncode" placeholder="2330" maxlength="6"/></div>
+      <div><label>名稱</label><input id="nname" placeholder="台積電"/></div>
+      <div><label>股數</label><input id="nshares" type="number" placeholder="1000"/></div>
+      <div><label>市價</label><input id="nprice" type="number" step="0.01" placeholder="850"/></div>
+      <div><label>損益兩平</label><input id="nbe" type="number" step="0.01" placeholder=""/></div>
+      <div><label>成交均價</label><input id="navg" type="number" step="0.01" placeholder="760"/></div>
+      <div><label>投入成本</label><input id="ncost" type="number" placeholder="760000"/></div>
+      <div style="display:flex;gap:6px;margin-top:12px;">
+        <button class="btn prim" onclick="confirmAdd()">新增</button>
+        <button class="btn" onclick="cancelAdd()">取消</button>
+      </div>
+    </div>`;
 }
 function confirmAdd(){
-  const g=id=>document.getElementById(id).value;
-  const code=g('nc').trim(),name=g('nn').trim(),shares=parseInt(g('ns')),price=parseFloat(g('np')),avg=parseFloat(g('na')),cost=parseFloat(g('nk')),be=parseFloat(g('nb'))||avg;
-  if(!code||!name||isNaN(shares)||isNaN(price)||isNaN(avg)||isNaN(cost)){alert('請填寫所有必要欄位');return;}
-  currentStocks.push({code,name,shares,price,be,avg,cost});cancelAdd();renderTable();
+  const g = id => document.getElementById(id).value;
+  const code=g('ncode').trim(), name=g('nname').trim();
+  const shares=parseInt(g('nshares')), price=parseFloat(g('nprice'));
+  const avg=parseFloat(g('navg')), cost=parseFloat(g('ncost'));
+  const be=parseFloat(g('nbe'))||avg;
+  if(!code||!name||isNaN(shares)||isNaN(price)||isNaN(avg)||isNaN(cost)){
+    alert('請填寫所有必要欄位'); return;
+  }
+  currentStocks.push({code,name,shares,price,be,avg,cost});
+  cancelAdd();
+  renderTable();
 }
-function cancelAdd(){document.getElementById('addForm').style.display='none';document.getElementById('addForm').innerHTML='';}
-function setStatus(msg,type='ok'){
-  const box=document.getElementById('statusBox');box.style.display='flex';box.className='status '+type;
-  box.innerHTML=`<span>${{ok:'✅',err:'❌',info:'ℹ️'}[type]}</span><span>${msg}</span>`;
+function cancelAdd(){
+  document.getElementById('addForm').style.display='none';
+  document.getElementById('addForm').innerHTML='';
 }
+
+// ── 狀態顯示 ────────────────────────────────────────────────────
+function setStatus(msg, type='ok'){
+  const box = document.getElementById('statusBox');
+  box.style.display = 'flex';
+  box.className = 'status '+type;
+  const icons = {ok:'✅',err:'❌',info:'ℹ️'};
+  box.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+}
+
+// ── 主匯入（嘗試 window.opener / BroadcastChannel / 書籤方式）───
 function doImport(){
-  const json=JSON.stringify(currentStocks);
-  try{
-    localStorage.setItem('tw_stocks_v5',json);
-    setStatus('✅ 寫入成功！現在點這裡前往主頁面重整：<a href="/stocks/" style="color:var(--acc);font-weight:600;margin-left:6px;">→ 前往 stocks/</a>','ok');
+  const data = JSON.parse(JSON.stringify(currentStocks));
+  const key = 'tw_stocks_v5';
+  const json = JSON.stringify(data);
+
+  // 嘗試 BroadcastChannel（同瀏覽器跨分頁通訊）
+  try {
+    const bc = new BroadcastChannel('stock_import_channel');
+    bc.postMessage({type:'IMPORT_STOCKS', key, data});
+    setTimeout(()=>bc.close(), 2000);
+    setStatus('已透過 BroadcastChannel 發送！請確認目標網站有接收（需加裝接收碼，見下方說明）。', 'info');
+  } catch(e){}
+
+  // 嘗試直接寫（若同域）
+  try {
+    localStorage.setItem(key, json);
+    setStatus('✅ localStorage 寫入成功！請重新整理 wang2026378.github.io/stocks/ 即可看到更新。', 'ok');
     document.getElementById('s1').className='step done';
     document.getElementById('s2').className='step done';
     document.getElementById('s3').className='step active';
-  }catch(e){
-    setStatus('❌ 寫入失敗：'+e.message,'err');
+    return;
+  } catch(e){}
+
+  // 否則提示使用匯入碼
+  setStatus('⚠️ 跨域限制，請使用下方「產生匯入碼」手動貼上。', 'info');
+  generateCode();
+  document.querySelector('.import-btn').disabled = true;
+}
+
+// ── 產生匯入碼 ────────────────────────────────────────────────────
+function generateCode(){
+  const data = JSON.parse(JSON.stringify(currentStocks));
+  const json = JSON.stringify(data);
+  // 產生一段可在目標網站 console 執行的 bookmarklet
+  const code = `javascript:(function(){localStorage.setItem('tw_stocks_v5',${JSON.stringify(json)});alert('✅ 持股資料已更新！請重整頁面。');})();`;
+  const box = document.getElementById('codeBox');
+  box.value = code;
+  box.style.display = 'block';
+  document.getElementById('copyBtn').style.display = 'inline-block';
+  document.getElementById('bookmarkHint').style.display = 'block';
+  document.getElementById('s1').className='step done';
+  document.getElementById('s2').className='step active';
+  setStatus('匯入碼已產生！複製後依下方說明貼到目標網站執行。', 'info');
+}
+
+function copyCode(){
+  const code = document.getElementById('codeBox').value;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(code).then(()=>{
+      document.getElementById('copyBtn').textContent = '✅ 已複製！';
+      setTimeout(()=>{ document.getElementById('copyBtn').textContent = '📋 複製'; }, 2000);
+      setStatus('程式碼已複製到剪貼簿！', 'ok');
+      document.getElementById('s2').className='step done';
+      document.getElementById('s3').className='step active';
+    });
+  } else {
+    document.getElementById('codeBox').select();
+    document.execCommand('copy');
+    setStatus('已複製！', 'ok');
   }
 }
-initDate();renderTable();
+
+// ── 初始化 ────────────────────────────────────────────────────────
+initDate();
+renderTable();
 </script>
 </body>
 </html>
