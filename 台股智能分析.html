@@ -348,7 +348,8 @@ let STOCKS=loadStocks();
 let sData={},kData={},mag7Data={},instData={},margData={},selStock=null,pChart=null,macdChart=null,kChart=null;
 
 // ── 顏色：台灣慣例 紅漲綠跌 ──
-function pclr(v){return v>0?'var(--up)':v<0?'var(--dn)':'var(--muted)'}  // price: 漲紅跌綠
+// 平盤門檻：±0.05% 內顯示灰色
+function pclr(v,thr=0.05){return Math.abs(v)<thr?'var(--muted)':v>0?'var(--up)':'var(--dn)'}
 function sclr(v){return v>0?'var(--dn)':v<0?'var(--up)':'var(--muted)'}  // signal: 外資買(+)=好(綠)
 function sign(v){return v>0?'+':''}
 
@@ -367,10 +368,12 @@ async function fetchPrice(code,us=false){
   const d=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1mo`);
   if(!d?.chart?.result?.[0])return null;
   const r=d.chart.result[0],m=r.meta;
-  const prev=m.previousClose||m.chartPreviousClose||m.regularMarketPrice;
+  const prev=m.chartPreviousClose||m.previousClose||m.regularMarketPrice;
   const closes=(r.indicators?.quote?.[0]?.close||[]).filter(c=>c!=null);
-  return{price:m.regularMarketPrice,prev,change:m.regularMarketPrice-prev,
-    pct:((m.regularMarketPrice-prev)/prev)*100,
+  // 優先使用 Yahoo 內建漲跌欄位，更準確
+  const change = (m.regularMarketChange != null) ? m.regularMarketChange : (m.regularMarketPrice - prev);
+  const pct    = (m.regularMarketChangePercent != null) ? m.regularMarketChangePercent : (prev ? (change/prev)*100 : 0);
+  return{price:m.regularMarketPrice,prev,change,pct,
     high52:m.fiftyTwoWeekHigh,low52:m.fiftyTwoWeekLow,closes};
 }
 
@@ -486,10 +489,11 @@ function renderMag7(){
     const d=mag7Data[m.t];
     if(!d)return`<div class="mag7-item"><div class="mag7-ticker">${m.t}</div><div class="muted">--</div></div>`;
     const c=d.pct||0;wtotal+=weights[m.t]||1;wsum+=c*(weights[m.t]||1);
+    const ctxt=Math.abs(c)<0.05?'—':(c>0?'+':'')+c.toFixed(2)+'%';
     return`<div class="mag7-item">
       <div class="mag7-ticker">${m.t}</div>
       <div class="mag7-price" style="color:${pclr(c)}">$${d.price?.toFixed(2)||'--'}</div>
-      <div class="mag7-chg" style="color:${pclr(c)}">${sign(c)}${c.toFixed(2)}%</div>
+      <div class="mag7-chg" style="color:${pclr(c)}">${ctxt}</div>
     </div>`;
   }).join('');
   const avg7=wtotal>0?wsum/wtotal:0;
@@ -538,7 +542,7 @@ function renderCard(stock,price,inst,marg,score,pred){
       <div class="sc-emoji">${pred.emoji}</div>
     </div>
     <div class="sc-price" style="color:${pclr(pct)}">${price?'NT$'+price.price.toFixed(2):'--'}</div>
-    <div class="sc-chg" style="color:${pclr(pct)}">${price?(pct>=0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%':'--'}</div>
+    <div class="sc-chg" style="color:${pclr(pct)}">${price?(Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%'):'--'}</div>
     <div class="sc-shares">持股 ${stock.shares?stock.shares.toLocaleString()+'股':'--'} ${mv?'｜市值 NT$'+fmtMoney(mv):''}</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:4px">聰明錢指數</div>
     <div class="sm-bar"><div class="sm-fill" style="width:${score}%;background:${barC}"></div></div>
@@ -573,7 +577,8 @@ async function selectStock(code){
   panel.scrollIntoView({behavior:'smooth',block:'start'});
   const pct=price?.pct||0;
   document.getElementById('dtTitle').textContent=`${code} ${s.name}`;
-  document.getElementById('dtSub').innerHTML=`NT$${price?.price?.toFixed(2)||'--'} <span style="color:${pclr(pct)}">${pct>=0?'▲':'▼'}${Math.abs(pct).toFixed(2)}%</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　${s.sector}`;
+  const pctTxt=Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%';
+  document.getElementById('dtSub').innerHTML=`NT$${price?.price?.toFixed(2)||'--'} <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　${s.sector}`;
   const mag7El=document.querySelector('.mag7-impact .val');
   const mag7avg=parseFloat(mag7El?.textContent||'0')||0;
   const{score,det}=calcScore(s,price,inst,marg,mag7avg);
