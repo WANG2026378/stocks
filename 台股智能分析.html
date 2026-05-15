@@ -368,13 +368,18 @@ async function fetchPrice(code,us=false){
   const d=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1mo`);
   if(!d?.chart?.result?.[0])return null;
   const r=d.chart.result[0],m=r.meta;
-  const prev=m.chartPreviousClose||m.previousClose||m.regularMarketPrice;
   const closes=(r.indicators?.quote?.[0]?.close||[]).filter(c=>c!=null);
-  // 優先使用 Yahoo 內建漲跌欄位，更準確
-  const change = (m.regularMarketChange != null) ? m.regularMarketChange : (m.regularMarketPrice - prev);
-  const pct    = (m.regularMarketChangePercent != null) ? m.regularMarketChangePercent : (prev ? (change/prev)*100 : 0);
-  return{price:m.regularMarketPrice,prev,change,pct,
-    high52:m.fiftyTwoWeekHigh,low52:m.fiftyTwoWeekLow,closes};
+  // 昨收：優先用 chartPreviousClose（Yahoo圖表昨收，最準）
+  // 若無則用 closes 倒數第二筆
+  const prev = m.chartPreviousClose
+             || (closes.length>=2 ? closes[closes.length-2] : null)
+             || m.previousClose
+             || m.regularMarketPrice;
+  const price = m.regularMarketPrice;
+  const change = price - prev;
+  const pct = prev ? (change / prev) * 100 : 0;
+  return{price, prev, change, pct,
+    high52:m.fiftyTwoWeekHigh, low52:m.fiftyTwoWeekLow, closes};
 }
 
 async function fetchKline(code){
