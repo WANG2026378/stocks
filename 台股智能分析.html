@@ -320,9 +320,9 @@ const DEFAULT_STOCKS=[
   {code:'2330',name:'台積電',shares:2130,theme:['AI','HBM','LPU'],sector:'半導體',corr:.88,hot:true},
   {code:'3711',name:'日月光投控',shares:8,theme:['AI封裝','先進封裝'],sector:'半導體封測',corr:.72,hot:true},
   {code:'4585',name:'達明',shares:8,theme:['機器人','AI'],sector:'精密機械',corr:.50,hot:true},
-  {code:'4908',name:'前鼎',shares:1008,theme:['低軌衛星','零組件'],sector:'電子零組件',corr:.38,hot:true},
+  {code:'4908',name:'前鼎',shares:1008,theme:['低軌衛星','精密零件','衛星天線'],sector:'精密機械',corr:.45,hot:true},
   {code:'6285',name:'啟碁',shares:17888,theme:['低軌衛星','網通'],sector:'網通',corr:.58,hot:true},
-  {code:'6829',name:'千附精密',shares:1000,theme:['光通訊','CPO'],sector:'光電',corr:.60,hot:true},
+  {code:'6829',name:'千附精密',shares:1000,theme:['CPO','光通訊','精密連接器'],sector:'光電',corr:.65,hot:true},
   {code:'8033',name:'雷虎科技',shares:25,theme:['無人機','國防'],sector:'其他',corr:.30},
 ];
 
@@ -422,7 +422,19 @@ async function fetchMarg(){
 }
 
 function simInst(){
-  const bias={'2330':{f:18000,it:3000},'0050':{f:5000,it:800},'2308':{f:2000,it:1500},'3711':{f:3500,it:900},'6285':{f:1200,it:600},'4908':{f:300,it:200},'6829':{f:600,it:300},'2049':{f:-200,it:100}};
+  const bias={
+    '2330':{f:18000,it:3000},  // 台積電 外資主力
+    '0050':{f:5000,it:800},    // 元大50
+    '2308':{f:2000,it:1500},   // 台達電 CPO
+    '3711':{f:3500,it:900},    // 日月光
+    '6285':{f:1200,it:600},    // 啟碁 低軌衛星
+    '4908':{f:900,it:450},     // 前鼎 低軌衛星精密零件
+    '6829':{f:1100,it:550},    // 千附精密 CPO光通訊
+    '2049':{f:-200,it:100},    // 上銀
+    '2301':{f:-300,it:80},     // 光寶科
+    '4585':{f:400,it:200},     // 達明 機器人
+    '2308':{f:1800,it:900},    // 台達電
+  };
   const r={};
   STOCKS.forEach(s=>{
     const b=bias[s.code]||{f:0,it:0};
