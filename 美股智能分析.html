@@ -197,6 +197,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
   </div>
   <div class="header-right">
     <span style="font-size:14px"><span class="status-dot off" id="sDot"></span><span id="sText">載入中</span></span>
+    <span style="color:var(--muted);font-size:12px" id="rateEl">1USD = NT$31.50</span>
     <span style="color:var(--muted);font-size:12px" id="lastUp">--</span>
     <button class="btn add" onclick="openModal()">＋ 新增股票</button>
     <button class="btn" id="refreshBtn" onclick="refreshAll()">⟳ 更新</button>
@@ -353,6 +354,21 @@ const PROXIES=[
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`
 ];
+
+let RATE = 31.5; // USD/TWD 匯率，更新時自動抓取
+
+async function fetchRate(){
+  try{
+    const d=await fetchPriceBySym('USDTWD=X');
+    if(d&&d.price>25&&d.price<50){
+      RATE=d.price;
+      document.getElementById('rateEl').textContent=`1USD = NT$${RATE.toFixed(2)}`;
+    }
+  }catch{}
+}
+
+function toTWD(usd){return Math.round(usd*RATE);}
+function fmtTWD(v){return v>=1e8?'NT$'+(v/1e8).toFixed(1)+'億':v>=1e4?'NT$'+(v/1e4).toFixed(0)+'萬':'NT$'+v.toLocaleString();}
 
 function loadStocks(){
   try{const s=localStorage.getItem('usStocks');return s?JSON.parse(s):DEFAULT_STOCKS;}
@@ -542,7 +558,7 @@ function renderOverview(scores){
   let totalMV=0;
   STOCKS.forEach(s=>{const p=sData[s.code];if(p&&s.shares)totalMV+=p.price*s.shares;});
   document.getElementById('ovMV').textContent=totalMV?fmtMoney(totalMV):'--';
-  document.getElementById('ovMVSub').textContent=`${STOCKS.length}檔持股 USD`;
+  document.getElementById('ovMVSub').textContent=totalMV?`${STOCKS.length}檔持股 ≈ ${fmtTWD(toTWD(totalMV))}`:`${STOCKS.length}檔持股 USD`;
   let best=null,bestPct=-Infinity;
   STOCKS.forEach(s=>{const p=sData[s.code]?.pct||0;if(p>bestPct){bestPct=p;best=s;}});
   if(best){document.getElementById('ovBest').textContent=`${best.code}`;document.getElementById('ovBestSub').textContent=`${sign(bestPct)}${bestPct.toFixed(2)}% 今日漲幅`;}
@@ -565,9 +581,9 @@ function renderCard(stock,price,score,pred){
       <div><div class="sc-code">${stock.code}</div><div class="sc-name">${stock.name}</div></div>
       <div class="sc-emoji">${pred.emoji}</div>
     </div>
-    <div class="sc-price" style="color:${pclr(pct)}">${price?'$'+price.price.toFixed(2):'--'}</div>
+    <div class="sc-price" style="color:${pclr(pct)}">${price?'$'+price.price.toFixed(2):'--'}<span style="font-size:13px;color:var(--muted);font-weight:400;margin-left:6px">${price?'NT$'+toTWD(price.price).toLocaleString():''}</span></div>
     <div class="sc-chg" style="color:${pclr(pct)}">${price?(Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%'):'--'}</div>
-    <div class="sc-shares">持股 ${stock.shares?stock.shares.toLocaleString()+'股':'--'} ${mv?'｜市值 '+fmtMoney(mv):''}</div>
+    <div class="sc-shares">持股 ${stock.shares?stock.shares.toLocaleString()+'股':'--'} ${mv?'｜$'+mv.toFixed(0)+' <span style="color:var(--muted);font-size:12px">'+fmtTWD(toTWD(mv))+'</span>':''}</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:4px">聰明錢指數</div>
     <div class="sm-bar"><div class="sm-fill" style="width:${score}%;background:${barC}"></div></div>
     <div class="sc-row"><span style="color:${barC};font-weight:700;font-size:15px">${score}/100</span><span style="color:var(--muted)">${pred.lbl}</span></div>
@@ -602,7 +618,8 @@ async function selectStock(code){
   document.getElementById('dtTitle').textContent=`${code} ${s.name}`;
   const pctTxt=Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%';
   const mv=price&&s.shares?fmtMoney(price.price*s.shares):'--';
-  document.getElementById('dtSub').innerHTML=`$${price?.price?.toFixed(2)||'--'} <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　市值 ${mv}　${s.sector}`;
+  const mvTWD=price&&s.shares?fmtTWD(toTWD(price.price*s.shares)):'--';
+  document.getElementById('dtSub').innerHTML=`$${price?.price?.toFixed(2)||'--'} <span style="color:var(--muted);font-size:13px">NT$${price?toTWD(price.price).toLocaleString():'--'}</span> <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　${mv} <span style="color:var(--muted);font-size:13px">${mvTWD}</span>　${s.sector}`;
   const mktEl=document.querySelector('.idx-impact .val');
   const mktAvg=parseFloat(mktEl?.textContent||'0')||0;
   const{score,det}=calcScore(s,price,mktAvg);
@@ -936,6 +953,7 @@ async function refreshAll(){
   btn.disabled=true;btn.textContent='更新中...';
   const savedY=window.scrollY;
   try{
+    await fetchRate();
     for(const m of INDICES){const d=await fetchPriceBySym(m.t);if(d)idxData[m.t]=d;await new Promise(r=>setTimeout(r,80));}
     const mktAvg=renderIndices();
     for(const s of STOCKS){const d=await fetchPriceBySym(s.code);if(d)sData[s.code]=d;await new Promise(r=>setTimeout(r,150));}
@@ -952,7 +970,8 @@ async function refreshAll(){
         const pctTxt=Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%';
         const mv=price&&s.shares?fmtMoney(price.price*s.shares):'--';
         document.getElementById('dtTitle').textContent=`${selStock} ${s.name}`;
-        document.getElementById('dtSub').innerHTML=`$${price?.price?.toFixed(2)||'--'} <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　市值 ${mv}　${s.sector}`;
+        const mvTWD=price&&s.shares?fmtTWD(toTWD(price.price*s.shares)):'--';
+  document.getElementById('dtSub').innerHTML=`$${price?.price?.toFixed(2)||'--'} <span style="color:var(--muted);font-size:13px">NT$${price?toTWD(price.price).toLocaleString():'--'}</span> <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　${mv} <span style="color:var(--muted);font-size:13px">${mvTWD}</span>　${s.sector}`;
         renderHolder(price,s);
         renderScore(score,pred,det);
       }
@@ -969,6 +988,7 @@ updateStatus();
 (async()=>{
   const btn=document.getElementById('refreshBtn');
   btn.disabled=true;btn.textContent='載入中...';
+  await fetchRate();
   for(const m of INDICES){const d=await fetchPriceBySym(m.t);if(d)idxData[m.t]=d;await new Promise(r=>setTimeout(r,80));}
   const mktAvg=renderIndices();
   const grid=document.getElementById('stocksGrid');grid.innerHTML='';
