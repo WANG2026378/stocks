@@ -346,6 +346,7 @@ function saveStocks(){
 let STOCKS=loadStocks();
 
 let sData={},kData={},mag7Data={},instData={},margData={},selStock=null,pChart=null,macdChart=null,kChart=null;
+let autoTimer=null;
 
 // ── 顏色：台灣慣例 紅漲綠跌 ──
 // 平盤門檻：±0.05% 內顯示灰色
@@ -353,33 +354,43 @@ function pclr(v,thr=0.05){return Math.abs(v)<thr?'var(--muted)':v>0?'var(--up)':
 function sclr(v){return v>0?'var(--dn)':v<0?'var(--up)':'var(--muted)'}  // signal: 外資買(+)=好(綠)
 function sign(v){return v>0?'+':''}
 
-async function fetchJSON(url){
-  for(const src of[...PROXIES,u=>u]){
+// ── 與 index.html 相同的報價來源（query1→query2→proxy，range=1d 最準）──
+function buildPriceSources(sym){return[
+  `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
+  `https://query2.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,
+  `https://corsproxy.io/?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d')}`,
+  `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d')}`,
+];}
+
+async function fetchPrice(code,us=false){
+  const sym=us?code:`${code}.TW`;
+  for(const url of buildPriceSources(sym)){
     try{
-      const r=await fetch(src(url),{signal:AbortSignal.timeout(10000)});
-      if(r.ok)return await r.json();
+      const res=await fetch(url,{signal:AbortSignal.timeout(7000)});
+      if(!res.ok)continue;
+      const j=await res.json();
+      const m=j?.chart?.result?.[0]?.meta;
+      if(!m)continue;
+      const price=m.regularMarketPrice;
+      if(!price||price<=0)continue;
+      // 昨收：chartPreviousClose 最準（圖表基準），再 fallback previousClose
+      const prev=m.chartPreviousClose||m.previousClose||price;
+      const change=price-prev;
+      const pct=prev?(change/prev)*100:0;
+      const quotes=j?.chart?.result?.[0]?.indicators?.quote?.[0];
+      const closes=(quotes?.close||[]).filter(c=>c!=null);
+      return{price,prev,change,pct,high52:m.fiftyTwoWeekHigh,low52:m.fiftyTwoWeekLow,closes};
     }catch{}
   }
   return null;
 }
 
-async function fetchPrice(code,us=false){
-  const sym=us?code:`${code}.TW`;
-  const d=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1mo`);
-  if(!d?.chart?.result?.[0])return null;
-  const r=d.chart.result[0],m=r.meta;
-  const closes=(r.indicators?.quote?.[0]?.close||[]).filter(c=>c!=null);
-  // 昨收：優先用 chartPreviousClose（Yahoo圖表昨收，最準）
-  // 若無則用 closes 倒數第二筆
-  const prev = m.chartPreviousClose
-             || (closes.length>=2 ? closes[closes.length-2] : null)
-             || m.previousClose
-             || m.regularMarketPrice;
-  const price = m.regularMarketPrice;
-  const change = price - prev;
-  const pct = prev ? (change / prev) * 100 : 0;
-  return{price, prev, change, pct,
-    high52:m.fiftyTwoWeekHigh, low52:m.fiftyTwoWeekLow, closes};
+// 單純抓最新報價（不含歷史，快速）
+async function fetchJSON(url){
+  for(const src of[...PROXIES,u=>u]){
+    try{const r=await fetch(src(url),{signal:AbortSignal.timeout(8000)});if(r.ok)return await r.json();}catch{}
+  }
+  return null;
 }
 
 async function fetchKline(code){
@@ -790,41 +801,95 @@ function deleteStock(code){
   refreshAll();
 }
 
-// ── Status & Refresh ──
-function updateStatus(){
-  const n=new Date(),h=n.getHours(),dy=n.getDay();
-  const open=dy>=1&&dy<=5&&((h>=9&&h<13)||(h===13&&n.getMinutes()<=30));
-  document.getElementById('sDot').className='status-dot '+(open?'on':'off');
-  document.getElementById('sText').textContent=open?'🔴 台股開盤中':'⚫ 台股休市';
+// ── 開盤判斷 ──
+function isOpen(){
+  const n=new Date(),h=n.getHours(),mi=n.getMinutes(),dy=n.getDay();
+  return dy>=1&&dy<=5&&((h===9&&mi>=0)||(h>=10&&h<=12)||(h===13&&mi<=30));
 }
 
+function updateStatus(autoSec){
+  const open=isOpen();
+  document.getElementById('sDot').className='status-dot '+(open?'on':'off');
+  const autoTxt=autoSec?` · ${autoSec}秒後更新`:'';
+  document.getElementById('sText').textContent=(open?'🔴 台股開盤中':'⚫ 台股休市')+autoTxt;
+}
+
+// ── 快速報價更新（每10秒，只更新股價卡片）──
+async function quickRefresh(){
+  // 同步抓所有股票最新報價（間隔200ms，與 index.html 相同）
+  const mag7avg=parseFloat(document.querySelector('.mag7-impact .val')?.textContent||'0')||0;
+  for(const m of MAG7){
+    const d=await fetchPrice(m.t,true);
+    if(d)mag7Data[m.t]=d;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  renderMag7();
+  for(const s of STOCKS){
+    const d=await fetchPrice(s.code);
+    if(d)sData[s.code]=d;
+    await new Promise(r=>setTimeout(r,200));
+  }
+  renderCards(mag7avg);
+  document.getElementById('lastUp').textContent='更新：'+new Date().toLocaleTimeString('zh-TW');
+  if(selStock)selectStock(selStock);
+}
+
+function renderCards(mag7avg){
+  const grid=document.getElementById('stocksGrid');
+  const scores=[];
+  grid.innerHTML='';
+  STOCKS.forEach(s=>{
+    const{score}=calcScore(s,sData[s.code],instData[s.code],margData[s.code],mag7avg);
+    const pred=predict(score,sData[s.code]);
+    scores.push(score);
+    grid.innerHTML+=renderCard(s,sData[s.code],instData[s.code],margData[s.code],score,pred);
+  });
+  renderOverview(scores);
+}
+
+// ── 完整更新（含法人、融資券）──
 async function refreshAll(){
   const btn=document.getElementById('refreshBtn');
   btn.disabled=true;btn.textContent='更新中...';
+  stopAuto();
   try{
-    await Promise.all(MAG7.map(async m=>{const d=await fetchPrice(m.t,true);if(d)mag7Data[m.t]=d;}));
+    for(const m of MAG7){const d=await fetchPrice(m.t,true);if(d)mag7Data[m.t]=d;await new Promise(r=>setTimeout(r,100));}
     const mag7avg=renderMag7();
     [instData,margData]=await Promise.all([fetchInst(),fetchMarg()]);
-    await Promise.all(STOCKS.map(async s=>{const d=await fetchPrice(s.code);if(d)sData[s.code]=d;}));
-    const scores=[];
-    const grid=document.getElementById('stocksGrid');
-    grid.innerHTML='';
-    STOCKS.forEach(s=>{
-      const{score}=calcScore(s,sData[s.code],instData[s.code],margData[s.code],mag7avg);
-      const pred=predict(score,sData[s.code]);
-      scores.push(score);
-      grid.innerHTML+=renderCard(s,sData[s.code],instData[s.code],margData[s.code],score,pred);
-    });
-    renderOverview(scores);
+    for(const s of STOCKS){const d=await fetchPrice(s.code);if(d)sData[s.code]=d;await new Promise(r=>setTimeout(r,200));}
+    renderCards(mag7avg);
     if(selStock)selectStock(selStock);
     updateStatus();
     document.getElementById('lastUp').textContent='更新：'+new Date().toLocaleTimeString('zh-TW');
-  }finally{btn.disabled=false;btn.textContent='⟳ 更新';}
+  }finally{
+    btn.disabled=false;btn.textContent='⟳ 更新';
+    startAuto();
+  }
+}
+
+// ── 10秒自動更新（開盤中才啟動）──
+let autoCountdown=10;
+function startAuto(){
+  stopAuto();
+  if(!isOpen())return;
+  autoCountdown=10;
+  updateStatus(autoCountdown);
+  autoTimer=setInterval(async()=>{
+    autoCountdown--;
+    if(autoCountdown<=0){
+      autoCountdown=10;
+      await quickRefresh();
+    }
+    updateStatus(isOpen()?autoCountdown:null);
+    if(!isOpen())stopAuto();
+  },1000);
+}
+function stopAuto(){
+  if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
 }
 
 updateStatus();
 refreshAll();
-setInterval(()=>{const h=new Date().getHours(),dy=new Date().getDay();if(dy>=1&&dy<=5&&h>=9&&h<14)refreshAll();},5*60*1000);
 </script>
 </body>
 </html>
