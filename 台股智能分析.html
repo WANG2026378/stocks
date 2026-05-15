@@ -601,8 +601,9 @@ async function selectStock(code){
   document.querySelectorAll('.stock-card').forEach(c=>c.classList.remove('active'));
   document.getElementById(`card-${code}`)?.classList.add('active');
   const panel=document.getElementById('detPanel');
+  const wasHidden=!panel.classList.contains('show');
   panel.classList.add('show');
-  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  if(wasHidden)panel.scrollIntoView({behavior:'smooth',block:'start'});
   const pct=price?.pct||0;
   document.getElementById('dtTitle').textContent=`${code} ${s.name}`;
   const pctTxt=Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%';
@@ -819,89 +820,107 @@ function isOpen(){
   return dy>=1&&dy<=5&&((h===9&&mi>=0)||(h>=10&&h<=12)||(h===13&&mi<=30));
 }
 
-function updateStatus(autoSec){
+function updateStatus(){
   const open=isOpen();
   document.getElementById('sDot').className='status-dot '+(open?'on':'off');
-  const autoTxt=autoSec?` · ${autoSec}秒後更新`:'';
-  document.getElementById('sText').textContent=(open?'🔴 台股開盤中':'⚫ 台股休市')+autoTxt;
+  document.getElementById('sText').textContent=open?'🔴 台股開盤中':'⚫ 台股休市';
 }
 
-// ── 快速報價更新（每10秒，只更新股價卡片）──
-async function quickRefresh(){
-  // 同步抓所有股票最新報價（間隔200ms，與 index.html 相同）
-  const mag7avg=parseFloat(document.querySelector('.mag7-impact .val')?.textContent||'0')||0;
-  for(const m of MAG7){
-    const d=await fetchPrice(m.t,true);
-    if(d)mag7Data[m.t]=d;
-    await new Promise(r=>setTimeout(r,100));
-  }
-  renderMag7();
-  for(const s of STOCKS){
-    const d=await fetchPrice(s.code);
-    if(d)sData[s.code]=d;
-    await new Promise(r=>setTimeout(r,200));
-  }
-  renderCards(mag7avg);
-  document.getElementById('lastUp').textContent='更新：'+new Date().toLocaleTimeString('zh-TW');
-  if(selStock)selectStock(selStock);
-}
-
+// ── 重新整理卡片（不重建DOM，原地更新，不跳頁）──
 function renderCards(mag7avg){
   const grid=document.getElementById('stocksGrid');
   const scores=[];
-  grid.innerHTML='';
+
   STOCKS.forEach(s=>{
-    const{score}=calcScore(s,sData[s.code],instData[s.code],margData[s.code],mag7avg);
-    const pred=predict(score,sData[s.code]);
+    const price=sData[s.code],inst=instData[s.code],marg=margData[s.code];
+    const{score}=calcScore(s,price,inst,marg,mag7avg);
+    const pred=predict(score,price);
     scores.push(score);
-    grid.innerHTML+=renderCard(s,sData[s.code],instData[s.code],margData[s.code],score,pred);
+
+    const existing=document.getElementById(`card-${s.code}`);
+    if(existing){
+      // 原地更新，不動捲軸
+      const pct=price?.pct||0;
+      const barC=score>=60?'var(--dn)':score<=40?'var(--up)':'var(--yellow)';
+      const f=inst?.f||0,mc=marg?.chg||0;
+      const mv=price&&s.shares?price.price*s.shares:0;
+      const cls=score>=60?'bull':score<=40?'bear':'neut';
+      existing.className=`stock-card ${cls}${selStock===s.code?' active':''}`;
+      existing.querySelector('.sc-emoji').textContent=pred.emoji;
+      existing.querySelector('.sc-price').textContent=price?'NT$'+price.price.toFixed(2):'--';
+      existing.querySelector('.sc-price').style.color=pclr(pct);
+      const chgEl=existing.querySelector('.sc-chg');
+      chgEl.textContent=price?(Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%'):'--';
+      chgEl.style.color=pclr(pct);
+      existing.querySelector('.sc-shares').textContent=`持股 ${s.shares?s.shares.toLocaleString()+'股':'--'} ${mv?'｜市值 NT$'+fmtMoney(mv):''}`;
+      existing.querySelector('.sm-fill').style.width=`${score}%`;
+      existing.querySelector('.sm-fill').style.background=barC;
+      const rowEl=existing.querySelector('.sc-row');
+      rowEl.children[0].textContent=`${score}/100`;
+      rowEl.children[0].style.color=barC;
+      rowEl.children[1].textContent=pred.lbl;
+      const sigs=existing.querySelectorAll('.sig-v');
+      if(sigs[0]){sigs[0].textContent=`${sign(f)}${(f/1000).toFixed(1)}K`;sigs[0].style.color=sclr(f);}
+      if(sigs[1]){sigs[1].textContent=`${sign(mc)}${mc}`;sigs[1].style.color=mc<0?'var(--dn)':mc>0?'var(--up)':'var(--muted)';}
+    }else{
+      // 首次建立
+      grid.innerHTML+=renderCard(s,price,inst,marg,score,pred);
+    }
   });
   renderOverview(scores);
 }
 
-// ── 完整更新（含法人、融資券）──
+// ── 手動更新（保留捲軸位置）──
 async function refreshAll(){
   const btn=document.getElementById('refreshBtn');
   btn.disabled=true;btn.textContent='更新中...';
-  stopAuto();
+  const savedY=window.scrollY; // 記住目前位置
   try{
-    for(const m of MAG7){const d=await fetchPrice(m.t,true);if(d)mag7Data[m.t]=d;await new Promise(r=>setTimeout(r,100));}
+    for(const m of MAG7){const d=await fetchPrice(m.t,true);if(d)mag7Data[m.t]=d;await new Promise(r=>setTimeout(r,80));}
     const mag7avg=renderMag7();
     [instData,margData]=await Promise.all([fetchInst(),fetchMarg()]);
     for(const s of STOCKS){const d=await fetchPrice(s.code);if(d)sData[s.code]=d;await new Promise(r=>setTimeout(r,200));}
     renderCards(mag7avg);
-    if(selStock)selectStock(selStock);
+    // 如有展開的詳細面板，靜默更新內容（不捲動）
+    if(selStock){
+      const s=STOCKS.find(x=>x.code===selStock);
+      if(s){
+        const price=sData[selStock],inst=instData[selStock],marg=margData[selStock];
+        const mag7El=document.querySelector('.mag7-impact .val');
+        const mag7avg2=parseFloat(mag7El?.textContent||'0')||0;
+        const{score,det}=calcScore(s,price,inst,marg,mag7avg2);
+        const pred=predict(score,price);
+        const pct=price?.pct||0;
+        const pctTxt=Math.abs(pct)<0.05?'— 平盤':(pct>0?'▲':'▼')+Math.abs(pct).toFixed(2)+'%';
+        document.getElementById('dtTitle').textContent=`${selStock} ${s.name}`;
+        document.getElementById('dtSub').innerHTML=`NT$${price?.price?.toFixed(2)||'--'} <span style="color:${pclr(pct)}">${pctTxt}</span>　持股 ${s.shares?s.shares.toLocaleString()+'股':'--'}　${s.sector}`;
+        renderHolder(inst,marg);
+        renderScore(score,pred,det);
+      }
+    }
     updateStatus();
     document.getElementById('lastUp').textContent='更新：'+new Date().toLocaleTimeString('zh-TW');
   }finally{
     btn.disabled=false;btn.textContent='⟳ 更新';
-    startAuto();
+    window.scrollTo({top:savedY,behavior:'instant'}); // 還原位置
   }
 }
 
-// ── 10秒自動更新（開盤中才啟動）──
-let autoCountdown=10;
-function startAuto(){
-  stopAuto();
-  if(!isOpen())return;
-  autoCountdown=10;
-  updateStatus(autoCountdown);
-  autoTimer=setInterval(async()=>{
-    autoCountdown--;
-    if(autoCountdown<=0){
-      autoCountdown=10;
-      await quickRefresh();
-    }
-    updateStatus(isOpen()?autoCountdown:null);
-    if(!isOpen())stopAuto();
-  },1000);
-}
-function stopAuto(){
-  if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
-}
-
 updateStatus();
-refreshAll();
+// 首次載入建立卡片
+(async()=>{
+  const btn=document.getElementById('refreshBtn');
+  btn.disabled=true;btn.textContent='載入中...';
+  for(const m of MAG7){const d=await fetchPrice(m.t,true);if(d)mag7Data[m.t]=d;await new Promise(r=>setTimeout(r,80));}
+  const mag7avg=renderMag7();
+  [instData,margData]=await Promise.all([fetchInst(),fetchMarg()]);
+  const grid=document.getElementById('stocksGrid');grid.innerHTML='';
+  for(const s of STOCKS){const d=await fetchPrice(s.code);if(d)sData[s.code]=d;await new Promise(r=>setTimeout(r,200));}
+  renderCards(mag7avg);
+  btn.disabled=false;btn.textContent='⟳ 更新';
+  updateStatus();
+  document.getElementById('lastUp').textContent='更新：'+new Date().toLocaleTimeString('zh-TW');
+})();
 </script>
 </body>
 </html>
