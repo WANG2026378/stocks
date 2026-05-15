@@ -347,6 +347,7 @@ let STOCKS=loadStocks();
 
 let sData={},kData={},mag7Data={},instData={},margData={},selStock=null,pChart=null,macdChart=null,kChart=null;
 let autoTimer=null;
+const marketCache={}; // {code: 'TW'|'TWO'} 自動記住上市/上櫃
 
 // ── 顏色：台灣慣例 紅漲綠跌 ──
 // 平盤門檻：±0.05% 內顯示灰色
@@ -362,8 +363,7 @@ function buildPriceSources(sym){return[
   `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d')}`,
 ];}
 
-async function fetchPrice(code,us=false){
-  const sym=us?code:`${code}.TW`;
+async function fetchPriceBySym(sym){
   for(const url of buildPriceSources(sym)){
     try{
       const res=await fetch(url,{signal:AbortSignal.timeout(7000)});
@@ -373,7 +373,6 @@ async function fetchPrice(code,us=false){
       if(!m)continue;
       const price=m.regularMarketPrice;
       if(!price||price<=0)continue;
-      // 昨收：chartPreviousClose 最準（圖表基準），再 fallback previousClose
       const prev=m.chartPreviousClose||m.previousClose||price;
       const change=price-prev;
       const pct=prev?(change/prev)*100:0;
@@ -382,6 +381,19 @@ async function fetchPrice(code,us=false){
       return{price,prev,change,pct,high52:m.fiftyTwoWeekHigh,low52:m.fiftyTwoWeekLow,closes};
     }catch{}
   }
+  return null;
+}
+
+async function fetchPrice(code,us=false){
+  if(us) return await fetchPriceBySym(code);
+  // 自動偵測上市(.TW)或上櫃(.TWO)
+  if(marketCache[code]) return await fetchPriceBySym(`${code}.${marketCache[code]}`);
+  // 先試上市
+  const d=await fetchPriceBySym(`${code}.TW`);
+  if(d&&d.price>0){marketCache[code]='TW';return d;}
+  // 再試上櫃
+  const d2=await fetchPriceBySym(`${code}.TWO`);
+  if(d2&&d2.price>0){marketCache[code]='TWO';console.log(`${code} → 上櫃 (.TWO)`);return d2;}
   return null;
 }
 
@@ -394,7 +406,8 @@ async function fetchJSON(url){
 }
 
 async function fetchKline(code){
-  const d=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${code}.TW?interval=1d&range=3mo`);
+  const suffix=marketCache[code]||'TW'; // 用已偵測到的市場
+  const d=await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${code}.${suffix}?interval=1d&range=3mo`);
   if(!d?.chart?.result?.[0])return null;
   const r=d.chart.result[0],ts=r.timestamp||[],q=r.indicators?.quote?.[0]||{};
   const bars=[];
@@ -407,17 +420,67 @@ async function fetchKline(code){
   return bars;
 }
 
-async function fetchInst(){
-  const dt=fmtDate(new Date());
+// 民國年日期（TPEx 格式）
+function fmtDateROC(d){return`${d.getFullYear()-1911}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`}
+
+// 上市三大法人（TWSE T86）
+async function fetchInstTWSE(dt){
   const d=await fetchJSON(`https://www.twse.com.tw/rwd/zh/fund/T86?response=json&date=${dt}&selectType=ALL`);
-  if(d?.data){const r={};d.data.forEach(row=>{r[row[0]]={f:pn(row[4]),it:pn(row[7]),dl:pn(row[9]),total:pn(row[10])};});return r;}
+  if(!d?.data)return null;
+  const r={};
+  d.data.forEach(row=>{r[row[0]]={f:pn(row[4]),it:pn(row[7]),dl:pn(row[9]),total:pn(row[10])};});
+  return r;
+}
+
+// 上櫃三大法人（TPEx）
+async function fetchInstTPEx(rocDate){
+  const d=await fetchJSON(`https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&o=json&se=EW&t=D&d=${encodeURIComponent(rocDate)}`);
+  if(!d?.aaData)return null;
+  const r={};
+  d.aaData.forEach(row=>{
+    const code=(row[0]||'').trim();
+    if(!code)return;
+    r[code]={f:pn(row[4]),it:pn(row[7]),dl:pn(row[10])+pn(row[13]),total:pn(row[14]),otc:true};
+  });
+  return r;
+}
+
+async function fetchInst(){
+  const dt=fmtDate(new Date()),roc=fmtDateROC(new Date());
+  const [twse,tpex]=await Promise.all([fetchInstTWSE(dt),fetchInstTPEx(roc)]);
+  if(twse||tpex){
+    // 合併上市+上櫃（上櫃資料優先覆蓋）
+    return Object.assign({},twse||{},tpex||{});
+  }
   return simInst();
 }
 
-async function fetchMarg(){
-  const dt=fmtDate(new Date());
+// 上市融資融券（TWSE）
+async function fetchMargTWSE(dt){
   const d=await fetchJSON(`https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&date=${dt}&selectType=ALL`);
-  if(d?.tables?.[0]?.data){const r={};d.tables[0].data.forEach(row=>{r[row[0]]={bal:pn(row[6]),chg:pn(row[4]),sBal:pn(row[11]),sChg:pn(row[9])};});return r;}
+  if(!d?.tables?.[0]?.data)return null;
+  const r={};
+  d.tables[0].data.forEach(row=>{r[row[0]]={bal:pn(row[6]),chg:pn(row[4]),sBal:pn(row[11]),sChg:pn(row[9])};});
+  return r;
+}
+
+// 上櫃融資融券（TPEx）
+async function fetchMargTPEx(rocDate){
+  const d=await fetchJSON(`https://www.tpex.org.tw/web/stock/margin_trading/margin_balance/margin_bal_result.php?l=zh-tw&o=json&d=${encodeURIComponent(rocDate)}&se=EW`);
+  if(!d?.aaData)return null;
+  const r={};
+  d.aaData.forEach(row=>{
+    const code=(row[0]||'').trim();
+    if(!code)return;
+    r[code]={bal:pn(row[4]),chg:pn(row[4])-pn(row[3]),sBal:pn(row[8]),sChg:pn(row[8])-pn(row[7]),otc:true};
+  });
+  return r;
+}
+
+async function fetchMarg(){
+  const dt=fmtDate(new Date()),roc=fmtDateROC(new Date());
+  const [twse,tpex]=await Promise.all([fetchMargTWSE(dt),fetchMargTPEx(roc)]);
+  if(twse||tpex) return Object.assign({},twse||{},tpex||{});
   return simMarg();
 }
 
@@ -580,7 +643,7 @@ function renderCard(stock,price,inst,marg,score,pred){
       <div class="sig-i"><span class="muted">融資</span><span class="sig-v" style="color:${mc<0?'var(--dn)':mc>0?'var(--up)':'var(--muted)'}">${sign(mc)}${mc}</span></div>
       <div class="sig-i"><span class="muted">Mag7</span><span class="sig-v blue">${(stock.corr*100).toFixed(0)}%</span></div>
     </div>
-    <div class="tags">${stock.theme.slice(0,2).map(t=>`<span class="tag${stock.hot?' hot':''}">${t}</span>`).join('')}${inst?.sim?'<span class="tag" style="opacity:.5">模擬</span>':''}</div>
+    <div class="tags">${stock.theme.slice(0,2).map(t=>`<span class="tag${stock.hot?' hot':''}">${t}</span>`).join('')}<span class="tag" style="opacity:.6">${marketCache[stock.code]==='TWO'?'上櫃':'上市'}</span>${inst?.sim?'<span class="tag" style="opacity:.5">模擬</span>':''}</div>
   </div>`;
 }
 
