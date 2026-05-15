@@ -133,6 +133,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 .modal-btns .btn{flex:1;text-align:center}
 .btn.cancel{background:#1a1a2e;border-color:var(--border);color:var(--muted)}
+.sort-btn{background:#0d1520;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+.sort-btn:hover{border-color:#3b82f6;color:var(--text)}
+.sort-btn.active{background:#1e3a5f;border-color:#3b82f6;color:#60a5fa}
 .up{color:var(--up)}.dn{color:var(--dn)}.yellow{color:var(--yellow)}.blue{color:#3b82f6}.muted{color:var(--muted)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-right:8px}
@@ -217,7 +220,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
     <div class="ov-card"><div class="ov-label">風險警示</div><div class="ov-val" style="font-size:17px" id="ovRisk">--</div><div class="ov-sub" id="ovRiskSub">--</div></div>
   </div>
 
-  <div style="font-size:14px;color:var(--muted);margin-bottom:12px">📈 持倉評分卡 — 點擊查看詳細分析 &nbsp;｜&nbsp; 🔴 漲 &nbsp; 🟢 跌（台灣慣例）</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:14px;color:var(--muted)">📈 持倉評分卡 — 點擊查看詳細分析 &nbsp;｜&nbsp; 🔴 漲 &nbsp; 🟢 跌</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap" id="sortBtns">
+      <button class="sort-btn active" onclick="setSort('default')" id="sort-default">預設</button>
+      <button class="sort-btn" onclick="setSort('gainTop')" id="sort-gainTop">🔴 漲幅↑</button>
+      <button class="sort-btn" onclick="setSort('gainBot')" id="sort-gainBot">🟢 跌幅↑</button>
+      <button class="sort-btn" onclick="setSort('score')" id="sort-score">🎯 評分↑</button>
+      <button class="sort-btn" onclick="setSort('mv')" id="sort-mv">💰 市值↑</button>
+    </div>
+  </div>
   <div class="stocks-grid" id="stocksGrid"><div class="loading" style="grid-column:1/-1"><span class="spinner"></span>載入個股...</div></div>
 
   <div class="detail" id="detPanel">
@@ -346,7 +358,7 @@ function saveStocks(){
 let STOCKS=loadStocks();
 
 let sData={},kData={},mag7Data={},instData={},margData={},selStock=null,pChart=null,macdChart=null,kChart=null;
-let autoTimer=null;
+let autoTimer=null,currentSort='default';
 const marketCache={}; // {code: 'TW'|'TWO'} 自動記住上市/上櫃
 
 // ── 顏色：台灣慣例 紅漲綠跌 ──
@@ -889,12 +901,61 @@ function updateStatus(){
   document.getElementById('sText').textContent=open?'🔴 台股開盤中':'⚫ 台股休市';
 }
 
-// ── 重新整理卡片（不重建DOM，原地更新，不跳頁）──
+// ── 排序 ──
+function setSort(type){
+  currentSort=type;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sort-'+type)?.classList.add('active');
+  const mag7El=document.querySelector('.mag7-impact .val');
+  const mag7avg=parseFloat(mag7El?.textContent||'0')||0;
+  rebuildCards(mag7avg); // 排序時強制重建順序
+}
+
+function getSortedStocks(mag7avg){
+  const withScore=STOCKS.map(s=>({
+    s,
+    score:calcScore(s,sData[s.code],instData[s.code],margData[s.code],mag7avg).score,
+    pct:sData[s.code]?.pct||0,
+    mv:(sData[s.code]?.price||0)*(s.shares||0)
+  }));
+  switch(currentSort){
+    case 'gainTop': return [...withScore].sort((a,b)=>b.pct-a.pct);
+    case 'gainBot': return [...withScore].sort((a,b)=>a.pct-b.pct);
+    case 'score':   return [...withScore].sort((a,b)=>b.score-a.score);
+    case 'mv':      return [...withScore].sort((a,b)=>b.mv-a.mv);
+    default:        return withScore; // 預設原始順序
+  }
+}
+
+// 強制重建（排序切換時使用）
+function rebuildCards(mag7avg){
+  const grid=document.getElementById('stocksGrid');
+  const savedY=window.scrollY;
+  grid.innerHTML='';
+  const scores=[];
+  getSortedStocks(mag7avg).forEach(({s,score})=>{
+    const price=sData[s.code],inst=instData[s.code],marg=margData[s.code];
+    const pred=predict(score,price);
+    scores.push(score);
+    grid.innerHTML+=renderCard(s,price,inst,marg,score,pred);
+  });
+  renderOverview(scores);
+  window.scrollTo({top:savedY,behavior:'instant'});
+}
+
+// ── 重新整理卡片（原地更新，不跳頁）──
 function renderCards(mag7avg){
   const grid=document.getElementById('stocksGrid');
   const scores=[];
+  const sorted=getSortedStocks(mag7avg);
 
-  STOCKS.forEach(s=>{
+  // 若排序有變，先重建 DOM 順序
+  const gridCodes=[...grid.querySelectorAll('.stock-card')].map(c=>c.id.replace('card-',''));
+  const sortedCodes=sorted.map(({s})=>s.code);
+  const needReorder=gridCodes.join()!==sortedCodes.join();
+  if(needReorder){grid.innerHTML='';sorted.forEach(({s,score})=>{const pred=predict(score,sData[s.code]);grid.innerHTML+=renderCard(s,sData[s.code],instData[s.code],margData[s.code],score,pred);scores.push(score);});renderOverview(scores);return;}
+
+  sorted.forEach(({s})=>{
     const price=sData[s.code],inst=instData[s.code],marg=margData[s.code];
     const{score}=calcScore(s,price,inst,marg,mag7avg);
     const pred=predict(score,price);
