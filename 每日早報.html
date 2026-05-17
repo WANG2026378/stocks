@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>川普投顧 · 每日早報</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #07091a;
+  color: #dde4f0;
+  font-family: 'Segoe UI', '微軟正黑體', '蘋方-繁', sans-serif;
+  min-height: 100vh;
+}
+
+/* ---- Header ---- */
+.header {
+  background: linear-gradient(135deg, #0f1428 0%, #0a0d1e 100%);
+  border-bottom: 2px solid #c49a14;
+  padding: 18px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-icon { font-size: 36px; }
+.header-title { font-size: 26px; font-weight: bold; color: #c49a14; letter-spacing: 1px; }
+.header-date { font-size: 14px; color: #7788aa; margin-top: 3px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-clock { font-size: 18px; color: #aabbcc; font-variant-numeric: tabular-nums; }
+.refresh-btn {
+  background: #c49a14; color: #07091a; border: none;
+  padding: 9px 18px; border-radius: 8px; cursor: pointer;
+  font-size: 15px; font-weight: bold; transition: all .2s;
+  white-space: nowrap;
+}
+.refresh-btn:hover { background: #e0b820; }
+.refresh-btn:active { transform: scale(.96); }
+.refresh-btn.loading { opacity: .6; pointer-events: none; }
+
+/* ---- Market Bar ---- */
+.market-bar {
+  background: #0b0e20;
+  border-bottom: 1px solid #1a2340;
+  padding: 10px 20px;
+  display: flex; gap: 10px; overflow-x: auto;
+}
+.market-bar::-webkit-scrollbar { height: 3px; }
+.market-bar::-webkit-scrollbar-track { background: #0b0e20; }
+.market-bar::-webkit-scrollbar-thumb { background: #2a3455; border-radius: 2px; }
+.mkt-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 7px 14px;
+  background: #101526; border: 1px solid #1e2a48;
+  border-radius: 8px; white-space: nowrap; min-width: 90px;
+}
+.mkt-name { font-size: 11px; color: #7788aa; margin-bottom: 2px; }
+.mkt-price { font-size: 16px; font-weight: bold; }
+.mkt-chg { font-size: 12px; margin-top: 1px; }
+
+/* ---- Portfolio Summary ---- */
+.summary-bar {
+  background: #0d1025;
+  border-bottom: 1px solid #1a2340;
+  padding: 10px 24px;
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.summary-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: #101526; border: 1px solid #1e2a48;
+  border-radius: 8px;
+}
+.summary-label { font-size: 12px; color: #7788aa; }
+.summary-value { font-size: 16px; font-weight: bold; color: #c49a14; }
+.summary-change { font-size: 13px; }
+
+/* ---- Main ---- */
+.main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+/* ---- Section ---- */
+.section { margin-bottom: 32px; }
+.section-title {
+  font-size: 18px; font-weight: bold; color: #c49a14;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #1a2340;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-count {
+  font-size: 13px; color: #556688; font-weight: normal;
+  background: #101526; padding: 2px 8px; border-radius: 10px;
+  margin-left: 4px;
+}
+
+/* ---- Stock Grid ---- */
+.stocks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 10px;
+}
+
+/* ---- Stock Button ---- */
+.stock-btn {
+  background: #101526;
+  border: 1px solid #1e2a48;
+  border-left: 3px solid #2a3455;
+  border-radius: 12px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  text-align: center;
+}
+.stock-btn:hover { transform: translateY(-3px); border-color: #c49a14; background: #141828; box-shadow: 0 6px 20px rgba(196,154,20,.1); }
+.stock-btn.up-btn { border-left-color: #ff4444; }
+.stock-btn.dn-btn { border-left-color: #00cc88; }
+.stock-btn.flat-btn { border-left-color: #445577; }
+
+.stock-code { font-size: 20px; font-weight: bold; color: #fff; letter-spacing: .5px; }
+.stock-name { font-size: 12px; color: #778899; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stock-price { font-size: 22px; font-weight: bold; margin-top: 10px; line-height: 1; }
+.stock-change { font-size: 13px; margin-top: 4px; }
+.stock-shares { font-size: 11px; color: #445566; margin-top: 8px; }
+.stock-value { font-size: 12px; color: #889aaa; margin-top: 2px; }
+
+.up { color: #ff4444; }
+.dn { color: #00cc88; }
+.flat { color: #778899; }
+
+/* ---- Hot Badge ---- */
+.hot-badge {
+  position: absolute; top: 5px; right: 6px;
+  background: linear-gradient(135deg, #ff4444, #ff6622);
+  color: #fff; font-size: 9px; font-weight: bold;
+  padding: 2px 5px; border-radius: 4px;
+  letter-spacing: .5px;
+}
+.otc-badge {
+  position: absolute; top: 5px; left: 6px;
+  background: #1a3060;
+  color: #6699cc; font-size: 9px;
+  padding: 1px 5px; border-radius: 4px;
+}
+
+/* ---- Skeleton ---- */
+.skel {
+  background: linear-gradient(90deg, #101526 25%, #1a2340 50%, #101526 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 4px; height: 22px; width: 75%; margin: 8px auto 0;
+}
+.skel-sm { height: 14px; width: 55%; margin: 4px auto 0; }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+/* ---- Quick Links ---- */
+.quick-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.ql {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 18px;
+  background: #101526; border: 1px solid #1e2a48;
+  border-radius: 10px; color: #c49a14;
+  text-decoration: none; font-size: 14px;
+  transition: all .2s;
+}
+.ql:hover { background: #141828; border-color: #c49a14; transform: translateY(-1px); }
+
+/* ---- Footer ---- */
+.footer { font-size: 12px; color: #445566; text-align: center; padding: 20px 0 30px; }
+
+/* ---- Mobile ---- */
+@media (max-width: 600px) {
+  .stocks-grid { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .stock-btn { padding: 10px 7px; }
+  .stock-code { font-size: 16px; }
+  .stock-price { font-size: 18px; }
+  .header-title { font-size: 20px; }
+  .main { padding: 16px; }
+  .summary-bar { padding: 10px 16px; }
+}
+@media (max-width: 400px) {
+  .stocks-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">📰</div>
+    <div>
+      <div class="header-title">川普投顧 · 每日早報</div>
+      <div class="header-date" id="hDate"></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-clock" id="hClock"></div>
+    <button class="refresh-btn" id="refreshBtn" onclick="fetchAll()">⟳ 更新</button>
+  </div>
+</div>
+
+<!-- Market indices bar -->
+<div class="market-bar" id="marketBar">
+  <div class="mkt-item"><div class="mkt-name">加權指數</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>
+  <div class="mkt-item"><div class="mkt-name">S&P 500</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>
+  <div class="mkt-item"><div class="mkt-name">NASDAQ</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>
+  <div class="mkt-item"><div class="mkt-name">NVIDIA</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>
+  <div class="mkt-item"><div class="mkt-name">TSM ADR</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>
+</div>
+
+<!-- Portfolio summary -->
+<div class="summary-bar">
+  <div class="summary-item">
+    <span class="summary-label">🇹🇼 台股總市值</span>
+    <span class="summary-value" id="twTotal">計算中...</span>
+    <span class="summary-change flat" id="twTotalChg"></span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">🇺🇸 美股總市值</span>
+    <span class="summary-value" id="usTotal">計算中...</span>
+    <span class="summary-change flat" id="usTotalChg"></span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">📊 合計</span>
+    <span class="summary-value" id="grandTotal">--</span>
+  </div>
+</div>
+
+<div class="main">
+  <!-- TW Stocks -->
+  <div class="section">
+    <div class="section-title">🇹🇼 台股持倉 <span class="section-count">12 檔</span></div>
+    <div class="stocks-grid" id="twGrid"></div>
+  </div>
+
+  <!-- US Stocks -->
+  <div class="section">
+    <div class="section-title">🇺🇸 美股持倉 <span class="section-count">6 檔</span></div>
+    <div class="stocks-grid" id="usGrid"></div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="section">
+    <div class="section-title" style="margin-bottom:12px;">🔗 快速工具</div>
+    <div class="quick-links">
+      <a class="ql" href="台股智能分析.html" target="_blank">📊 台股智能分析</a>
+      <a class="ql" href="美股智能分析.html" target="_blank">📈 美股智能分析</a>
+      <a class="ql" href="首頁.html" target="_blank">🏠 工具箱首頁</a>
+      <a class="ql" href="index.html" target="_blank">💼 損益追蹤器</a>
+    </div>
+  </div>
+
+  <div class="footer" id="footer">尚未更新</div>
+</div>
+
+<script>
+// ==================== 持倉資料 ====================
+const TW = [
+  { code:'2330', name:'台積電',    shares:2130,  mkt:'TW',  hot:true  },
+  { code:'6285', name:'啟碁',      shares:17888, mkt:'TW',  hot:true  },
+  { code:'2301', name:'光寶科',    shares:7058,  mkt:'TW',  hot:false },
+  { code:'4908', name:'前鼎',      shares:1008,  mkt:'TWO', hot:true  },
+  { code:'6829', name:'千附精密',  shares:1000,  mkt:'TWO', hot:true  },
+  { code:'2049', name:'上銀',      shares:500,   mkt:'TW',  hot:false },
+  { code:'2308', name:'台達電',    shares:18,    mkt:'TW',  hot:true  },
+  { code:'2312', name:'金寶',      shares:1000,  mkt:'TW',  hot:false },
+  { code:'3711', name:'日月光投控',shares:8,     mkt:'TW',  hot:true  },
+  { code:'4585', name:'達明',      shares:8,     mkt:'TW',  hot:true  },
+  { code:'8033', name:'雷虎科技',  shares:25,    mkt:'TW',  hot:false },
+  { code:'0050', name:'台灣50',    shares:5,     mkt:'TW',  hot:false },
+];
+
+const US = [
+  { code:'TSM',   name:'台積電ADR', shares:50,  hot:false },
+  { code:'TSLA',  name:'Tesla',     shares:83,  hot:false },
+  { code:'IONQ',  name:'IonQ',      shares:478, hot:true  },
+  { code:'AVGO',  name:'Broadcom',  shares:8,   hot:false },
+  { code:'GOOGL', name:'Alphabet',  shares:8,   hot:false },
+  { code:'QBTS',  name:'D-Wave',    shares:108, hot:true  },
+];
+
+const INDICES = [
+  { sym:'^TWII',  name:'加權指數' },
+  { sym:'^GSPC',  name:'S&P 500'  },
+  { sym:'^IXIC',  name:'NASDAQ'   },
+  { sym:'NVDA',   name:'NVIDIA'   },
+  { sym:'TSM',    name:'TSM ADR'  },
+];
+
+// ==================== 工具函數 ====================
+const fmt = (n, d=2) => n == null || isNaN(n) ? '--'
+  : n >= 10000 ? n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})
+  : n.toFixed(d);
+
+const fmtPct = p => p == null || isNaN(p) ? '--'
+  : (p>=0?'+':'')+p.toFixed(2)+'%';
+
+const fmtWan = v => {
+  if (v >= 100000000) return (v/100000000).toFixed(1)+'億';
+  if (v >= 10000)     return (v/10000).toFixed(1)+'萬';
+  return v.toLocaleString();
+};
+
+const cc = p => p == null || isNaN(p) ? 'flat' : p > 0.05 ? 'up' : p < -0.05 ? 'dn' : 'flat';
+const arrow = p => p > 0.05 ? '▲' : p < -0.05 ? '▼' : '—';
+
+// ==================== Yahoo Finance ====================
+async function fetchQ(symbol) {
+  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
+  const urls = [
+    base,
+    base.replace('query1','query2'),
+    `https://corsproxy.io/?${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
+  ];
+  for (const u of urls) {
+    try {
+      const r = await fetch(u, { signal: AbortSignal.timeout(6000) });
+      let d = await r.json();
+      if (d.contents) d = JSON.parse(d.contents);
+      const meta = d?.chart?.result?.[0]?.meta;
+      if (!meta) continue;
+      const price = meta.regularMarketPrice ?? meta.previousClose;
+      const prev  = meta.chartPreviousClose ?? meta.previousClose;
+      const chg   = price - prev;
+      const pct   = prev ? (chg / prev) * 100 : 0;
+      return { price, prev, chg, pct };
+    } catch {}
+  }
+  return null;
+}
+
+// ==================== Render ====================
+function renderBtn(s, isTW) {
+  const link = isTW
+    ? `https://tw.finance.yahoo.com/quote/${s.code}.${s.mkt}`
+    : `https://finance.yahoo.com/quote/${s.code}`;
+  const otcBadge = (isTW && s.mkt === 'TWO') ? '<span class="otc-badge">櫃</span>' : '';
+  const hotBadge = s.hot ? '<span class="hot-badge">HOT</span>' : '';
+  return `
+    <a class="stock-btn flat-btn" id="btn-${s.code}" href="${link}" target="_blank">
+      ${otcBadge}${hotBadge}
+      <div class="stock-code">${s.code}</div>
+      <div class="stock-name">${s.name}</div>
+      <div class="skel" id="px-${s.code}"></div>
+      <div class="skel skel-sm" id="ch-${s.code}"></div>
+      <div class="stock-shares">${s.shares > 0 ? s.shares.toLocaleString()+' 股' : '觀察'}</div>
+      <div class="stock-value" id="vl-${s.code}"></div>
+    </a>`;
+}
+
+function patchBtn(s, data, isTW) {
+  const btn = document.getElementById(`btn-${s.code}`);
+  const pxEl = document.getElementById(`px-${s.code}`);
+  const chEl = document.getElementById(`ch-${s.code}`);
+  const vlEl = document.getElementById(`vl-${s.code}`);
+  if (!btn) return;
+
+  if (!data) {
+    btn.className = 'stock-btn flat-btn';
+    pxEl.className = 'stock-price flat'; pxEl.textContent = '--';
+    chEl.className = 'stock-change flat'; chEl.textContent = '無法取得';
+    return;
+  }
+
+  const c = cc(data.pct);
+  btn.className = `stock-btn ${c === 'up' ? 'up-btn' : c === 'dn' ? 'dn-btn' : 'flat-btn'}`;
+
+  pxEl.className = `stock-price ${c}`;
+  pxEl.textContent = (isTW ? 'NT$' : '$') + fmt(data.price);
+
+  chEl.className = `stock-change ${c}`;
+  chEl.textContent = `${arrow(data.pct)} ${fmt(Math.abs(data.chg))} (${fmtPct(data.pct)})`;
+
+  if (s.shares > 0 && data.price) {
+    const val = s.shares * data.price;
+    vlEl.textContent = isTW ? `NT$ ${fmtWan(val)}` : `$ ${(val).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}`;
+  }
+}
+
+// ==================== Market Bar ====================
+function patchMarket(results) {
+  const bar = document.getElementById('marketBar');
+  bar.innerHTML = results.map(({idx, data}) => {
+    if (!data) return `<div class="mkt-item"><div class="mkt-name">${idx.name}</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>`;
+    const c = cc(data.pct);
+    return `<div class="mkt-item">
+      <div class="mkt-name">${idx.name}</div>
+      <div class="mkt-price ${c}">${fmt(data.price)}</div>
+      <div class="mkt-chg ${c}">${arrow(data.pct)} ${fmtPct(data.pct)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ==================== Portfolio Summary ====================
+function updateSummary(twResults, usResults) {
+  let twVal = 0, twChg = 0, usVal = 0, usChg = 0;
+  TW.forEach((s, i) => {
+    const d = twResults[i];
+    if (d && s.shares > 0) {
+      twVal += s.shares * d.price;
+      twChg += s.shares * d.chg;
+    }
+  });
+  US.forEach((s, i) => {
+    const d = usResults[i];
+    if (d && s.shares > 0) {
+      usVal += s.shares * d.price;
+      usChg += s.shares * d.chg;
+    }
+  });
+
+  const twC = twChg >= 0 ? 'up' : 'dn';
+  document.getElementById('twTotal').textContent = `NT$ ${fmtWan(twVal)}`;
+  document.getElementById('twTotalChg').className = `summary-change ${twC}`;
+  document.getElementById('twTotalChg').textContent = `${arrow(twChg)} NT$ ${fmtWan(Math.abs(twChg))}`;
+
+  const usC = usChg >= 0 ? 'up' : 'dn';
+  document.getElementById('usTotal').textContent = `$ ${(usVal).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  document.getElementById('usTotalChg').className = `summary-change ${usC}`;
+  document.getElementById('usTotalChg').textContent = `${arrow(usChg)} $ ${Math.abs(usChg).toFixed(2)}`;
+
+  // Grand total — need USD→TWD rate, skip conversion for now
+  document.getElementById('grandTotal').textContent = `NT$ ${fmtWan(twVal)} + $${(usVal).toFixed(0)}`;
+}
+
+// ==================== Main Fetch ====================
+async function fetchAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('loading'); btn.textContent = '更新中...';
+  document.getElementById('footer').textContent = '更新中...';
+
+  // Parallel fetch: indices + all stocks
+  const [idxRes, twRes, usRes] = await Promise.all([
+    Promise.all(INDICES.map(async idx => ({ idx, data: await fetchQ(idx.sym) }))),
+    Promise.all(TW.map(s => fetchQ(`${s.code}.${s.mkt}`))),
+    Promise.all(US.map(s => fetchQ(s.code))),
+  ]);
+
+  patchMarket(idxRes);
+  TW.forEach((s, i) => patchBtn(s, twRes[i], true));
+  US.forEach((s, i) => patchBtn(s, usRes[i], false));
+  updateSummary(twRes, usRes);
+
+  const now = new Date();
+  document.getElementById('footer').textContent =
+    `最後更新：${now.toLocaleTimeString('zh-TW')} ── 資料來源：Yahoo Finance`;
+
+  btn.classList.remove('loading'); btn.textContent = '⟳ 更新';
+}
+
+// ==================== Init ====================
+function init() {
+  // Clock
+  const WD = ['日','一','二','三','四','五','六'];
+  const tick = () => {
+    const n = new Date();
+    document.getElementById('hDate').textContent =
+      `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日（${WD[n.getDay()]}）`;
+    document.getElementById('hClock').textContent = n.toLocaleTimeString('zh-TW');
+  };
+  tick();
+  setInterval(tick, 1000);
+
+  // Render grids (skeleton state)
+  document.getElementById('twGrid').innerHTML = TW.map(s => renderBtn(s, true)).join('');
+  document.getElementById('usGrid').innerHTML = US.map(s => renderBtn(s, false)).join('');
+
+  // Fetch
+  fetchAll();
+}
+
+init();
+</script>
+</body>
+</html>
