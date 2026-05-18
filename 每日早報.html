@@ -130,9 +130,20 @@ body {
   text-align: center;
 }
 .stock-btn:hover { transform: translateY(-3px); border-color: #c49a14; background: #141828; box-shadow: 0 6px 20px rgba(196,154,20,.1); }
-.stock-btn.up-btn { border-left-color: #ff4444; }
-.stock-btn.dn-btn { border-left-color: #00cc88; }
-.stock-btn.flat-btn { border-left-color: #445577; }
+/* 漲幅等級 */
+.stock-btn.limit-btn    { border-left-color: #ff1111; background: #1e0505; border-color: #ff3333; box-shadow: 0 0 12px rgba(255,30,30,.35); }
+.stock-btn.up-strong-btn{ border-left-color: #ff2222; background: #160606; }
+.stock-btn.up-btn       { border-left-color: #ff5555; }
+/* 跌幅等級 */
+.stock-btn.limit-dn-btn { border-left-color: #00dd77; background: #031a0e; border-color: #00cc66; box-shadow: 0 0 12px rgba(0,200,100,.3); }
+.stock-btn.dn-strong-btn{ border-left-color: #00bb66; background: #031209; }
+.stock-btn.dn-btn       { border-left-color: #00cc88; }
+.stock-btn.flat-btn     { border-left-color: #445577; }
+/* 漲跌停標籤 */
+.limit-tag { position:absolute; top:5px; left:50%; transform:translateX(-50%);
+  font-size:9px; font-weight:bold; padding:1px 6px; border-radius:3px; white-space:nowrap; z-index:1; }
+.limit-tag.up  { background:#ff1111; color:#fff; }
+.limit-tag.dn  { background:#00bb66; color:#fff; }
 
 .stock-code { font-size: 20px; font-weight: bold; color: #fff; letter-spacing: .5px; }
 .stock-name { font-size: 12px; color: #778899; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -496,10 +507,23 @@ function patchBtn(s, data, isTW) {
     return;
   }
 
-  const c = cc(data.pct);
-  btn.className = `stock-btn ${c === 'up' ? 'up-btn' : c === 'dn' ? 'dn-btn' : 'flat-btn'}`;
+  const p = data.pct;
+  let btnCls, priceCls, limitTag = '';
+  if      (p >= 9.5)   { btnCls='limit-btn';     priceCls='up'; limitTag='<span class="limit-tag up">漲停</span>'; }
+  else if (p >= 3)     { btnCls='up-strong-btn'; priceCls='up'; }
+  else if (p > 0.05)   { btnCls='up-btn';        priceCls='up'; }
+  else if (p <= -9.5)  { btnCls='limit-dn-btn';  priceCls='dn'; limitTag='<span class="limit-tag dn">跌停</span>'; }
+  else if (p <= -3)    { btnCls='dn-strong-btn'; priceCls='dn'; }
+  else if (p < -0.05)  { btnCls='dn-btn';        priceCls='dn'; }
+  else                 { btnCls='flat-btn';       priceCls='flat'; }
 
-  pxEl.className = `stock-price ${c}`;
+  btn.className = `stock-btn ${btnCls}`;
+
+  // 漲跌停標籤（移除舊的再插入）
+  btn.querySelectorAll('.limit-tag').forEach(el => el.remove());
+  if (limitTag) btn.insertAdjacentHTML('afterbegin', limitTag);
+
+  pxEl.className = `stock-price ${priceCls}`;
   pxEl.textContent = (isTW ? 'NT$' : '$') + fmt(data.price);
 
   chEl.className = `stock-change ${c}`;
