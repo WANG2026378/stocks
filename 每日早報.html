@@ -353,69 +353,50 @@ const fmtWan = v => {
 const cc = p => p == null || isNaN(p) ? 'flat' : p > 0.05 ? 'up' : p < -0.05 ? 'dn' : 'flat';
 const arrow = p => p > 0.05 ? '▲' : p < -0.05 ? '▼' : '—';
 
-// ==================== Yahoo Finance ====================
-async function fetchQ(symbol) {
-  const ts = Date.now();
-
-  // ── 主要：v10 quoteSummary（最即時，含盤前/盤後延伸交易）──
-  const v10 = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=price&_=${ts}`;
-  const v10urls = [
-    v10,
-    v10.replace('query1','query2'),
-    `https://corsproxy.io/?${encodeURIComponent(v10)}`,
+// ==================== Yahoo Finance Batch Fetch ====================
+// 一次傳多個 symbol，只需 2 個 API 請求取代 20+ 個，proxy 不容易掛
+async function fetchBatch(symbols) {
+  const ts   = Date.now();
+  const syms = symbols.join(',');
+  const base = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(syms)}&_=${ts}`;
+  const proxies = [
+    base,
+    base.replace('query1', 'query2'),
+    `https://corsproxy.io/?${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
+    `https://thingproxy.freeboard.io/fetch/${base}`,
   ];
-  for (const u of v10urls) {
+  for (const u of proxies) {
     try {
-      const r = await fetch(u, { signal: AbortSignal.timeout(5000) });
+      const r = await fetch(u, { signal: AbortSignal.timeout(9000) });
       let d = await r.json();
-      if (d.contents) d = JSON.parse(d.contents);
-      const p = d?.quoteSummary?.result?.[0]?.price;
-      if (!p?.regularMarketPrice?.raw) continue;
+      if (d.contents) d = JSON.parse(d.contents);  // allorigins 包裝
+      const results = d?.quoteResponse?.result;
+      if (!results?.length) continue;
 
-      const state = p.marketState ?? 'REGULAR';
-      const prev  = p.regularMarketPreviousClose?.raw ?? p.regularMarketPrice.raw;
-      let price   = p.regularMarketPrice.raw;
-      let label   = '';
+      const map = {};
+      for (const q of results) {
+        const state = q.marketState ?? 'REGULAR';
+        let price = q.regularMarketPrice;
+        let label = '收盤';
 
-      if (state === 'PRE' && p.preMarketPrice?.raw) {
-        price = p.preMarketPrice.raw; label = '盤前';
-      } else if ((state === 'POST' || state === 'POSTPOST') && p.postMarketPrice?.raw) {
-        price = p.postMarketPrice.raw; label = '盤後';
-      } else if (state === 'REGULAR') {
-        label = '盤中';
-      } else if (state === 'CLOSED') {
-        label = '收盤';
+        if (state === 'REGULAR') {
+          label = '盤中';
+        } else if (state === 'PRE' && q.preMarketPrice) {
+          price = q.preMarketPrice; label = '盤前';
+        } else if ((state === 'POST' || state === 'POSTPOST') && q.postMarketPrice) {
+          price = q.postMarketPrice; label = '盤後';
+        }
+
+        const prev = q.regularMarketPreviousClose ?? price;
+        const chg  = price - prev;
+        const pct  = prev ? (chg / prev) * 100 : 0;
+        map[q.symbol] = { price, prev, chg, pct, label };
       }
-
-      const chg = price - prev;
-      const pct = prev ? (chg / prev) * 100 : 0;
-      return { price, prev, chg, pct, label };
+      return map;
     } catch {}
   }
-
-  // ── 備援：v8 chart（加 cache-busting，2m interval 取最新K棒）──
-  const v8 = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=2m&range=1d&_=${ts}`;
-  const v8urls = [
-    v8,
-    v8.replace('query1','query2'),
-    `https://corsproxy.io/?${encodeURIComponent(v8)}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(v8)}`,
-  ];
-  for (const u of v8urls) {
-    try {
-      const r = await fetch(u, { signal: AbortSignal.timeout(6000) });
-      let d = await r.json();
-      if (d.contents) d = JSON.parse(d.contents);
-      const meta = d?.chart?.result?.[0]?.meta;
-      if (!meta) continue;
-      const price = meta.regularMarketPrice ?? meta.previousClose;
-      const prev  = meta.chartPreviousClose ?? meta.previousClose;
-      const chg   = price - prev;
-      const pct   = prev ? (chg / prev) * 100 : 0;
-      return { price, prev, chg, pct, label: '' };
-    } catch {}
-  }
-  return null;
+  return {};
 }
 
 // ==================== Render ====================
@@ -547,16 +528,26 @@ async function fetchAll() {
   btn.classList.add('loading'); btn.textContent = '更新中...';
   document.getElementById('footer').textContent = '更新中...';
 
-  // Parallel fetch: indices + all stocks
-  const [idxRes, twRes, usRes] = await Promise.all([
-    Promise.all(INDICES.map(async idx => ({ idx, data: await fetchQ(idx.sym) }))),
-    Promise.all(TW.map(s => fetchQ(`${s.code}.${s.mkt}`))),
-    Promise.all(US.map(s => fetchQ(s.code))),
+  const twSymbols  = TW.map(s => `${s.code}.${s.mkt}`);
+  const usSymbols  = US.map(s => s.code);
+  const idxSymbols = INDICES.map(i => i.sym);
+
+  // 只需 2 個 batch 請求：台股 | 美股+指數+匯率
+  const [twMap, usIdxMap] = await Promise.all([
+    fetchBatch(twSymbols),
+    fetchBatch([...usSymbols, ...idxSymbols]),
   ]);
 
-  patchMarket(idxRes);
-  TW.forEach((s, i) => patchBtn(s, twRes[i], true));
-  US.forEach((s, i) => patchBtn(s, usRes[i], false));
+  // 大盤列
+  patchMarket(INDICES.map(idx => ({ idx, data: usIdxMap[idx.sym] ?? null })));
+
+  // 個股按鈕
+  TW.forEach(s => patchBtn(s, twMap[`${s.code}.${s.mkt}`] ?? null, true));
+  US.forEach(s => patchBtn(s, usIdxMap[s.code] ?? null, false));
+
+  // 總市值
+  const twRes = TW.map(s => twMap[`${s.code}.${s.mkt}`] ?? null);
+  const usRes = US.map(s => usIdxMap[s.code] ?? null);
   updateSummary(twRes, usRes);
 
   const now = new Date();
