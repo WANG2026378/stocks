@@ -378,8 +378,7 @@ const arrow = p => p > 0.05 ? '▲' : p < -0.05 ? '▼' : '—';
 // 失敗才走 corsproxy.io/?url= → allorigins.win/raw?url=
 
 function buildPriceSources(sym) {
-  // 5m + includePrePost：抓最近一根 K 棒，盤前/盤後也能抓到
-  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=5m&range=1d&includePrePost=true`;
+  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`;
   return [
     base,
     base.replace('query1', 'query2'),
@@ -394,16 +393,10 @@ async function fetchPriceBySym(sym) {
       const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
       if (!res.ok) continue;
       const j = await res.json();
-      const result = j?.chart?.result?.[0];
-      const m = result?.meta;
+      const m = j?.chart?.result?.[0]?.meta;
       if (!m) continue;
-
-      // 優先取最後一根 K 棒收盤（最即時），否則用 meta 報價
-      const closes = result?.indicators?.quote?.[0]?.close ?? [];
-      const lastClose = [...closes].reverse().find(c => c != null);
-      const price = lastClose ?? m.regularMarketPrice;
+      const price = m.regularMarketPrice;
       if (!price || price <= 0) continue;
-
       const prev  = m.chartPreviousClose || m.previousClose || price;
       const chg   = price - prev;
       const pct   = prev ? (chg / prev) * 100 : 0;
