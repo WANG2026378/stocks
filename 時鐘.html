@@ -209,11 +209,31 @@
   <div class="schedule">
     <h2>每日鐘聲表</h2>
     <table id="scheduleTable"></table>
-    <div style="margin-top:14px;padding:10px;background:rgba(255,211,105,0.08);border-radius:8px;font-size:12px;color:#ccc;line-height:1.6">
-      💡 <b>使用真實錄音：</b>把 <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">四季.mp3</code> 和 <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">童年.mp3</code> 放到與本檔案同一資料夾，網頁會優先播放真實錄音；沒有檔案時則播放內建合成旋律。<br>
-      📁 本機路徑：<code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">~/Downloads/</code>
+  </div>
+
+  <div class="schedule" style="background:rgba(255,211,105,0.06)">
+    <h2>🎬 YouTube 鐘聲設定</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+      <label>上課鐘 YouTube 連結或影片 ID（韋瓦第四季）:
+        <input id="ytClassInput" placeholder="貼上 YouTube 網址" style="width:100%;padding:8px;margin-top:4px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-family:inherit">
+      </label>
+      <label>下課鐘 YouTube 連結或影片 ID（張艾嘉 童年）:
+        <input id="ytBreakInput" placeholder="貼上 YouTube 網址" style="width:100%;padding:8px;margin-top:4px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-family:inherit">
+      </label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:6px">
+          播放時長:
+          <input id="durationInput" type="number" value="40" min="5" max="600" style="width:70px;padding:6px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff">
+          秒
+        </label>
+        <button id="saveYt" style="background:rgba(39,174,96,0.4);border-color:#27ae60">💾 儲存設定</button>
+      </div>
+      <div id="ytStatus" style="font-size:12px;color:#888"></div>
     </div>
   </div>
+
+  <div id="yt-class" style="position:fixed;left:-9999px;width:1px;height:1px"></div>
+  <div id="yt-break" style="position:fixed;left:-9999px;width:1px;height:1px"></div>
 
 <script>
   // ===== 時鐘外觀 =====
@@ -310,11 +330,90 @@
     activeSources.forEach(o => { try { o.stop(); } catch(e){} });
     activeSources = [];
     if (activeAudio) { activeAudio.pause(); activeAudio.currentTime = 0; activeAudio = null; }
+    if (ytStopTimer) { clearTimeout(ytStopTimer); ytStopTimer = null; }
+    Object.values(ytPlayers).forEach(p => {
+      if (p && typeof p.pauseVideo === 'function') { try { p.pauseVideo(); } catch(e){} }
+    });
   }
 
-  // 優先播放 MP3，沒有就播合成版
+  // ===== YouTube IFrame API =====
+  const ytPlayers = { class: null, break: null };
+  let ytApiReady = false;
+  let ytStopTimer = null;
+
+  function extractYTId(input) {
+    if (!input) return '';
+    input = input.trim();
+    const m = input.match(/(?:v=|youtu\.be\/|\/embed\/|\/shorts\/)([a-zA-Z0-9_-]{11})/);
+    if (m) return m[1];
+    if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+    return '';
+  }
+
+  function loadYTApi() {
+    if (window.YT && window.YT.Player) { onYouTubeIframeAPIReady(); return; }
+    if (document.getElementById('yt-api-script')) return;
+    const tag = document.createElement('script');
+    tag.id = 'yt-api-script';
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.body.appendChild(tag);
+  }
+
+  window.onYouTubeIframeAPIReady = function() {
+    ytApiReady = true;
+    rebuildPlayers();
+  };
+
+  function rebuildPlayers() {
+    if (!ytApiReady) return;
+    const classId = extractYTId(localStorage.getItem('ytClass') || '');
+    const breakId = extractYTId(localStorage.getItem('ytBreak') || '');
+    ['class', 'break'].forEach(type => {
+      const id = type === 'class' ? classId : breakId;
+      const elId = 'yt-' + type;
+      if (ytPlayers[type]) { try { ytPlayers[type].destroy(); } catch(e){} ytPlayers[type] = null; }
+      const el = document.getElementById(elId);
+      if (el && !document.getElementById(elId + '-inner')) {
+        const inner = document.createElement('div');
+        inner.id = elId + '-inner';
+        el.appendChild(inner);
+      }
+      if (id) {
+        ytPlayers[type] = new YT.Player(elId + '-inner', {
+          height: '1',
+          width: '1',
+          videoId: id,
+          playerVars: { autoplay: 0, controls: 0, playsinline: 1 }
+        });
+      }
+    });
+    updateYtStatus();
+  }
+
+  function updateYtStatus() {
+    const c = localStorage.getItem('ytClass') || '';
+    const b = localStorage.getItem('ytBreak') || '';
+    const status = document.getElementById('ytStatus');
+    status.innerHTML =
+      `上課鐘: ${extractYTId(c) ? '✅ ' + extractYTId(c) : '⚠️ 未設定（將播合成版）'}<br>` +
+      `下課鐘: ${extractYTId(b) ? '✅ ' + extractYTId(b) : '⚠️ 未設定（將播合成版）'}`;
+  }
+
+  // 優先順序：YouTube → MP3 → 合成
   async function playBell(type) {
     stopAll();
+    const player = ytPlayers[type];
+    if (player && typeof player.playVideo === 'function') {
+      try {
+        player.seekTo(0);
+        player.unMute && player.unMute();
+        player.setVolume && player.setVolume(80);
+        player.playVideo();
+        const dur = parseInt(document.getElementById('durationInput').value) || 40;
+        ytStopTimer = setTimeout(() => { try { player.pauseVideo(); } catch(e){} }, dur * 1000);
+        return;
+      } catch(e) { console.warn('YT play failed', e); }
+    }
     const fileName = type === 'class' ? '四季.mp3' : '童年.mp3';
     try {
       const head = await fetch(fileName, { method: 'HEAD' });
@@ -452,6 +551,36 @@
   }
 
   document.getElementById('stopBtn').addEventListener('click', stopAll);
+
+  // ===== YouTube 設定初始化 =====
+  if (!localStorage.getItem('ytBreak')) {
+    localStorage.setItem('ytBreak', 'caQzKz4Zi-A');
+  }
+  document.getElementById('ytClassInput').value = localStorage.getItem('ytClass') || '';
+  document.getElementById('ytBreakInput').value = localStorage.getItem('ytBreak') || '';
+  document.getElementById('durationInput').value = localStorage.getItem('bellDuration') || '40';
+
+  document.getElementById('saveYt').addEventListener('click', () => {
+    const c = document.getElementById('ytClassInput').value.trim();
+    const b = document.getElementById('ytBreakInput').value.trim();
+    const d = document.getElementById('durationInput').value;
+    localStorage.setItem('ytClass', c);
+    localStorage.setItem('ytBreak', b);
+    localStorage.setItem('bellDuration', d);
+    const cid = extractYTId(c);
+    const bid = extractYTId(b);
+    if ((c && !cid) || (b && !bid)) {
+      alert('YouTube 連結格式不正確，請檢查');
+      return;
+    }
+    rebuildPlayers();
+    const btn = document.getElementById('saveYt');
+    btn.textContent = '✅ 已儲存';
+    setTimeout(() => btn.textContent = '💾 儲存設定', 1500);
+  });
+
+  updateYtStatus();
+  loadYTApi();
 
   function flashStatus() {
     const el = document.getElementById('status');
