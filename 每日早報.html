@@ -396,6 +396,52 @@ async function fetchRate() {
   } catch { return 32; }
 }
 
+// ── 備用來源（Yahoo 全失敗時自動啟用）──
+const CPROXY = s => `https://corsproxy.io/?url=${encodeURIComponent(s)}`;
+
+async function fetchTWSE_backup() {
+  try {
+    const r = await fetch(CPROXY('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL'), { signal: AbortSignal.timeout(15000) });
+    const d = await r.json();
+    const map = {};
+    for (const item of d) {
+      const price = parseFloat(item.ClosingPrice), chg = parseFloat(item.Change);
+      if (isNaN(price)) continue;
+      const prev = price - chg, pct = prev ? (chg / prev) * 100 : 0;
+      map[item.Code] = { price, prev, chg, pct, label: '昨收' };
+    }
+    return map;
+  } catch { return {}; }
+}
+
+async function fetchTPEx_backup() {
+  try {
+    const r = await fetch(CPROXY('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes'), { signal: AbortSignal.timeout(15000) });
+    const d = await r.json();
+    const map = {};
+    for (const item of d) {
+      const price = parseFloat(item.Close), chg = parseFloat(item.Change);
+      if (isNaN(price)) continue;
+      const prev = price - chg, pct = prev ? (chg / prev) * 100 : 0;
+      map[item.SecuritiesCompanyCode] = { price, prev, chg, pct, label: '昨收' };
+    }
+    return map;
+  } catch { return {}; }
+}
+
+async function fetchStooq_backup(code) {
+  try {
+    const r = await fetch(CPROXY(`https://stooq.com/q/l/?s=${code.toLowerCase()}.us&f=sd2t2ohlcv&h&e=csv`), { signal: AbortSignal.timeout(8000) });
+    const csv = await r.text();
+    const cols = csv.trim().split('\n')[1]?.split(',');
+    if (!cols || cols[6] === 'N/D') return null;
+    const price = parseFloat(cols[6]), openP = parseFloat(cols[3]);
+    if (isNaN(price) || price <= 0) return null;
+    const chg = price - openP, pct = openP ? (chg / openP) * 100 : 0;
+    return { price, prev: openP, chg, pct, label: '日內' };
+  } catch { return null; }
+}
+
 // ==================== Render ====================
 function renderBtn(s, isTW) {
   const link = isTW
@@ -521,17 +567,35 @@ async function fetchAll() {
   btn.classList.add('loading'); btn.textContent = '更新中...';
   document.getElementById('footer').textContent = '更新中...';
 
-  // 全部並行抓取（與台股智能分析.html 相同策略）
+  // ① 主要：Yahoo Finance（query1 → query2 → corsproxy → allorigins）
   const twSyms  = TW.map(s => `${s.code}.${s.mkt}`);
   const usSyms  = US.map(s => s.code);
   const idxSyms = INDICES.map(i => i.sym);
 
-  const [twArr, usArr, idxArr, rate] = await Promise.all([
+  let [twArr, usArr, idxArr, rate] = await Promise.all([
     Promise.all(twSyms.map(sym  => fetchPriceBySym(sym).catch(() => null))),
     Promise.all(usSyms.map(sym  => fetchPriceBySym(sym).catch(() => null))),
     Promise.all(idxSyms.map(sym => fetchPriceBySym(sym).catch(() => null))),
     fetchRate(),
   ]);
+
+  // ② 備用：若台股有缺，改用 TWSE/TPEx OpenAPI
+  const twFailed = twArr.some(d => !d);
+  const usFailed = usArr.some(d => !d);
+  let src = 'Yahoo Finance';
+
+  if (twFailed) {
+    const [twseMap, tpexMap] = await Promise.all([fetchTWSE_backup(), fetchTPEx_backup()]);
+    twArr = TW.map((s, i) => twArr[i] ?? (s.mkt === 'TWO' ? tpexMap : twseMap)[s.code] ?? null);
+    if (twArr.some(d => d)) src = 'Yahoo Finance + TWSE/TPEx 備援';
+  }
+
+  // ③ 備用：若美股有缺，改用 Stooq
+  if (usFailed) {
+    const stooqArr = await Promise.all(US.map(s => fetchStooq_backup(s.code)));
+    usArr = usArr.map((d, i) => d ?? stooqArr[i]);
+    if (usArr.some(d => d)) src = src.includes('備援') ? 'TWSE/TPEx + Stooq 備援' : 'Yahoo Finance + Stooq 備援';
+  }
 
   // 匯率
   usdtwd = rate;
@@ -542,10 +606,8 @@ async function fetchAll() {
   // 大盤列
   patchMarket(INDICES.map((idx, i) => ({ idx, data: idxArr[i] })));
 
-  // 台股按鈕
+  // 台股 / 美股按鈕
   TW.forEach((s, i) => patchBtn(s, twArr[i], true));
-
-  // 美股按鈕
   US.forEach((s, i) => patchBtn(s, usArr[i], false));
 
   // 總市值
@@ -553,7 +615,7 @@ async function fetchAll() {
 
   const now = new Date();
   document.getElementById('footer').textContent =
-    `最後更新：${now.toLocaleTimeString('zh-TW')} ── 資料來源：Yahoo Finance`;
+    `最後更新：${now.toLocaleTimeString('zh-TW')} ── ${src}`;
 
   btn.classList.remove('loading'); btn.textContent = '⟳ 更新';
 }
