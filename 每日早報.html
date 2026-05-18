@@ -147,6 +147,15 @@ body {
 .stock-state.收盤 { background: #1a2340; color: #445577; }
 .stock-state.昨收 { background: #1a2340; color: #556688; }
 .stock-state.日內 { background: #101e30; color: #5599cc; }
+.ext-link {
+  position: absolute; bottom: 5px; right: 6px;
+  font-size: 12px; color: #334466; text-decoration: none;
+  opacity: 0; transition: opacity .15s; line-height: 1;
+}
+.stock-btn:hover .ext-link { opacity: 1; color: #c49a14; }
+.stock-btn.refreshing { opacity: .55; pointer-events: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin .7s linear infinite; }
 
 .up { color: #ff4444; }
 .dn { color: #00cc88; }
@@ -451,14 +460,18 @@ async function fetchStooq_backup(code) {
 
 // ==================== Render ====================
 function renderBtn(s, isTW) {
+  const sym  = isTW ? `${s.code}.${s.mkt}` : s.code;
   const link = isTW
     ? `https://tw.finance.yahoo.com/quote/${s.code}.${s.mkt}`
     : `https://finance.yahoo.com/quote/${s.code}`;
   const otcBadge = (isTW && s.mkt === 'TWO') ? '<span class="otc-badge">櫃</span>' : '';
   const hotBadge = s.hot ? '<span class="hot-badge">HOT</span>' : '';
   return `
-    <a class="stock-btn flat-btn" id="btn-${s.code}" href="${link}" target="_blank">
+    <div class="stock-btn flat-btn" id="btn-${s.code}"
+         onclick="refreshStock('${s.code}','${sym}',${isTW})">
       ${otcBadge}${hotBadge}
+      <a class="ext-link" href="${link}" target="_blank"
+         onclick="event.stopPropagation()" title="開啟 Yahoo Finance">↗</a>
       <div class="stock-code">${s.code}</div>
       <div class="stock-name">${s.name}</div>
       <div class="skel" id="px-${s.code}"></div>
@@ -466,7 +479,7 @@ function renderBtn(s, isTW) {
       <div class="stock-shares">${s.shares > 0 ? s.shares.toLocaleString()+' 股' : '觀察'}</div>
       <div class="stock-value" id="vl-${s.code}"></div>
       <div class="stock-state" id="st-${s.code}"></div>
-    </a>`;
+    </div>`;
 }
 
 function patchBtn(s, data, isTW) {
@@ -625,6 +638,28 @@ async function fetchAll() {
     `最後更新：${now.toLocaleTimeString('zh-TW')} ── ${src}`;
 
   btn.classList.remove('loading'); btn.textContent = '⟳ 更新';
+}
+
+// ==================== 單支即時刷新 ====================
+async function refreshStock(code, sym, isTW) {
+  const btn  = document.getElementById(`btn-${code}`);
+  const pxEl = document.getElementById(`px-${code}`);
+  if (!btn || btn.classList.contains('refreshing')) return;
+
+  btn.classList.add('refreshing');
+  const origHTML = pxEl.innerHTML;
+  pxEl.className = 'stock-price flat';
+  pxEl.innerHTML = '<span class="spin">⟳</span>';
+
+  const data = await fetchPriceBySym(sym).catch(() => null);
+  btn.classList.remove('refreshing');
+
+  if (data) {
+    const stock = isTW ? TW.find(s => s.code === code) : US.find(s => s.code === code);
+    if (stock) patchBtn(stock, data, isTW);
+  } else {
+    pxEl.innerHTML = origHTML; // 還原
+  }
 }
 
 // ==================== 自動更新 ====================
