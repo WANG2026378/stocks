@@ -35,6 +35,24 @@ body {
 .refresh-btn:hover { background: #e0b820; }
 .refresh-btn:active { transform: scale(.96); }
 .refresh-btn.loading { opacity: .6; pointer-events: none; }
+.auto-toggle {
+  display: flex; align-items: center; gap: 7px;
+  background: #101526; border: 1px solid #1e2a48;
+  border-radius: 8px; padding: 7px 12px; cursor: pointer;
+  font-size: 13px; color: #7788aa; transition: all .2s;
+  user-select: none; white-space: nowrap;
+}
+.auto-toggle:hover { border-color: #c49a14; color: #c49a14; }
+.auto-toggle.active { border-color: #00cc88; color: #00cc88; background: #0d1e18; }
+.countdown-ring { position: relative; width: 22px; height: 22px; flex-shrink: 0; }
+.countdown-ring svg { transform: rotate(-90deg); }
+.countdown-ring circle { fill: none; stroke-width: 3; }
+.ring-bg { stroke: #2a3455; }
+.ring-fill { stroke: #00cc88; stroke-linecap: round; transition: stroke-dashoffset .9s linear; }
+.countdown-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: bold; color: #00cc88;
+}
 
 /* ---- Market Bar ---- */
 .market-bar {
@@ -195,6 +213,17 @@ body {
   </div>
   <div class="header-right">
     <div class="header-clock" id="hClock"></div>
+    <div class="auto-toggle" id="autoToggle" onclick="toggleAuto()">
+      <div class="countdown-ring" id="countdownRing" style="display:none;">
+        <svg width="22" height="22" viewBox="0 0 22 22">
+          <circle class="ring-bg" cx="11" cy="11" r="8"/>
+          <circle class="ring-fill" id="ringFill" cx="11" cy="11" r="8"
+            stroke-dasharray="50.3" stroke-dashoffset="0"/>
+        </svg>
+        <div class="countdown-num" id="countdownNum">60</div>
+      </div>
+      <span id="autoLabel">⏸ 自動更新</span>
+    </div>
     <button class="refresh-btn" id="refreshBtn" onclick="fetchAll()">⟳ 更新</button>
   </div>
 </div>
@@ -486,9 +515,62 @@ async function fetchAll() {
   btn.classList.remove('loading'); btn.textContent = '⟳ 更新';
 }
 
+// ==================== 自動更新 ====================
+const AUTO_INTERVAL = 60; // 秒
+let autoOn = false;
+let autoTimer = null;
+let countdown = AUTO_INTERVAL;
+let countdownTimer = null;
+const CIRC = 50.3; // 2π×8
+
+function toggleAuto() {
+  autoOn = !autoOn;
+  const toggle = document.getElementById('autoToggle');
+  const label  = document.getElementById('autoLabel');
+  const ring   = document.getElementById('countdownRing');
+  if (autoOn) {
+    toggle.classList.add('active');
+    label.textContent = '▶ 自動更新';
+    ring.style.display = 'flex';
+    startCountdown();
+  } else {
+    toggle.classList.remove('active');
+    label.textContent = '⏸ 自動更新';
+    ring.style.display = 'none';
+    clearTimeout(autoTimer);
+    clearInterval(countdownTimer);
+  }
+}
+
+function startCountdown() {
+  clearTimeout(autoTimer);
+  clearInterval(countdownTimer);
+  countdown = AUTO_INTERVAL;
+  updateRing();
+
+  countdownTimer = setInterval(() => {
+    countdown--;
+    if (countdown < 0) countdown = AUTO_INTERVAL;
+    updateRing();
+  }, 1000);
+
+  autoTimer = setTimeout(function loop() {
+    if (!autoOn) return;
+    fetchAll();
+    countdown = AUTO_INTERVAL;
+    autoTimer = setTimeout(loop, AUTO_INTERVAL * 1000);
+  }, AUTO_INTERVAL * 1000);
+}
+
+function updateRing() {
+  const pct = countdown / AUTO_INTERVAL;
+  const offset = CIRC * (1 - pct);
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('countdownNum').textContent = countdown;
+}
+
 // ==================== Init ====================
 function init() {
-  // Clock
   const WD = ['日','一','二','三','四','五','六'];
   const tick = () => {
     const n = new Date();
@@ -499,11 +581,9 @@ function init() {
   tick();
   setInterval(tick, 1000);
 
-  // Render grids (skeleton state)
   document.getElementById('twGrid').innerHTML = TW.map(s => renderBtn(s, true)).join('');
   document.getElementById('usGrid').innerHTML = US.map(s => renderBtn(s, false)).join('');
 
-  // Fetch
   fetchAll();
 }
 
