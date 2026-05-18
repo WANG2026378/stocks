@@ -215,14 +215,26 @@ body {
     <span class="summary-value" id="twTotal">計算中...</span>
     <span class="summary-change flat" id="twTotalChg"></span>
   </div>
-  <div class="summary-item">
-    <span class="summary-label">🇺🇸 美股總市值</span>
-    <span class="summary-value" id="usTotal">計算中...</span>
-    <span class="summary-change flat" id="usTotalChg"></span>
+  <div class="summary-item" style="flex-direction:column;align-items:flex-start;gap:3px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="summary-label">🇺🇸 美股總市值</span>
+      <span class="summary-value" id="usTotal">計算中...</span>
+      <span class="summary-change flat" id="usTotalChg"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;padding-left:2px;">
+      <span style="font-size:11px;color:#445566;">≈</span>
+      <span style="font-size:15px;font-weight:bold;color:#aabbcc;" id="usTotalTwd">--</span>
+      <span class="summary-change flat" id="usTotalTwdChg"></span>
+    </div>
   </div>
   <div class="summary-item">
-    <span class="summary-label">📊 合計</span>
+    <span class="summary-label">💱 匯率</span>
+    <span class="summary-value" style="color:#aabbcc;" id="fxRate">--</span>
+  </div>
+  <div class="summary-item">
+    <span class="summary-label">📊 合計（台幣）</span>
     <span class="summary-value" id="grandTotal">--</span>
+    <span class="summary-change flat" id="grandChg"></span>
   </div>
 </div>
 
@@ -285,7 +297,10 @@ const INDICES = [
   { sym:'^IXIC',  name:'NASDAQ'   },
   { sym:'NVDA',   name:'NVIDIA'   },
   { sym:'TSM',    name:'TSM ADR'  },
+  { sym:'TWD=X',  name:'USD/TWD'  },
 ];
+
+let usdtwd = 32; // 預設備用匯率，更新後覆蓋
 
 // ==================== 工具函數 ====================
 const fmt = (n, d=2) => n == null || isNaN(n) ? '--'
@@ -374,7 +389,12 @@ function patchBtn(s, data, isTW) {
 
   if (s.shares > 0 && data.price) {
     const val = s.shares * data.price;
-    vlEl.textContent = isTW ? `NT$ ${fmtWan(val)}` : `$ ${(val).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}`;
+    if (isTW) {
+      vlEl.textContent = `NT$ ${fmtWan(val)}`;
+    } else {
+      const twd = val * usdtwd;
+      vlEl.innerHTML = `$${val.toLocaleString('en-US',{maximumFractionDigits:0})}<br><span style="color:#6677aa;font-size:11px;">≈ NT$ ${fmtWan(twd)}</span>`;
+    }
   }
 }
 
@@ -383,6 +403,16 @@ function patchMarket(results) {
   const bar = document.getElementById('marketBar');
   bar.innerHTML = results.map(({idx, data}) => {
     if (!data) return `<div class="mkt-item"><div class="mkt-name">${idx.name}</div><div class="mkt-price flat">--</div><div class="mkt-chg flat">--</div></div>`;
+    // 匯率特殊顯示
+    if (idx.sym === 'TWD=X') {
+      usdtwd = data.price;
+      document.getElementById('fxRate').textContent = data.price.toFixed(3);
+      return `<div class="mkt-item" style="border:1px solid #2a3a5a;">
+        <div class="mkt-name">💱 USD/TWD</div>
+        <div class="mkt-price flat">${data.price.toFixed(3)}</div>
+        <div class="mkt-chg ${cc(data.pct)}">${arrow(data.pct)} ${fmtPct(data.pct)}</div>
+      </div>`;
+    }
     const c = cc(data.pct);
     return `<div class="mkt-item">
       <div class="mkt-name">${idx.name}</div>
@@ -397,31 +427,38 @@ function updateSummary(twResults, usResults) {
   let twVal = 0, twChg = 0, usVal = 0, usChg = 0;
   TW.forEach((s, i) => {
     const d = twResults[i];
-    if (d && s.shares > 0) {
-      twVal += s.shares * d.price;
-      twChg += s.shares * d.chg;
-    }
+    if (d && s.shares > 0) { twVal += s.shares * d.price; twChg += s.shares * d.chg; }
   });
   US.forEach((s, i) => {
     const d = usResults[i];
-    if (d && s.shares > 0) {
-      usVal += s.shares * d.price;
-      usChg += s.shares * d.chg;
-    }
+    if (d && s.shares > 0) { usVal += s.shares * d.price; usChg += s.shares * d.chg; }
   });
 
+  // 台股
   const twC = twChg >= 0 ? 'up' : 'dn';
   document.getElementById('twTotal').textContent = `NT$ ${fmtWan(twVal)}`;
   document.getElementById('twTotalChg').className = `summary-change ${twC}`;
   document.getElementById('twTotalChg').textContent = `${arrow(twChg)} NT$ ${fmtWan(Math.abs(twChg))}`;
 
+  // 美股：顯示美元 + 台幣換算
+  const usTwd = usVal * usdtwd;
+  const usChgTwd = usChg * usdtwd;
   const usC = usChg >= 0 ? 'up' : 'dn';
-  document.getElementById('usTotal').textContent = `$ ${(usVal).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  document.getElementById('usTotal').textContent =
+    `$${usVal.toLocaleString('en-US',{maximumFractionDigits:0})}`;
+  document.getElementById('usTotalTwd').textContent = `NT$ ${fmtWan(usTwd)}`;
   document.getElementById('usTotalChg').className = `summary-change ${usC}`;
-  document.getElementById('usTotalChg').textContent = `${arrow(usChg)} $ ${Math.abs(usChg).toFixed(2)}`;
+  document.getElementById('usTotalChg').textContent = `${arrow(usChg)} $${Math.abs(usChg).toFixed(0)}`;
+  document.getElementById('usTotalTwdChg').className = `summary-change ${usC}`;
+  document.getElementById('usTotalTwdChg').textContent = `${arrow(usChgTwd)} NT$ ${fmtWan(Math.abs(usChgTwd))}`;
 
-  // Grand total — need USD→TWD rate, skip conversion for now
-  document.getElementById('grandTotal').textContent = `NT$ ${fmtWan(twVal)} + $${(usVal).toFixed(0)}`;
+  // 合計（全台幣計價）
+  const grand = twVal + usTwd;
+  const grandChg = twChg + usChgTwd;
+  const gC = grandChg >= 0 ? 'up' : 'dn';
+  document.getElementById('grandTotal').textContent = `NT$ ${fmtWan(grand)}`;
+  document.getElementById('grandChg').className = `summary-change ${gC}`;
+  document.getElementById('grandChg').textContent = `${arrow(grandChg)} NT$ ${fmtWan(Math.abs(grandChg))}`;
 }
 
 // ==================== Main Fetch ====================
