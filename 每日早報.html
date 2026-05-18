@@ -335,7 +335,6 @@ const INDICES = [
 ];
 
 let usdtwd = 32;
-const PROXY = 'https://corsproxy.io/?url=';
 
 // ==================== 工具函數 ====================
 const fmt = (n, d=2) => n == null || isNaN(n) ? '--'
@@ -354,65 +353,47 @@ const fmtWan = v => {
 const cc = p => p == null || isNaN(p) ? 'flat' : p > 0.05 ? 'up' : p < -0.05 ? 'dn' : 'flat';
 const arrow = p => p > 0.05 ? '▲' : p < -0.05 ? '▼' : '—';
 
-// ==================== 資料來源（已驗證可用）====================
-// 台股上市：TWSE OpenAPI → corsproxy（CORS:*，含昨收漲跌）
-// 台股上櫃：TPEx OpenAPI → corsproxy（CORS:*，含昨收漲跌）
-// 美股/指數：Stooq CSV    → corsproxy（CORS:*，OHLCV）
-// 匯率：    open.er-api   → 直連（CORS:*）
+// ==================== 資料來源（與台股智能分析.html 相同策略）====================
+// 優先直連 Yahoo Finance（瀏覽器有 .yahoo.com cookie 就通過驗證）
+// 失敗才走 corsproxy.io/?url= → allorigins.win/raw?url=
 
-async function fetchTWSE() {
-  const url = PROXY + encodeURIComponent('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
-  const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-  const d = await r.json();
-  const map = {};
-  for (const item of d) {
-    const price = parseFloat(item.ClosingPrice);
-    const chg   = parseFloat(item.Change);
-    if (isNaN(price)) continue;
-    const prev = price - chg;
-    const pct  = prev ? (chg / prev) * 100 : 0;
-    map[item.Code] = { price, prev, chg, pct, label: '昨收' };
-  }
-  return map;
+function buildPriceSources(sym) {
+  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`;
+  return [
+    base,
+    base.replace('query1', 'query2'),
+    `https://corsproxy.io/?url=${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,
+  ];
 }
 
-async function fetchTPEx() {
-  const url = PROXY + encodeURIComponent('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes');
-  const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
-  const d = await r.json();
-  const map = {};
-  for (const item of d) {
-    const price = parseFloat(item.Close);
-    const chg   = parseFloat(item.Change);
-    if (isNaN(price)) continue;
-    const prev = price - chg;
-    const pct  = prev ? (chg / prev) * 100 : 0;
-    map[item.SecuritiesCompanyCode] = { price, prev, chg, pct, label: '昨收' };
+async function fetchPriceBySym(sym) {
+  for (const url of buildPriceSources(sym)) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
+      if (!res.ok) continue;
+      const j = await res.json();
+      const m = j?.chart?.result?.[0]?.meta;
+      if (!m) continue;
+      const price = m.regularMarketPrice;
+      if (!price || price <= 0) continue;
+      const prev  = m.chartPreviousClose || m.previousClose || price;
+      const chg   = price - prev;
+      const pct   = prev ? (chg / prev) * 100 : 0;
+      const state = m.marketState ?? '';
+      const label = state === 'REGULAR' ? '盤中' : state === 'PRE' ? '盤前' : state === 'POST' ? '盤後' : '收盤';
+      return { price, prev, chg, pct, label };
+    } catch {}
   }
-  return map;
-}
-
-async function fetchStooq(sym) {
-  const inner = `https://stooq.com/q/l/?s=${sym}&f=sd2t2ohlcv&h&e=csv`;
-  const url = PROXY + encodeURIComponent(inner);
-  const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-  const csv = await r.text();
-  const lines = csv.trim().split('\n');
-  if (lines.length < 2) return null;
-  const cols = lines[1].split(',');
-  // header: Symbol,Date,Time,Open,High,Low,Close,Volume
-  const openP = parseFloat(cols[3]);
-  const price = parseFloat(cols[6]);
-  if (isNaN(price) || price === 0 || cols[6] === 'N/D') return null;
-  const chg = price - openP;
-  const pct = openP ? (chg / openP) * 100 : 0;
-  return { price, prev: openP, chg, pct, label: '日內' };
+  return null;
 }
 
 async function fetchRate() {
-  const r = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(8000) });
-  const d = await r.json();
-  return d.rates?.TWD ?? 32;
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(8000) });
+    const d = await r.json();
+    return d.rates?.TWD ?? 32;
+  } catch { return 32; }
 }
 
 // ==================== Render ====================
@@ -540,13 +521,16 @@ async function fetchAll() {
   btn.classList.add('loading'); btn.textContent = '更新中...';
   document.getElementById('footer').textContent = '更新中...';
 
-  // 四路並行：TWSE、TPEx、所有 Stooq（美股+指數）、匯率
-  const stooqTargets = [...US.map(s => s.code.toLowerCase()+'.us'), ...INDICES.map(i => i.sym)];
-  const [twseMap, tpexMap, stooqArr, rate] = await Promise.all([
-    fetchTWSE().catch(() => ({})),
-    fetchTPEx().catch(() => ({})),
-    Promise.all(stooqTargets.map(sym => fetchStooq(sym).catch(() => null))),
-    fetchRate().catch(() => 32),
+  // 全部並行抓取（與台股智能分析.html 相同策略）
+  const twSyms  = TW.map(s => `${s.code}.${s.mkt}`);
+  const usSyms  = US.map(s => s.code);
+  const idxSyms = INDICES.map(i => i.sym);
+
+  const [twArr, usArr, idxArr, rate] = await Promise.all([
+    Promise.all(twSyms.map(sym  => fetchPriceBySym(sym).catch(() => null))),
+    Promise.all(usSyms.map(sym  => fetchPriceBySym(sym).catch(() => null))),
+    Promise.all(idxSyms.map(sym => fetchPriceBySym(sym).catch(() => null))),
+    fetchRate(),
   ]);
 
   // 匯率
@@ -555,29 +539,21 @@ async function fetchAll() {
   const fxEl = document.getElementById('fxInBar');
   if (fxEl) fxEl.textContent = rate.toFixed(3);
 
-  // 拆解 Stooq 結果
-  const usData  = stooqArr.slice(0, US.length);
-  const idxData = stooqArr.slice(US.length);
-
   // 大盤列
-  patchMarket(INDICES.map((idx, i) => ({ idx, data: idxData[i] })));
+  patchMarket(INDICES.map((idx, i) => ({ idx, data: idxArr[i] })));
 
   // 台股按鈕
-  TW.forEach(s => {
-    const map = s.mkt === 'TWO' ? tpexMap : twseMap;
-    patchBtn(s, map[s.code] ?? null, true);
-  });
+  TW.forEach((s, i) => patchBtn(s, twArr[i], true));
 
   // 美股按鈕
-  US.forEach((s, i) => patchBtn(s, usData[i] ?? null, false));
+  US.forEach((s, i) => patchBtn(s, usArr[i], false));
 
   // 總市值
-  const twRes = TW.map(s => (s.mkt === 'TWO' ? tpexMap : twseMap)[s.code] ?? null);
-  updateSummary(twRes, usData);
+  updateSummary(twArr, usArr);
 
   const now = new Date();
   document.getElementById('footer').textContent =
-    `最後更新：${now.toLocaleTimeString('zh-TW')} ── 台股：TWSE/TPEx OpenAPI ｜ 美股：Stooq ｜ 匯率：open.er-api`;
+    `最後更新：${now.toLocaleTimeString('zh-TW')} ── 資料來源：Yahoo Finance`;
 
   btn.classList.remove('loading'); btn.textContent = '⟳ 更新';
 }
