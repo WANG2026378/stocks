@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>永芳國小・上下課鐘</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, "Helvetica Neue", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    color: #fff;
+    padding: 30px 20px;
+    gap: 25px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    color: #ffd369;
+  }
+  .clock {
+    position: relative;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fafafa 0%, #e0e0e0 70%, #c0c0c0 100%);
+    box-shadow:
+      0 0 0 12px #2c2c2c,
+      0 0 0 14px #555,
+      0 20px 60px rgba(0,0,0,0.6),
+      inset 0 0 30px rgba(0,0,0,0.1);
+  }
+  .number {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    font-size: 42px;
+    font-weight: 700;
+    color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1;
+  }
+  .tick {
+    position: absolute;
+    background: #333;
+    left: 50%;
+  }
+  .hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 50% 100%;
+    border-radius: 4px;
+  }
+  .hour {
+    width: 8px; height: 90px;
+    margin-left: -4px; margin-top: -90px;
+    background: #1a1a2e;
+  }
+  .minute {
+    width: 5px; height: 130px;
+    margin-left: -2.5px; margin-top: -130px;
+    background: #333;
+  }
+  .second {
+    width: 2px; height: 145px;
+    margin-left: -1px; margin-top: -145px;
+    background: #e74c3c;
+    transition: transform 0.1s cubic-bezier(0.4, 2.5, 0.6, 1);
+  }
+  .second::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 30px;
+    background: #e74c3c;
+    bottom: -20px; left: -3px;
+    border-radius: 2px;
+  }
+  .center {
+    position: absolute;
+    width: 16px; height: 16px;
+    background: #1a1a2e;
+    border-radius: 50%;
+    left: 50%; top: 50%;
+    margin-left: -8px; margin-top: -8px;
+    z-index: 10;
+    box-shadow: 0 0 0 3px #e74c3c, 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .digital {
+    font-size: 42px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+  }
+  .date {
+    font-size: 16px;
+    color: #aaa;
+    letter-spacing: 2px;
+  }
+  .status {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 320px;
+  }
+  .status .label { font-size: 14px; color: #aaa; margin-bottom: 6px; }
+  .status .next-time { font-size: 24px; color: #ffd369; font-weight: 600; letter-spacing: 2px; }
+  .status .next-type { font-size: 16px; margin-top: 4px; }
+  .status .countdown { font-size: 13px; color: #888; margin-top: 6px; }
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  button {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  button:hover { background: rgba(255,255,255,0.2); }
+  button.active { background: #27ae60; border-color: #27ae60; }
+  button.test-class { background: rgba(52, 152, 219, 0.3); border-color: #3498db; }
+  button.test-break { background: rgba(231, 76, 60, 0.3); border-color: #e74c3c; }
+  .schedule {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .schedule h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #ffd369;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .schedule table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .schedule td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .schedule td:nth-child(2) { color: #aaa; font-variant-numeric: tabular-nums; }
+  .schedule td:nth-child(3) { text-align: right; }
+  .schedule .ring-class { color: #5dade2; }
+  .schedule .ring-break { color: #f1948a; }
+  .schedule tr.passed td { opacity: 0.35; }
+  .schedule tr.upcoming { background: rgba(255, 211, 105, 0.1); }
+  .schedule tr.upcoming td { color: #ffd369; font-weight: 600; }
+  .ringing {
+    background: #e74c3c !important;
+    animation: pulse 0.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+</style>
+</head>
+<body>
+  <h1>永 芳 國 小 ・ 上 下 課 鐘</h1>
+
+  <div class="clock" id="clock">
+    <div class="center"></div>
+    <div class="hand hour" id="hour"></div>
+    <div class="hand minute" id="minute"></div>
+    <div class="hand second" id="second"></div>
+  </div>
+
+  <div class="digital" id="digital">00:00:00</div>
+  <div class="date" id="date"></div>
+
+  <div class="status" id="status">
+    <div class="label">下一次鐘聲</div>
+    <div class="next-time" id="nextTime">--:--</div>
+    <div class="next-type" id="nextType">--</div>
+    <div class="countdown" id="countdown">--</div>
+  </div>
+
+  <div class="controls">
+    <button id="bellToggle" class="active">🔔 鐘聲：開啟</button>
+    <button class="test-class" onclick="playMelody(MELODY_SIJI)">🎵 試聽 上課鐘（四季）</button>
+    <button class="test-break" onclick="playMelody(MELODY_TONGNIAN)">🎵 試聽 下課鐘（童年）</button>
+  </div>
+
+  <div class="schedule">
+    <h2>每日鐘聲表</h2>
+    <table id="scheduleTable"></table>
+  </div>
+
+<script>
+  // ===== 時鐘外觀 =====
+  const clock = document.getElementById('clock');
+
+  for (let i = 0; i < 60; i++) {
+    const tick = document.createElement('div');
+    tick.className = 'tick';
+    const isMajor = i % 5 === 0;
+    tick.style.width = isMajor ? '3px' : '2px';
+    tick.style.height = isMajor ? '12px' : '8px';
+    tick.style.background = isMajor ? '#000' : '#555';
+    tick.style.marginLeft = isMajor ? '-1.5px' : '-1px';
+    tick.style.top = '8px';
+    tick.style.transform = `rotate(${i * 6}deg)`;
+    tick.style.transformOrigin = `50% 172px`;
+    clock.appendChild(tick);
+  }
+
+  for (let i = 1; i <= 12; i++) {
+    const num = document.createElement('div');
+    num.className = 'number';
+    num.textContent = i;
+    const angle = i * 30 * Math.PI / 180;
+    const r = 135;
+    num.style.left = `calc(50% + ${Math.sin(angle) * r}px - 28px)`;
+    num.style.top = `calc(50% - ${Math.cos(angle) * r}px - 28px)`;
+    clock.appendChild(num);
+  }
+
+  // ===== 音樂播放（Web Audio API）=====
+  let audioCtx = null;
+  function getAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  const NOTES = {
+    REST: 0,
+    C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+    C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, B5: 987.77,
+    Cs5: 554.37, Fs4: 369.99, Fs5: 739.99, Gs4: 415.30
+  };
+
+  function playNote(freq, duration, startTime) {
+    const ctx = getAudio();
+    if (freq === 0) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    const peak = 0.25;
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(peak, startTime + 0.02);
+    gain.gain.linearRampToValueAtTime(peak * 0.7, startTime + duration * 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.05);
+  }
+
+  function playMelody(notes) {
+    const ctx = getAudio();
+    let t = ctx.currentTime + 0.05;
+    for (const [note, dur] of notes) {
+      playNote(NOTES[note] || 0, dur * 0.95, t);
+      t += dur;
+    }
+  }
+
+  // 童年（羅大佑）— 下課鐘
+  // 池塘邊的榕樹上　知了在聲聲叫著夏天
+  const MELODY_TONGNIAN = [
+    ['G4', 0.35], ['G4', 0.35], ['A4', 0.35], ['G4', 0.35],
+    ['E4', 0.35], ['D4', 0.35], ['C4', 0.7],
+    ['REST', 0.25],
+    ['G4', 0.35], ['G4', 0.35], ['A4', 0.35], ['G4', 0.35],
+    ['E4', 0.35], ['D4', 0.35], ['C4', 0.35], ['D4', 0.35], ['E4', 0.9],
+    ['REST', 0.3],
+    ['E4', 0.35], ['F4', 0.35], ['G4', 0.7],
+    ['G4', 0.35], ['A4', 0.35], ['G4', 0.7],
+    ['E4', 0.35], ['D4', 0.35], ['C4', 1.0],
+  ];
+
+  // 韋瓦第「四季」— 春・第一樂章（上課鐘）
+  const MELODY_SIJI = [
+    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.6],
+    ['B4', 0.3], ['B4', 0.3],
+    ['Cs5', 0.3], ['Cs5', 0.3], ['Cs5', 0.3], ['B4', 0.6],
+    ['REST', 0.2],
+    ['A4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['B4', 0.6],
+    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.6],
+    ['REST', 0.2],
+    ['B4', 0.3], ['Cs5', 0.3], ['B4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['B4', 0.9],
+  ];
+
+  // ===== 上下課時間表 =====
+  // 根據永芳國小一週作息時間表
+  const SCHEDULE = [
+    { time: '08:40', type: 'class', label: '第一節 上課' },
+    { time: '09:20', type: 'break', label: '第一節 下課' },
+    { time: '09:30', type: 'class', label: '第二節 上課' },
+    { time: '10:10', type: 'break', label: '第二節 下課（課間活動）' },
+    { time: '10:25', type: 'class', label: '第三節 上課' },
+    { time: '11:05', type: 'break', label: '第三節 下課' },
+    { time: '11:15', type: 'class', label: '第四節 上課' },
+    { time: '11:55', type: 'break', label: '第四節 下課（午餐午休）' },
+    { time: '13:30', type: 'class', label: '第五節 上課' },
+    { time: '14:10', type: 'break', label: '第五節 下課' },
+    { time: '14:20', type: 'class', label: '第六節 上課' },
+    { time: '15:00', type: 'break', label: '第六節 下課（環境整理）' },
+    { time: '15:15', type: 'class', label: '第七節 上課' },
+    { time: '15:55', type: 'break', label: '第七節 下課・放學' },
+  ];
+
+  // 渲染鐘聲表
+  const tbody = document.getElementById('scheduleTable');
+  SCHEDULE.forEach((s, idx) => {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + idx;
+    const icon = s.type === 'class' ? '🔵' : '🔴';
+    const cls = s.type === 'class' ? 'ring-class' : 'ring-break';
+    const song = s.type === 'class' ? '四季' : '童年';
+    tr.innerHTML = `
+      <td>${icon}</td>
+      <td>${s.time}</td>
+      <td>${s.label}</td>
+      <td class="${cls}">♪ ${song}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // ===== 鐘聲開關 =====
+  let bellEnabled = true;
+  const bellToggle = document.getElementById('bellToggle');
+  bellToggle.addEventListener('click', () => {
+    bellEnabled = !bellEnabled;
+    bellToggle.classList.toggle('active', bellEnabled);
+    bellToggle.textContent = bellEnabled ? '🔔 鐘聲：開啟' : '🔕 鐘聲：關閉';
+    if (bellEnabled) getAudio();
+  });
+
+  // ===== 觸發鐘聲（避免同一分鐘重複觸發）=====
+  let lastTriggered = '';
+  function checkBell(now) {
+    if (!bellEnabled) return;
+    const hhmm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    const ss = now.getSeconds();
+    if (ss !== 0) return;
+    const stamp = now.toDateString() + ' ' + hhmm;
+    if (stamp === lastTriggered) return;
+    const hit = SCHEDULE.find(s => s.time === hhmm);
+    if (hit) {
+      lastTriggered = stamp;
+      const melody = hit.type === 'class' ? MELODY_SIJI : MELODY_TONGNIAN;
+      playMelody(melody);
+      flashStatus();
+    }
+  }
+
+  function flashStatus() {
+    const el = document.getElementById('status');
+    el.classList.add('ringing');
+    setTimeout(() => el.classList.remove('ringing'), 8000);
+  }
+
+  // ===== 找下一次鐘聲 =====
+  function findNext(now) {
+    const mins = now.getHours() * 60 + now.getMinutes() + now.getSeconds()/60;
+    for (let i = 0; i < SCHEDULE.length; i++) {
+      const [h, m] = SCHEDULE[i].time.split(':').map(Number);
+      if (h * 60 + m > mins) return { ...SCHEDULE[i], idx: i };
+    }
+    return null;
+  }
+
+  // ===== 更新介面 =====
+  const hourHand = document.getElementById('hour');
+  const minuteHand = document.getElementById('minute');
+  const secondHand = document.getElementById('second');
+  const digital = document.getElementById('digital');
+  const dateEl = document.getElementById('date');
+  const nextTimeEl = document.getElementById('nextTime');
+  const nextTypeEl = document.getElementById('nextType');
+  const countdownEl = document.getElementById('countdown');
+
+  function update() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+
+    secondHand.style.transform = `rotate(${s * 6}deg)`;
+    minuteHand.style.transform = `rotate(${m * 6 + s * 0.1}deg)`;
+    hourHand.style.transform = `rotate(${(h % 12) * 30 + m * 0.5}deg)`;
+
+    const pad = n => String(n).padStart(2, '0');
+    digital.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+
+    const week = ['日','一','二','三','四','五','六'][now.getDay()];
+    dateEl.textContent = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日　星期${week}`;
+
+    // 下一次鐘聲
+    const next = findNext(now);
+    if (next) {
+      nextTimeEl.textContent = next.time;
+      const songName = next.type === 'class' ? '上課鐘 ♪ 四季' : '下課鐘 ♪ 童年';
+      nextTypeEl.textContent = `${next.label}　|　${songName}`;
+      const [nh, nm] = next.time.split(':').map(Number);
+      const diffSec = (nh * 3600 + nm * 60) - (h * 3600 + m * 60 + s);
+      const dh = Math.floor(diffSec / 3600);
+      const dm = Math.floor((diffSec % 3600) / 60);
+      const ds = diffSec % 60;
+      countdownEl.textContent = `倒數 ${dh > 0 ? dh + ' 時 ' : ''}${dm} 分 ${ds} 秒`;
+    } else {
+      nextTimeEl.textContent = '明日';
+      nextTypeEl.textContent = '今日鐘聲已全部結束';
+      countdownEl.textContent = '';
+    }
+
+    // 更新表格樣式（已過 / 即將響）
+    const nowMins = h * 60 + m + s/60;
+    SCHEDULE.forEach((sch, i) => {
+      const [sh, sm] = sch.time.split(':').map(Number);
+      const t = sh * 60 + sm;
+      const row = document.getElementById('row-' + i);
+      row.classList.toggle('passed', t < nowMins);
+      row.classList.toggle('upcoming', next && next.idx === i);
+    });
+
+    checkBell(now);
+  }
+
+  update();
+  setInterval(update, 1000);
+
+  // 首次互動後啟用 AudioContext（瀏覽器要求）
+  document.addEventListener('click', () => getAudio(), { once: true });
+</script>
+</body>
+</html>
