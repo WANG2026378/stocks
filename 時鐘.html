@@ -201,13 +201,18 @@
 
   <div class="controls">
     <button id="bellToggle" class="active">🔔 鐘聲：開啟</button>
-    <button class="test-class" onclick="playMelody(MELODY_SIJI)">🎵 試聽 上課鐘（四季）</button>
-    <button class="test-break" onclick="playMelody(MELODY_TONGNIAN)">🎵 試聽 下課鐘（童年）</button>
+    <button class="test-class" onclick="playBell('class')">🎵 試聽 上課鐘（韋瓦第 四季 Op.8）</button>
+    <button class="test-break" onclick="playBell('break')">🎵 試聽 下課鐘（張艾嘉 童年）</button>
+    <button id="stopBtn" style="background:rgba(149,165,166,0.3);border-color:#95a5a6">⏹ 停止</button>
   </div>
 
   <div class="schedule">
     <h2>每日鐘聲表</h2>
     <table id="scheduleTable"></table>
+    <div style="margin-top:14px;padding:10px;background:rgba(255,211,105,0.08);border-radius:8px;font-size:12px;color:#ccc;line-height:1.6">
+      💡 <b>使用真實錄音：</b>把 <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">四季.mp3</code> 和 <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">童年.mp3</code> 放到與本檔案同一資料夾，網頁會優先播放真實錄音；沒有檔案時則播放內建合成旋律。<br>
+      📁 本機路徑：<code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px">~/Downloads/</code>
+    </div>
   </div>
 
 <script>
@@ -251,7 +256,8 @@
     REST: 0,
     C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
     C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, B5: 987.77,
-    Cs5: 554.37, Fs4: 369.99, Fs5: 739.99, Gs4: 415.30
+    Cs5: 554.37, Ds5: 622.25, Fs4: 369.99, Fs5: 739.99, Gs4: 415.30, Gs5: 830.61,
+    Bb4: 466.16, Eb5: 622.25, Ab4: 415.30
   };
 
   function playNote(freq, duration, startTime) {
@@ -272,39 +278,114 @@
     osc.stop(startTime + duration + 0.05);
   }
 
+  let activeSources = [];
+  let activeAudio = null;
+
   function playMelody(notes) {
     const ctx = getAudio();
     let t = ctx.currentTime + 0.05;
     for (const [note, dur] of notes) {
-      playNote(NOTES[note] || 0, dur * 0.95, t);
+      const freq = NOTES[note] || 0;
+      if (freq > 0) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        const peak = 0.25;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(peak, t + 0.02);
+        gain.gain.linearRampToValueAtTime(peak * 0.7, t + dur * 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.95);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + dur);
+        activeSources.push(osc);
+      }
       t += dur;
     }
   }
 
-  // 童年（羅大佑）— 下課鐘
-  // 池塘邊的榕樹上　知了在聲聲叫著夏天
+  function stopAll() {
+    activeSources.forEach(o => { try { o.stop(); } catch(e){} });
+    activeSources = [];
+    if (activeAudio) { activeAudio.pause(); activeAudio.currentTime = 0; activeAudio = null; }
+  }
+
+  // 優先播放 MP3，沒有就播合成版
+  async function playBell(type) {
+    stopAll();
+    const fileName = type === 'class' ? '四季.mp3' : '童年.mp3';
+    try {
+      const head = await fetch(fileName, { method: 'HEAD' });
+      if (head.ok) {
+        const audio = new Audio(fileName);
+        audio.volume = 0.8;
+        activeAudio = audio;
+        await audio.play();
+        return;
+      }
+    } catch (e) { /* fallback to synth */ }
+    playMelody(type === 'class' ? MELODY_SIJI : MELODY_TONGNIAN);
+  }
+
+  // 童年（羅大佑詞曲・張艾嘉演唱）— 下課鐘
   const MELODY_TONGNIAN = [
-    ['G4', 0.35], ['G4', 0.35], ['A4', 0.35], ['G4', 0.35],
-    ['E4', 0.35], ['D4', 0.35], ['C4', 0.7],
-    ['REST', 0.25],
-    ['G4', 0.35], ['G4', 0.35], ['A4', 0.35], ['G4', 0.35],
-    ['E4', 0.35], ['D4', 0.35], ['C4', 0.35], ['D4', 0.35], ['E4', 0.9],
+    // 池塘邊的榕樹上
+    ['G4', 0.4], ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.8],
     ['REST', 0.3],
-    ['E4', 0.35], ['F4', 0.35], ['G4', 0.7],
-    ['G4', 0.35], ['A4', 0.35], ['G4', 0.7],
-    ['E4', 0.35], ['D4', 0.35], ['C4', 1.0],
+    // 知了在聲聲地叫著夏天
+    ['G4', 0.4], ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.4], ['D4', 0.4], ['E4', 1.0],
+    ['REST', 0.3],
+    // 操場邊的鞦韆上
+    ['G4', 0.4], ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.8],
+    ['REST', 0.3],
+    // 只有那蝴蝶停在上面
+    ['G4', 0.4], ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.4], ['D4', 0.4], ['E4', 1.0],
+    ['REST', 0.5],
+    // 黑板上老師的粉筆
+    ['C5', 0.4], ['C5', 0.4], ['D5', 0.4], ['C5', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.8],
+    ['REST', 0.3],
+    // 還在拚命嘰嘰喳喳寫個不停
+    ['C5', 0.4], ['C5', 0.4], ['D5', 0.4], ['C5', 0.4], ['A4', 0.4], ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 1.0],
+    ['REST', 0.4],
+    // 等待著下課
+    ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.8],
+    ['REST', 0.25],
+    // 等待著放學
+    ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.8],
+    ['REST', 0.25],
+    // 等待遊戲的童年
+    ['G4', 0.4], ['A4', 0.4], ['G4', 0.4], ['E4', 0.4], ['D4', 0.4], ['C4', 0.4], ['C4', 1.4],
   ];
 
-  // 韋瓦第「四季」— 春・第一樂章（上課鐘）
+  // 韋瓦第「四季」Op.8（春・夏・秋・冬 主題串燒）— 上課鐘
   const MELODY_SIJI = [
-    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.6],
-    ['B4', 0.3], ['B4', 0.3],
-    ['Cs5', 0.3], ['Cs5', 0.3], ['Cs5', 0.3], ['B4', 0.6],
-    ['REST', 0.2],
-    ['A4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['B4', 0.6],
-    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.6],
-    ['REST', 0.2],
-    ['B4', 0.3], ['Cs5', 0.3], ['B4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['B4', 0.9],
+    // === 春 Spring・第一樂章 Allegro（最有名的主題）===
+    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.5],
+    ['B4', 0.3], ['B4', 0.3], ['B4', 0.5],
+    ['Cs5', 0.3], ['Cs5', 0.3], ['Cs5', 0.3], ['B4', 0.5],
+    ['B4', 0.3], ['B4', 0.3], ['B4', 0.5],
+    ['A4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['A4', 0.3], ['B4', 0.6],
+    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.5],
+    ['REST', 0.4],
+    // === 夏 Summer・第三樂章 Presto（暴風雨 急板）===
+    ['B4', 0.18], ['A4', 0.18], ['Gs4', 0.18], ['A4', 0.18], ['B4', 0.18], ['Cs5', 0.18], ['Ds5', 0.18], ['E5', 0.18],
+    ['Fs5', 0.18], ['E5', 0.18], ['Ds5', 0.18], ['Cs5', 0.18], ['B4', 0.18], ['A4', 0.18], ['Gs4', 0.18], ['Fs4', 0.18],
+    ['E5', 0.4], ['REST', 0.3],
+    // === 秋 Autumn・第一樂章（農夫慶豐收 狩獵主題）===
+    ['F4', 0.3], ['A4', 0.3], ['C5', 0.3], ['F5', 0.5],
+    ['E5', 0.3], ['D5', 0.3], ['C5', 0.5],
+    ['F4', 0.3], ['A4', 0.3], ['C5', 0.3], ['F5', 0.5],
+    ['REST', 0.3],
+    // === 冬 Winter・第二樂章 Largo（最優美的慢板 「爐邊」）===
+    ['Eb5', 0.6], ['D5', 0.5], ['C5', 0.5],
+    ['Bb4', 0.5], ['C5', 0.5], ['D5', 0.6],
+    ['Eb5', 0.6], ['F5', 0.5], ['Eb5', 0.5], ['D5', 0.5], ['C5', 1.0],
+    ['REST', 0.3],
+    // === 回到 春 結尾（首尾呼應）===
+    ['E5', 0.3], ['E5', 0.3], ['E5', 0.3], ['B4', 0.5],
+    ['B4', 0.3], ['Cs5', 0.3], ['B4', 0.3], ['A4', 0.3], ['Gs4', 0.3], ['A4', 0.3], ['B4', 1.2],
   ];
 
   // ===== 上下課時間表 =====
@@ -365,11 +446,12 @@
     const hit = SCHEDULE.find(s => s.time === hhmm);
     if (hit) {
       lastTriggered = stamp;
-      const melody = hit.type === 'class' ? MELODY_SIJI : MELODY_TONGNIAN;
-      playMelody(melody);
+      playBell(hit.type);
       flashStatus();
     }
   }
+
+  document.getElementById('stopBtn').addEventListener('click', stopAll);
 
   function flashStatus() {
     const el = document.getElementById('status');
