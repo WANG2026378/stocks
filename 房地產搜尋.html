@@ -312,6 +312,38 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
     </div>
   </div>
 
+  <!-- Step 7: 房型（591 對接） -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">7</div>
+      <div class="step-title">房型 <span style="font-size:11px;color:#fb923c;font-weight:700;margin-left:6px;padding:2px 8px;background:rgba(251,146,60,.15);border-radius:10px">→ 直連 591</span></div>
+      <div class="step-hint">可多選 · 僅房屋</div>
+    </div>
+    <div class="btn-row" data-group="rooms">
+      <button class="btn" data-v="1">🛏️ 1房<span class="btn-sub">套房/雅房</span></button>
+      <button class="btn" data-v="2">🛏️🛏️ 2房</button>
+      <button class="btn" data-v="3">🛏️🛏️🛏️ 3房</button>
+      <button class="btn" data-v="4">🛏️×4 4房</button>
+      <button class="btn" data-v="5">🛏️×5+ 5房以上</button>
+    </div>
+  </div>
+
+  <!-- Step 8: 建物類型（591 對接） -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">8</div>
+      <div class="step-title">建物類型 <span style="font-size:11px;color:#fb923c;font-weight:700;margin-left:6px;padding:2px 8px;background:rgba(251,146,60,.15);border-radius:10px">→ 直連 591</span></div>
+      <div class="step-hint">可多選 · 僅房屋</div>
+    </div>
+    <div class="btn-row" data-group="shape">
+      <button class="btn" data-v="1">🏠 公寓<span class="btn-sub">無電梯</span></button>
+      <button class="btn" data-v="2">🏢 電梯大樓</button>
+      <button class="btn" data-v="3">🏘️ 透天厝</button>
+      <button class="btn" data-v="4">🏛️ 別墅</button>
+      <button class="btn" data-v="5">🛌 套房</button>
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-primary" onclick="search()">🔍 智能推薦</button>
     <button class="btn-reset" onclick="resetAll()">🔄 重新選擇</button>
@@ -435,7 +467,13 @@ const DATA = [
 
 const REGION_LABEL={北北基:'雙北基隆',桃竹苗:'桃竹苗',中彰投:'中彰投',雲嘉南:'雲嘉南',高屏:'高屏',宜花東:'宜花東'};
 
-const state = {purpose:'',region:[],budget:'',size:'',bonus:[],personal:[]};
+const state = {purpose:'',region:[],budget:'',size:'',bonus:[],personal:[],rooms:[],shape:[]};
+
+// 591 預算對應表
+const BUDGET_591 = {'300':'_300','500':'300_500','800':'500_800','1500':'800_1500','3000':'1500_3000','9999':'3000_'};
+const BUDGET_LABEL = {'300':'500萬內','500':'300-500萬','800':'500-800萬','1500':'800-1500萬','3000':'1500-3000萬','9999':'3000萬+'};
+const ROOM_LABEL = {'1':'1房','2':'2房','3':'3房','4':'4房','5':'5房+'};
+const SHAPE_LABEL = {'1':'公寓','2':'電梯大樓','3':'透天','4':'別墅','5':'套房'};
 
 // 按鈕點擊事件
 document.querySelectorAll('.btn-row').forEach(row=>{
@@ -462,8 +500,28 @@ document.querySelectorAll('.btn-row').forEach(row=>{
 
 function resetAll(){
   document.querySelectorAll('.btn.active').forEach(b=>b.classList.remove('active'));
-  state.purpose=''; state.region=[]; state.budget=''; state.size=''; state.bonus=[]; state.personal=[];
+  state.purpose=''; state.region=[]; state.budget=''; state.size=''; state.bonus=[]; state.personal=[]; state.rooms=[]; state.shape=[];
   document.getElementById('results').classList.remove('show');
+}
+
+// 建構 591 完整過濾 URL（kw + price + room + shape + type）
+function build591URL(d, isAgri){
+  const p = new URLSearchParams();
+  p.set('kw', d.loc);
+  if(isAgri){ p.set('type','2'); return `https://sale.591.com.tw/?${p.toString()}`; }
+  if(state.budget && BUDGET_591[state.budget]) p.set('price', BUDGET_591[state.budget]);
+  if(state.rooms.length) p.set('room', state.rooms.join(','));
+  if(state.shape.length) p.set('shape', state.shape.join(','));
+  return `https://sale.591.com.tw/?${p.toString()}`;
+}
+
+// 591 條件摘要（顯示給使用者看會傳什麼到 591）
+function get591FilterText(){
+  const parts = [];
+  if(state.budget && BUDGET_LABEL[state.budget]) parts.push(BUDGET_LABEL[state.budget]);
+  if(state.rooms.length) parts.push(state.rooms.map(r=>ROOM_LABEL[r]).join('/'));
+  if(state.shape.length) parts.push(state.shape.map(s=>SHAPE_LABEL[s]).join('/'));
+  return parts.join(' · ') || '無過濾';
 }
 
 // ===================== 智能輔助函式 =====================
@@ -508,19 +566,20 @@ function getTiming(d){
   return {ic:'🟡', t:'盤整中', cls:'yellow'};
 }
 
-// 智能配對連結：依用途給出 2 個最相關網站
+// 智能配對連結：依用途給出 2 個最相關網站,591 帶完整過濾條件
 function getSmartLinks(d, isAgri, purpose){
-  const kw=encodeURIComponent(d.loc), kwArea=encodeURIComponent(d.area+' '+d.loc);
+  const kwArea=encodeURIComponent(d.area+' '+d.loc);
+  const url591 = build591URL(d, isAgri);
   if(isAgri) return [
-    {ic:'🌾', lb:'591土地', url:`https://sale.591.com.tw/?type=2&kw=${kw}`, cls:'s591'},
+    {ic:'🌾', lb:'591土地', url:url591, cls:'s591'},
     {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
   ];
   if(purpose==='投資') return [
-    {ic:'🏠', lb:'591房屋', url:`https://sale.591.com.tw/?kw=${kw}`, cls:'s591'},
+    {ic:'🏠', lb:'591房屋', url:url591, cls:'s591'},
     {ic:'📊', lb:'實價', url:`https://lvr.land.moi.gov.tw/`, cls:'gov'},
   ];
   return [
-    {ic:'🏠', lb:'591房屋', url:`https://sale.591.com.tw/?kw=${kw}`, cls:'s591'},
+    {ic:'🏠', lb:'591房屋', url:url591, cls:'s591'},
     {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
   ];
 }
@@ -653,9 +712,11 @@ function renderResults(list, isAgri){
   const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
   const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
 
+  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591 將套用過濾</strong>:${get591FilterText()} · 點下方推薦卡的「591」按鈕直接帶入</p>` : '';
   document.getElementById('summary').innerHTML = `
     <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
     <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
+    ${filter591}
     ${cmpHTML}
     ${warnHTML}
   `;
