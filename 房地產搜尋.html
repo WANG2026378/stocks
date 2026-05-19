@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>理想房屋與農地搜尋 · 川普投顧 VIP</title>
+<style>
+:root{--bg:#0a0e1a;--card:#111827;--card2:#0f1623;--border:#1e2d40;--text:#e0e6f0;--muted:#6b7280;--blue:#3b82f6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;--orange:#fb923c}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:60px}
+
+.header{background:linear-gradient(135deg,#060912 0%,#0d1520 100%);border-bottom:1px solid var(--border);padding:28px 20px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(251,146,60,.12) 0%,transparent 70%);pointer-events:none}
+.header-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.3);border-radius:20px;padding:4px 14px;font-size:12px;color:#fdba74;margin-bottom:14px}
+.header-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-1px}
+.header-title span{background:linear-gradient(90deg,#fb923c,#f59e0b,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:14px;color:var(--muted)}
+
+.main{max-width:1100px;margin:0 auto;padding:24px 16px}
+
+.step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.step-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#fb923c,#f59e0b);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.step-title{font-size:16px;font-weight:700}
+.step-hint{font-size:12px;color:var(--muted);margin-left:auto}
+
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--text);cursor:pointer;transition:all .15s;font-family:inherit;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:#fb923c;background:rgba(251,146,60,.08)}
+.btn.active{background:linear-gradient(135deg,#fb923c,#f59e0b);border-color:#fb923c;color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(251,146,60,.3)}
+.btn-icon{margin-right:4px}
+.btn-sub{font-size:11px;opacity:.7;display:block;margin-top:2px;font-weight:400}
+
+.actions{display:flex;gap:10px;justify-content:center;margin:20px 0 8px;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:14px 32px;font-size:16px;font-weight:700;border-radius:12px;cursor:pointer;transition:all .2s;font-family:inherit;box-shadow:0 4px 16px rgba(16,185,129,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(16,185,129,.4)}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted);padding:14px 24px;font-size:14px;border-radius:12px;cursor:pointer;font-family:inherit}
+.btn-reset:hover{border-color:var(--red);color:var(--red)}
+
+.results{display:none;margin-top:24px}
+.results.show{display:block}
+.result-summary{background:linear-gradient(135deg,rgba(251,146,60,.12),rgba(16,185,129,.08));border:1px solid rgba(251,146,60,.3);border-radius:14px;padding:18px;margin-bottom:18px}
+.result-summary h3{font-size:16px;margin-bottom:8px;color:#fdba74}
+.result-summary p{font-size:13px;color:var(--muted);line-height:1.7}
+
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.r-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;transition:all .2s}
+.r-card:hover{border-color:#fb923c;transform:translateY(-2px)}
+.r-card.top1{border-color:#f59e0b;background:linear-gradient(135deg,rgba(245,158,11,.08),var(--card))}
+.r-card.top1::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#fb923c,#f59e0b)}
+.r-rank{position:absolute;top:14px;right:14px;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;color:var(--muted);font-weight:700}
+.r-card.top1 .r-rank{background:linear-gradient(135deg,#fb923c,#f59e0b);border-color:#fb923c;color:#fff}
+.r-loc{font-size:18px;font-weight:800;margin-bottom:2px}
+.r-area{font-size:12px;color:var(--muted);margin-bottom:12px}
+.r-score{display:flex;align-items:baseline;gap:6px;margin-bottom:12px}
+.r-score-val{font-size:32px;font-weight:800;background:linear-gradient(90deg,#fb923c,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.r-score-lbl{font-size:11px;color:var(--muted)}
+
+.r-bars{margin-bottom:12px}
+.r-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.r-bar-lbl{width:60px;color:var(--muted);flex-shrink:0}
+.r-bar-track{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.r-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.r-bar-val{width:32px;text-align:right;color:var(--text);font-weight:600}
+
+.r-info{font-size:12px;color:var(--muted);line-height:1.6;padding:10px;background:var(--card2);border-radius:8px;margin-bottom:10px}
+.r-info strong{color:#fdba74}
+
+.r-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.r-tag{font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.r-tag.g{background:rgba(16,185,129,.12);color:#6ee7b7;border-color:rgba(16,185,129,.2)}
+.r-tag.y{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.2)}
+.r-tag.p{background:rgba(139,92,246,.12);color:#c4b5fd;border-color:rgba(139,92,246,.2)}
+.r-tag.r{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.2)}
+
+.r-links{border-top:1px dashed var(--border);padding-top:10px;margin-top:4px}
+.r-links-title{font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:.5px;font-weight:600}
+.r-link-row{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.r-link{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:7px 6px;font-size:11px;color:var(--text);text-decoration:none;transition:all .15s;font-weight:600}
+.r-link:hover{transform:translateY(-1px)}
+.r-link.s591{border-color:rgba(239,68,68,.3);color:#fca5a5}
+.r-link.s591:hover{background:rgba(239,68,68,.12);border-color:#ef4444}
+.r-link.sinyi{border-color:rgba(59,130,246,.3);color:#93c5fd}
+.r-link.sinyi:hover{background:rgba(59,130,246,.12);border-color:#3b82f6}
+.r-link.yung{border-color:rgba(16,185,129,.3);color:#6ee7b7}
+.r-link.yung:hover{background:rgba(16,185,129,.12);border-color:#10b981}
+.r-link.gov{border-color:rgba(245,158,11,.3);color:#fcd34d}
+.r-link.gov:hover{background:rgba(245,158,11,.12);border-color:#f59e0b}
+.r-link.farm{border-color:rgba(139,92,246,.3);color:#c4b5fd}
+.r-link.farm:hover{background:rgba(139,92,246,.12);border-color:#8b5cf6}
+.r-link.google{border-color:rgba(251,146,60,.3);color:#fdba74}
+.r-link.google:hover{background:rgba(251,146,60,.12);border-color:#fb923c}
+
+.r-fetch-btn{width:100%;margin-top:10px;background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.r-fetch-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,.3)}
+.r-fetch-btn:disabled{opacity:.6;cursor:wait}
+.r-fetch-panel{display:none;margin-top:10px;padding:10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;max-height:400px;overflow-y:auto}
+.r-fetch-panel.show{display:block}
+.fetch-status{font-size:12px;color:var(--muted);text-align:center;padding:14px}
+.fetch-empty{font-size:12px;color:#fcd34d;text-align:center;padding:10px;line-height:1.7}
+.fetch-go{display:inline-block;margin-top:8px;color:#fb923c;text-decoration:none;font-weight:700;padding:6px 12px;border:1px solid rgba(251,146,60,.4);border-radius:6px}
+.fetch-go:hover{background:rgba(251,146,60,.12)}
+.fetch-list-title{font-size:11px;color:#6ee7b7;margin-bottom:8px;font-weight:700;letter-spacing:.5px}
+.fetch-item{display:flex;align-items:center;gap:8px;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:6px;transition:all .15s}
+.fetch-item:hover{border-color:#10b981}
+.fi-type{font-size:10px;background:rgba(16,185,129,.15);color:#6ee7b7;padding:2px 6px;border-radius:4px;font-weight:700;flex-shrink:0}
+.fi-info{flex:1;min-width:0}
+.fi-title{font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px}
+.fi-price{font-size:13px;color:#fb923c;font-weight:700}
+.fi-link{color:#60a5fa;font-size:18px;text-decoration:none;flex-shrink:0;padding:0 4px}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+
+.warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:12px;font-size:12px;color:#fcd34d;margin-top:16px;line-height:1.6}
+
+@media(max-width:600px){
+  .header-title{font-size:22px}
+  .btn{padding:8px 12px;font-size:13px}
+  .step{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">🏡 川普投顧 VIP · 房地產智能搜尋</div>
+  <div class="header-title">理想房屋與<span>農地搜尋</span></div>
+  <div class="header-sub">按需求按鈕 · 智能推薦增值潛力地區 · 全台農地與住宅</div>
+</div>
+
+<div class="main">
+
+  <!-- Step 1: 用途 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-title">主要用途</div>
+      <div class="step-hint">單選</div>
+    </div>
+    <div class="btn-row" data-group="purpose" data-single="1">
+      <button class="btn" data-v="自住">🏠 自住房屋<span class="btn-sub">蓋自宅或購屋居住</span></button>
+      <button class="btn" data-v="農耕">🌾 農地耕作<span class="btn-sub">種菜種樹自耕</span></button>
+      <button class="btn" data-v="休閒">🏕️ 休閒農場<span class="btn-sub">假日露營度假</span></button>
+      <button class="btn" data-v="投資">💰 投資增值<span class="btn-sub">長期持有等增值</span></button>
+      <button class="btn" data-v="退休">🌅 退休養老<span class="btn-sub">山林水邊慢活</span></button>
+    </div>
+  </div>
+
+  <!-- Step 2: 地區 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-title">偏好地區</div>
+      <div class="step-hint">可多選 · 不選=全台</div>
+    </div>
+    <div class="btn-row" data-group="region">
+      <button class="btn" data-v="北北基">🏙️ 雙北基隆</button>
+      <button class="btn" data-v="桃竹苗">🌆 桃竹苗</button>
+      <button class="btn" data-v="中彰投">🏞️ 中彰投</button>
+      <button class="btn" data-v="雲嘉南">🌾 雲嘉南</button>
+      <button class="btn" data-v="高屏">🌴 高屏</button>
+      <button class="btn" data-v="宜花東">🏔️ 宜花東</button>
+    </div>
+  </div>
+
+  <!-- Step 3: 預算 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-title">預算範圍</div>
+      <div class="step-hint">單選</div>
+    </div>
+    <div class="btn-row" data-group="budget" data-single="1">
+      <button class="btn" data-v="300">💵 300萬以下</button>
+      <button class="btn" data-v="500">💵 300-500萬</button>
+      <button class="btn" data-v="800">💴 500-800萬</button>
+      <button class="btn" data-v="1500">💴 800-1500萬</button>
+      <button class="btn" data-v="3000">💰 1500-3000萬</button>
+      <button class="btn" data-v="9999">💎 3000萬以上</button>
+    </div>
+  </div>
+
+  <!-- Step 4: 面積 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-title">面積需求</div>
+      <div class="step-hint">單選</div>
+    </div>
+    <div class="btn-row" data-group="size" data-single="1">
+      <button class="btn" data-v="小">🏠 小坪數<span class="btn-sub">30坪以下</span></button>
+      <button class="btn" data-v="中">🏡 中坪數<span class="btn-sub">30-60坪</span></button>
+      <button class="btn" data-v="大">🏘️ 大坪數<span class="btn-sub">60坪以上</span></button>
+      <button class="btn" data-v="農小">🌱 小農地<span class="btn-sub">1分地以下</span></button>
+      <button class="btn" data-v="農中">🌾 中農地<span class="btn-sub">1-3分地</span></button>
+      <button class="btn" data-v="農大">🚜 大農地<span class="btn-sub">3分地以上</span></button>
+    </div>
+  </div>
+
+  <!-- Step 5: 加分條件 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-title">加分條件</div>
+      <div class="step-hint">可多選</div>
+    </div>
+    <div class="btn-row" data-group="bonus">
+      <button class="btn" data-v="捷運">🚇 捷運/高鐵近</button>
+      <button class="btn" data-v="重劃">🏗️ 重劃區</button>
+      <button class="btn" data-v="學區">🎓 明星學區</button>
+      <button class="btn" data-v="醫療">🏥 醫療資源</button>
+      <button class="btn" data-v="水源">💧 自然水源</button>
+      <button class="btn" data-v="聯外">🛣️ 聯外道路</button>
+      <button class="btn" data-v="景觀">🏞️ 山景/海景</button>
+      <button class="btn" data-v="人口">📈 人口成長</button>
+      <button class="btn" data-v="科技">💻 科技園區近</button>
+      <button class="btn" data-v="觀光">🎡 觀光熱區</button>
+    </div>
+  </div>
+
+  <!-- Step 6: 個人條件 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div class="step-title">個人條件</div>
+      <div class="step-hint">可多選</div>
+    </div>
+    <div class="btn-row" data-group="personal">
+      <button class="btn" data-v="自耕農">👨‍🌾 具自耕農身分<span class="btn-sub">可購農牧用地</span></button>
+      <button class="btn" data-v="通勤北">🚗 需通勤台北</button>
+      <button class="btn" data-v="長期">⏳ 長期持有10年+</button>
+      <button class="btn" data-v="短期">⚡ 短期5年內</button>
+      <button class="btn" data-v="貸款">🏦 需貸款</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" onclick="search()">🔍 智能推薦</button>
+    <button class="btn-reset" onclick="resetAll()">🔄 重新選擇</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="result-summary" id="summary"></div>
+    <div class="result-grid" id="grid"></div>
+  </div>
+
+  <div class="warn">
+    ⚠️ 提醒：本工具為策略推薦參考，實際購買前請至內政部實價登錄 (lvr.land.moi.gov.tw) 查詢真實成交價，並至地政事務所確認地目、使用分區與管制。農牧用地需具自然人且符合農發條例規定方可購買。
+  </div>
+
+</div>
+
+<script>
+// 全台精選地區資料庫（含增值評分、適合用途、條件標籤）
+const DATA = [
+  // 北北基
+  {loc:'淡水',area:'新北市',region:'北北基',scores:{自住:75,農耕:30,休閒:60,投資:80,退休:78},price:{房:55,地:18},bonus:['捷運','學區','景觀','聯外'],size:['小','中'],tags:['捷運紅樹線','輕軌','海景','人口增'],desc:'新北人口持續移入，輕軌+捷運雙軌，海景宅選擇多。<strong>缺點：</strong>濕冷、東北季風強。'},
+  {loc:'三峽北大',area:'新北市',region:'北北基',scores:{自住:82,農耕:20,休閒:35,投資:78,退休:65},price:{房:50,地:22},bonus:['學區','重劃','聯外','人口'],size:['中','大'],tags:['北大特區','學區佳','重劃區'],desc:'北大特區規劃完整，年輕家庭聚集，<strong>學區與生活機能</strong>佳。'},
+  {loc:'林口',area:'新北市',region:'北北基',scores:{自住:80,農耕:15,休閒:30,投資:75,退休:60},price:{房:60,地:30},bonus:['捷運','重劃','聯外','人口'],size:['中','大'],tags:['機捷','A8新莊副都心','大型重劃'],desc:'機場捷運+重劃區，<strong>三井 Outlet</strong> 帶動商圈，新成屋多。'},
+  {loc:'金山萬里',area:'新北市',region:'北北基',scores:{自住:55,農耕:55,休閒:75,投資:50,退休:80},price:{房:30,地:12},bonus:['景觀','水源','觀光'],size:['農小','農中','中'],tags:['溫泉','海景','低密度'],desc:'<strong>北海岸退休首選</strong>，溫泉+海景，但通勤台北約1小時。'},
+  {loc:'石碇坪林',area:'新北市',region:'北北基',scores:{自住:40,農耕:75,休閒:80,投資:45,退休:78},price:{房:25,地:8},bonus:['水源','景觀','聯外'],size:['農中','農大'],tags:['翡翠水庫','茶園','國5'],desc:'<strong>水源保護區限制多</strong>，但生態好，國道5號可快速到台北。'},
+
+  // 桃竹苗
+  {loc:'青埔高鐵',area:'桃園市',region:'桃竹苗',scores:{自住:78,農耕:10,休閒:35,投資:90,退休:55},price:{房:55,地:35},bonus:['捷運','重劃','聯外','人口','觀光'],size:['中','大'],tags:['高鐵','機捷','華泰','棒球場'],desc:'<strong>北台灣最強重劃區</strong>，高鐵+機捷雙軌，新建案多，租金報酬佳。'},
+  {loc:'楊梅富岡',area:'桃園市',region:'桃竹苗',scores:{自住:65,農耕:75,休閒:65,投資:72,退休:70},price:{房:25,地:10},bonus:['聯外','人口'],size:['農中','農大','中'],tags:['交流道近','農地多','低總價'],desc:'<strong>農地交易熱區</strong>，國道1號富岡交流道，總價親民，<strong>都更想像空間</strong>。'},
+  {loc:'竹北高鐵',area:'新竹縣',region:'桃竹苗',scores:{自住:85,農耕:15,休閒:30,投資:92,退休:60},price:{房:80,地:50},bonus:['捷運','重劃','學區','科技','人口'],size:['中','大'],tags:['高鐵','竹科','薪資高'],desc:'<strong>竹科工程師購屋首選</strong>，房價漲幅全台前段班，但已偏高。'},
+  {loc:'寶山',area:'新竹縣',region:'桃竹苗',scores:{自住:70,農耕:55,休閒:60,投資:88,退休:65},price:{房:40,地:18},bonus:['科技','重劃','人口','景觀'],size:['農中','中','大'],tags:['寶山二期','台積電','水庫'],desc:'<strong>台積電寶山廠加持</strong>，未來5年最有想像空間的新竹區段。'},
+  {loc:'頭份竹南',area:'苗栗縣',region:'桃竹苗',scores:{自住:75,農耕:45,休閒:50,投資:80,退休:65},price:{房:30,地:13},bonus:['科技','聯外','人口'],size:['農小','中','大'],tags:['竹科外溢','低總價','銅鑼科'],desc:'<strong>竹北外溢買盤</strong>，總價只要竹北一半，<strong>長期看漲</strong>。'},
+  {loc:'三義銅鑼',area:'苗栗縣',region:'桃竹苗',scores:{自住:50,農耕:80,休閒:78,投資:55,退休:75},price:{房:20,地:6},bonus:['景觀','水源','觀光'],size:['農中','農大'],tags:['客家文化','油桐花','便宜'],desc:'<strong>農地極便宜</strong>，適合休閒農場，銅鑼科學園區想像。'},
+
+  // 中彰投
+  {loc:'北屯14期',area:'台中市',region:'中彰投',scores:{自住:88,農耕:10,休閒:25,投資:90,退休:55},price:{房:65,地:42},bonus:['捷運','重劃','學區','聯外','人口'],size:['中','大'],tags:['捷運綠線','水湳','重劃王'],desc:'<strong>台中最熱重劃區</strong>，捷運綠線+水湳經貿園區雙引擎。'},
+  {loc:'烏日高鐵',area:'台中市',region:'中彰投',scores:{自住:78,農耕:25,休閒:40,投資:85,退休:60},price:{房:40,地:22},bonus:['捷運','重劃','聯外','人口'],size:['中','大'],tags:['高鐵','捷運綠線','三鐵共構'],desc:'<strong>台中高鐵特區</strong>，總價比北屯低、增值空間大。'},
+  {loc:'大肚龍井',area:'台中市',region:'中彰投',scores:{自住:62,農耕:70,休閒:60,投資:75,退休:65},price:{房:25,地:11},bonus:['聯外','科技','人口'],size:['農中','農大','中'],tags:['台中港','中科','低總價'],desc:'<strong>中科+台中港加持</strong>，農地總價低，工業需求強。'},
+  {loc:'霧峰',area:'台中市',region:'中彰投',scores:{自住:60,農耕:80,休閒:65,投資:65,退休:72},price:{房:22,地:9},bonus:['學區','水源'],size:['農中','農大','中'],tags:['亞大','921園區','便宜'],desc:'<strong>台中最便宜的市區</strong>，農地多，亞洲大學學區。'},
+  {loc:'員林田中',area:'彰化縣',region:'中彰投',scores:{自住:65,農耕:75,休閒:55,投資:60,退休:68},price:{房:20,地:8},bonus:['聯外','人口'],size:['農中','農大','中'],tags:['高鐵田中','員林市','便宜'],desc:'高鐵田中站帶動，<strong>台中外溢買盤</strong>，農地價穩。'},
+  {loc:'草屯埔里',area:'南投縣',region:'中彰投',scores:{自住:55,農耕:85,休閒:80,投資:55,退休:80},price:{房:18,地:5},bonus:['景觀','水源','觀光'],size:['農中','農大'],tags:['日月潭','清境','水質佳'],desc:'<strong>農地全台最便宜</strong>區段之一，<strong>退休與露營地</strong>絕佳。'},
+
+  // 雲嘉南
+  {loc:'斗六虎尾',area:'雲林縣',region:'雲嘉南',scores:{自住:62,農耕:80,休閒:50,投資:55,退休:65},price:{房:18,地:5},bonus:['學區','聯外'],size:['農中','農大','中'],tags:['雲科大','高鐵','農業重鎮'],desc:'<strong>農業大縣便宜地</strong>，高鐵雲林站，農業科技園區想像。'},
+  {loc:'嘉義太保',area:'嘉義縣',region:'雲嘉南',scores:{自住:65,農耕:65,休閒:50,投資:80,退休:60},price:{房:22,地:8},bonus:['捷運','聯外','重劃','人口'],size:['農小','中','大'],tags:['高鐵','故宮南院','重劃'],desc:'<strong>高鐵嘉義站重劃區</strong>，移居熱區，<strong>低總價高潛力</strong>。'},
+  {loc:'新化善化',area:'台南市',region:'雲嘉南',scores:{自住:72,農耕:70,休閒:50,投資:85,退休:65},price:{房:30,地:14},bonus:['科技','聯外','人口'],size:['農中','中','大'],tags:['南科','台積電','人口爆增'],desc:'<strong>台積電南科3奈米</strong>加持，房價漲幅驚人，農地有變更想像。'},
+  {loc:'安南安平',area:'台南市',region:'雲嘉南',scores:{自住:75,農耕:35,休閒:55,投資:78,退休:72},price:{房:35,地:16},bonus:['重劃','景觀','觀光','人口'],size:['中','大'],tags:['府城','海安','安平港'],desc:'<strong>台南購屋熱區</strong>，重劃完整，文化氣息+海景。'},
+  {loc:'永康仁德',area:'台南市',region:'雲嘉南',scores:{自住:78,農耕:30,休閒:35,投資:82,退休:65},price:{房:32,地:18},bonus:['聯外','學區','科技','人口'],size:['中','大'],tags:['南科外溢','奇美','成大'],desc:'南科上班族購屋首選，<strong>機能成熟、學區佳</strong>。'},
+
+  // 高屏
+  {loc:'楠梓橋頭',area:'高雄市',region:'高屏',scores:{自住:80,農耕:30,休閒:35,投資:92,退休:60},price:{房:35,地:18},bonus:['捷運','重劃','科技','人口'],size:['中','大'],tags:['台積電','橋頭科','捷運紅線'],desc:'<strong>台積電高雄2奈米廠</strong>+橋頭科學園區，<strong>全台最熱區段之一</strong>。'},
+  {loc:'美術館農16',area:'高雄市',region:'高屏',scores:{自住:88,農耕:10,休閒:30,投資:78,退休:75},price:{房:55,地:35},bonus:['捷運','學區','醫療','景觀'],size:['中','大'],tags:['豪宅區','美術館','明星學區'],desc:'<strong>高雄頂級住宅區</strong>，生活機能完善，保值性佳。'},
+  {loc:'鳳山仁武',area:'高雄市',region:'高屏',scores:{自住:75,農耕:40,休閒:40,投資:80,退休:65},price:{房:28,地:13},bonus:['捷運','重劃','聯外','人口'],size:['中','大'],tags:['輕軌','捷運橘線','低總價'],desc:'高雄輕軌+捷運網絡，<strong>低總價高機能</strong>。'},
+  {loc:'屏東潮州',area:'屏東縣',region:'高屏',scores:{自住:55,農耕:80,休閒:65,投資:55,退休:72},price:{房:15,地:5},bonus:['聯外','水源'],size:['農中','農大'],tags:['高鐵延伸','屏鵝公路','便宜'],desc:'<strong>高鐵延伸計畫</strong>想像，農地全台最便宜之一。'},
+  {loc:'恆春墾丁',area:'屏東縣',region:'高屏',scores:{自住:45,農耕:55,休閒:88,投資:55,退休:78},price:{房:25,地:10},bonus:['景觀','觀光','水源'],size:['農中','農大','中'],tags:['國家公園','海景','民宿熱'],desc:'<strong>休閒民宿首選</strong>，南國度假宅，但通勤不便。'},
+
+  // 宜花東
+  {loc:'宜蘭礁溪',area:'宜蘭縣',region:'宜花東',scores:{自住:68,農耕:60,休閒:85,投資:75,退休:82},price:{房:35,地:18},bonus:['景觀','水源','觀光','聯外'],size:['農中','中','大'],tags:['溫泉','雪隧','民宿王'],desc:'<strong>雪隧通勤北宜1小時</strong>，溫泉度假首選，民宿投報率高。'},
+  {loc:'宜蘭員山',area:'宜蘭縣',region:'宜花東',scores:{自住:60,農耕:85,休閒:80,投資:65,退休:78},price:{房:28,地:10},bonus:['水源','景觀','聯外'],size:['農中','農大'],tags:['農舍熱區','水質好','低密度'],desc:'<strong>宜蘭農地交易最熱區</strong>，水源充足，<strong>農舍法規嚴需注意</strong>。'},
+  {loc:'冬山三星',area:'宜蘭縣',region:'宜花東',scores:{自住:55,農耕:88,休閒:78,投資:62,退休:75},price:{房:22,地:8},bonus:['水源','景觀'],size:['農中','農大'],tags:['三星蔥','梅花湖','慢活'],desc:'<strong>農地最便宜的宜蘭</strong>，水質佳，慢活首選。'},
+  {loc:'花蓮市',area:'花蓮縣',region:'宜花東',scores:{自住:65,農耕:55,休閒:80,投資:62,退休:78},price:{房:25,地:10},bonus:['景觀','醫療','觀光'],size:['中','大'],tags:['東部首府','慈濟','海景'],desc:'<strong>東部最大都會</strong>，醫療資源完整，海景+山景。'},
+  {loc:'吉安壽豐',area:'花蓮縣',region:'宜花東',scores:{自住:55,農耕:85,休閒:82,投資:60,退休:80},price:{房:18,地:6},bonus:['水源','景觀'],size:['農中','農大'],tags:['東華大學','好山好水','便宜'],desc:'<strong>退休首選</strong>，農地便宜、無汙染、好山好水。'},
+  {loc:'台東市',area:'台東縣',region:'宜花東',scores:{自住:62,農耕:65,休閒:82,投資:60,退休:80},price:{房:22,地:8},bonus:['景觀','醫療','觀光'],size:['中','大','農中'],tags:['熱氣球','慢活','東部'],desc:'<strong>近年觀光起飛</strong>，移居熱潮，房價漲幅可觀。'},
+  {loc:'池上關山',area:'台東縣',region:'宜花東',scores:{自住:48,農耕:88,休閒:85,投資:55,退休:78},price:{房:15,地:5},bonus:['水源','景觀','觀光'],size:['農中','農大'],tags:['伯朗大道','米鄉','秘境'],desc:'<strong>全台最美田園風光</strong>，農地便宜，<strong>觀光帶動增值</strong>。'},
+];
+
+const REGION_LABEL={北北基:'雙北基隆',桃竹苗:'桃竹苗',中彰投:'中彰投',雲嘉南:'雲嘉南',高屏:'高屏',宜花東:'宜花東'};
+
+const state = {purpose:'',region:[],budget:'',size:'',bonus:[],personal:[]};
+
+// 按鈕點擊事件
+document.querySelectorAll('.btn-row').forEach(row=>{
+  const group = row.dataset.group;
+  const single = row.dataset.single === '1';
+  row.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const v = btn.dataset.v;
+      if(single){
+        row.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group] = v;
+      } else {
+        btn.classList.toggle('active');
+        if(btn.classList.contains('active')){
+          if(!state[group].includes(v)) state[group].push(v);
+        } else {
+          state[group] = state[group].filter(x=>x!==v);
+        }
+      }
+    });
+  });
+});
+
+function resetAll(){
+  document.querySelectorAll('.btn.active').forEach(b=>b.classList.remove('active'));
+  state.purpose=''; state.region=[]; state.budget=''; state.size=''; state.bonus=[]; state.personal=[];
+  document.getElementById('results').classList.remove('show');
+}
+
+function search(){
+  if(!state.purpose){ alert('請先選擇主要用途'); return; }
+
+  const budgetMax = state.budget ? parseInt(state.budget) : 9999;
+  const isAgri = ['農耕','休閒','退休'].includes(state.purpose) || (state.size||'').startsWith('農');
+
+  const scored = DATA.map(d=>{
+    let score = d.scores[state.purpose] || 50;
+
+    // 預算過濾
+    const refPrice = isAgri ? d.price.地*30 : d.price.房*15; // 粗估總價（萬）
+    let budgetFit = 1;
+    if(refPrice > budgetMax * 1.5){ budgetFit = 0.3; score -= 25; }
+    else if(refPrice > budgetMax){ budgetFit = 0.6; score -= 10; }
+    else if(refPrice < budgetMax * 0.3){ budgetFit = 0.9; score += 3; }
+    else { score += 8; }
+
+    // 地區符合
+    if(state.region.length>0 && !state.region.includes(d.region)){
+      score -= 15;
+    } else if(state.region.includes(d.region)){
+      score += 5;
+    }
+
+    // 面積符合
+    if(state.size && !d.size.includes(state.size)){
+      score -= 8;
+    }
+
+    // 加分條件
+    const bonusHit = state.bonus.filter(b=>d.bonus.includes(b)).length;
+    score += bonusHit * 4;
+
+    // 個人條件
+    if(state.personal.includes('通勤北') && !['北北基','桃竹苗'].includes(d.region)) score -= 12;
+    if(state.personal.includes('通勤北') && d.region==='宜花東' && d.loc.includes('宜蘭')) score += 5; // 雪隧
+    if(state.personal.includes('短期') && d.scores.投資 < 70) score -= 8;
+    if(state.personal.includes('長期') && d.scores.投資 >= 75) score += 5;
+    if(state.personal.includes('自耕農') && d.size.some(s=>s.startsWith('農'))) score += 6;
+    if(!state.personal.includes('自耕農') && isAgri) score -= 5; // 提醒沒身分不能買農牧用地
+
+    score = Math.max(0,Math.min(100,Math.round(score)));
+    return {...d,score,bonusHit,refPrice};
+  });
+
+  // 排序取前9
+  scored.sort((a,b)=>b.score-a.score);
+  const top = scored.slice(0,9);
+
+  renderResults(top, isAgri);
+}
+
+function renderResults(list, isAgri){
+  const purposeLabel = {自住:'自住房屋',農耕:'農地耕作',休閒:'休閒農場',投資:'投資增值',退休:'退休養老'}[state.purpose];
+  const regionLabel = state.region.length>0 ? state.region.map(r=>REGION_LABEL[r]).join('、') : '全台';
+  const budgetLabel = state.budget ? (state.budget==='9999'?'3000萬以上':`${state.budget}萬以下`) : '不限';
+
+  document.getElementById('summary').innerHTML = `
+    <h3>🎯 推薦結果：${purposeLabel} · ${regionLabel} · 預算 ${budgetLabel}</h3>
+    <p>已從全台 ${DATA.length} 個熱門區段中，依你的條件智能評分。前 3 名為最佳配對，建議優先實地勘查。${isAgri?'<br><strong>農地提醒：</strong>農牧用地需具自然人身分，建地/林地/養殖地法規不同，購買前務必確認地目。':''}</p>
+  `;
+
+  const grid = document.getElementById('grid');
+  if(list.length===0){
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>找不到符合條件的地區<br>請放寬條件再試</div>';
+  } else {
+    grid.innerHTML = list.map((d,i)=>{
+      const rank = i+1;
+      const isTop = rank===1;
+      const tags = d.tags.map((t,idx)=>{
+        const cls = ['','g','y','p','r'][idx%5];
+        return `<span class="r-tag ${cls}">${t}</span>`;
+      }).join('');
+      const scoreInvest = d.scores.投資;
+      const scoreLive = d.scores.自住;
+      const scoreFarm = d.scores.農耕;
+      const scoreLeisure = d.scores.休閒;
+      const totalEst = isAgri ? (d.price.地*30) : (d.price.房*15);
+      const kw = encodeURIComponent(d.loc);
+      const kwArea = encodeURIComponent(d.area + d.loc);
+      const links = isAgri ? `
+        <div class="r-link-row">
+          <a class="r-link s591" href="https://sale.591.com.tw/list/index?shType=&kw=${kw}&type=2" target="_blank">🏛️ 591土地</a>
+          <a class="r-link farm" href="https://ezland.coa.gov.tw/Home" target="_blank">🌾 農地銀行</a>
+          <a class="r-link google" href="https://www.google.com/search?q=${kw}+農地+出售" target="_blank">🔍 Google</a>
+          <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
+        </div>
+      ` : `
+        <div class="r-link-row">
+          <a class="r-link s591" href="https://sale.591.com.tw/list/index?kw=${kw}" target="_blank">🏠 591房屋</a>
+          <a class="r-link sinyi" href="https://www.sinyi.com.tw/buy/list/${kw}-keyword" target="_blank">🏢 信義房屋</a>
+          <a class="r-link yung" href="https://buy.yungching.com.tw/region/${kw}-_c/" target="_blank">🏘️ 永慶</a>
+          <a class="r-link google" href="https://www.google.com/search?q=${kwArea}+房屋+出售" target="_blank">🔍 Google</a>
+          <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
+          <a class="r-link farm" href="https://sale.591.com.tw/list/index?shType=&kw=${kw}&type=2" target="_blank">🌾 591土地</a>
+        </div>
+      `;
+      return `
+        <div class="r-card ${isTop?'top1':''}">
+          <div class="r-rank">#${rank}</div>
+          <div class="r-loc">${d.loc}</div>
+          <div class="r-area">📍 ${d.area} · ${REGION_LABEL[d.region]}</div>
+          <div class="r-score">
+            <div class="r-score-val">${d.score}</div>
+            <div class="r-score-lbl">/ 100 匹配分數</div>
+          </div>
+          <div class="r-bars">
+            <div class="r-bar"><div class="r-bar-lbl">自住性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreLive}%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div><div class="r-bar-val">${scoreLive}</div></div>
+            <div class="r-bar"><div class="r-bar-lbl">農耕性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreFarm}%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><div class="r-bar-val">${scoreFarm}</div></div>
+            <div class="r-bar"><div class="r-bar-lbl">休閒性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreLeisure}%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div><div class="r-bar-val">${scoreLeisure}</div></div>
+            <div class="r-bar"><div class="r-bar-lbl">增值力</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreInvest}%;background:linear-gradient(90deg,#fb923c,#f59e0b)"></div></div><div class="r-bar-val">${scoreInvest}</div></div>
+          </div>
+          <div class="r-info">
+            💰 房價約 <strong>${d.price.房}萬/坪</strong> · 農地約 <strong>${d.price.地}萬/坪</strong><br>
+            📊 ${d.desc}
+          </div>
+          <div class="r-tags">${tags}</div>
+          <div class="r-links">
+            <div class="r-links-title">🔗 查看現有出售物件</div>
+            ${links}
+            <button class="r-fetch-btn" onclick="fetchListings('${d.loc}','${d.area}',${isAgri?'true':'false'},this)">📥 直接抓取現售物件到此</button>
+            <div class="r-fetch-panel"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('results').classList.add('show');
+  setTimeout(()=>{
+    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+}
+
+// 透過 CORS 代理抓取 591 物件並去重
+async function fetchListings(loc, area, isAgri, btn){
+  const card = btn.closest('.r-card');
+  const panel = card.querySelector('.r-fetch-panel');
+
+  // 已載入過則切換顯示
+  if(panel.dataset.loaded === '1'){
+    panel.classList.toggle('show');
+    return;
+  }
+
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="fetch-status">⏳ 透過代理抓取 591 現售物件中（首次可能需 5-10 秒）...</div>';
+  btn.disabled = true;
+
+  const types = isAgri ? [{t:2,label:'土地'}] : [{t:1,label:'房屋'},{t:2,label:'土地'}];
+  const allItems = [];
+
+  // 多重 CORS 代理 fallback
+  const proxies = [
+    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  ];
+
+  async function tryFetch(url){
+    for(const proxify of proxies){
+      try{
+        const res = await fetch(proxify(url),{signal:AbortSignal.timeout(12000)});
+        if(!res.ok) continue;
+        const ct = res.headers.get('content-type')||'';
+        if(ct.includes('application/json')){
+          const j = await res.json();
+          if(j.contents) return j.contents;
+        }
+        const txt = await res.text();
+        if(txt && txt.length > 500) return txt;
+      }catch(e){ /* try next */ }
+    }
+    return null;
+  }
+
+  for(const {t,label} of types){
+    const target = `https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}&type=${t}`;
+    const html = await tryFetch(target);
+    if(!html) continue;
+
+    const doc = new DOMParser().parseFromString(html,'text/html');
+
+    // 嘗試多種 591 用過的選擇器
+    const sels = ['.houseList-item','.itemBoxNew','.item','li[data-bind]','[class*="house-item"]','[class*="houseList"]','article'];
+    let foundNodes = [];
+    for(const sel of sels){
+      const nodes = doc.querySelectorAll(sel);
+      if(nodes.length>0){ foundNodes = [...nodes]; break; }
+    }
+
+    // 若 SPA 沒給內容，從整頁文字中抓取「XXX萬」的片段
+    if(foundNodes.length===0){
+      const allLinks = doc.querySelectorAll('a[href*="591"]');
+      allLinks.forEach(a=>{
+        const text = (a.textContent||'').replace(/\s+/g,' ').trim();
+        const priceM = text.match(/(\d[\d,]*)\s*萬/);
+        if(priceM && text.length > 10 && text.length < 150){
+          allItems.push({
+            title: text.slice(0,40),
+            price: priceM[1]+'萬',
+            priceNum: parseInt(priceM[1].replace(/,/g,'')),
+            link: a.href || target,
+            type: label
+          });
+        }
+      });
+    } else {
+      foundNodes.forEach(n=>{
+        const text = (n.textContent||'').replace(/\s+/g,' ').trim();
+        const priceM = text.match(/(\d[\d,]*)\s*萬/);
+        if(priceM){
+          const a = n.querySelector('a');
+          const title = (n.querySelector('[class*="title"],[class*="name"],h3,h4')?.textContent||a?.textContent||text).trim().slice(0,40);
+          allItems.push({
+            title: title || '物件',
+            price: priceM[1]+'萬',
+            priceNum: parseInt(priceM[1].replace(/,/g,'')),
+            link: a?.href || target,
+            type: label
+          });
+        }
+      });
+    }
+  }
+
+  // 去重：同價位+標題前綴相似視為同物件，只留第一個
+  const seen = new Map();
+  for(const item of allItems){
+    const titleKey = item.title.replace(/[\s,，。\.\-_]/g,'').slice(0,12);
+    const key = `${item.priceNum}_${titleKey}`;
+    if(!seen.has(key)) seen.set(key,item);
+  }
+  // 進一步：同價位若已有 3 個以上，再去掉
+  const priceCount = {};
+  const items = Array.from(seen.values()).filter(it=>{
+    priceCount[it.priceNum] = (priceCount[it.priceNum]||0)+1;
+    return priceCount[it.priceNum] <= 2; // 同價位最多保留 2 個
+  });
+
+  // 依價格排序
+  items.sort((a,b)=>a.priceNum-b.priceNum);
+  const top = items.slice(0,10);
+
+  panel.dataset.loaded = '1';
+  btn.disabled = false;
+
+  if(top.length === 0){
+    panel.innerHTML = `
+      <div class="fetch-empty">
+        ⚠️ 591 採 SPA 動態載入，靜態抓取受限。建議直接到 591 查看：
+        <br>
+        <a class="fetch-go" href="https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}" target="_blank">直接前往 591 搜尋「${loc}」 →</a>
+      </div>
+    `;
+    btn.textContent = '🔄 重新嘗試抓取';
+    btn.onclick = ()=>{ panel.dataset.loaded=''; panel.classList.remove('show'); btn.textContent='📥 直接抓取現售物件到此'; btn.onclick=()=>fetchListings(loc,area,isAgri,btn); fetchListings(loc,area,isAgri,btn); };
+    return;
+  }
+
+  panel.innerHTML = `
+    <div class="fetch-list-title">📦 從 591 抓到 ${top.length} 筆現售物件（已去重 · 依價格排序）</div>
+    ${top.map(it=>`
+      <div class="fetch-item">
+        <div class="fi-type">${it.type}</div>
+        <div class="fi-info">
+          <div class="fi-title">${it.title}</div>
+          <div class="fi-price">💰 ${it.price}</div>
+        </div>
+        <a class="fi-link" href="${it.link}" target="_blank" title="到 591 查看詳情">→</a>
+      </div>
+    `).join('')}
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted)">
+      ⚠️ 透過第三方 CORS 代理抓取，資料以 591 即時為準 · <a href="https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}" target="_blank" style="color:#fb923c">查看完整列表</a>
+    </div>
+  `;
+  btn.textContent = '🔄 重新抓取';
+  btn.onclick = ()=>{ panel.dataset.loaded=''; panel.innerHTML=''; fetchListings(loc,area,isAgri,btn); };
+}
+</script>
+
+</body>
+</html>
