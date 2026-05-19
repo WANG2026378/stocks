@@ -413,22 +413,25 @@ function renderResults(list, isAgri){
       const scoreLeisure = d.scores.休閒;
       const totalEst = isAgri ? (d.price.地*30) : (d.price.房*15);
       const kw = encodeURIComponent(d.loc);
-      const kwArea = encodeURIComponent(d.area + d.loc);
+      const kwArea = encodeURIComponent(d.area + ' ' + d.loc);
+      // 用 Google 搜尋當路由，避免各家網站 URL 變動失效；地圖與實價登錄為官方 URL，穩定
       const links = isAgri ? `
         <div class="r-link-row">
-          <a class="r-link s591" href="https://sale.591.com.tw/list/index?shType=&kw=${kw}&type=2" target="_blank">🏛️ 591土地</a>
-          <a class="r-link farm" href="https://ezland.coa.gov.tw/Home" target="_blank">🌾 農地銀行</a>
-          <a class="r-link google" href="https://www.google.com/search?q=${kw}+農地+出售" target="_blank">🔍 Google</a>
+          <a class="r-link s591" href="https://www.google.com/search?q=${kw}+農地+出售+site:591.com.tw" target="_blank">🌾 591 農地</a>
+          <a class="r-link farm" href="https://www.google.com/search?q=${kw}+農地+出售+site:sale.591.com.tw+OR+site:rakuya.com.tw+OR+site:housefun.com.tw" target="_blank">🏛️ 全網農地</a>
+          <a class="r-link sinyi" href="https://www.google.com/maps/search/?api=1&query=${kwArea}" target="_blank">🗺️ Google 地圖</a>
           <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
+          <a class="r-link google" href="https://www.google.com/search?q=${kw}+農地+出售" target="_blank">🔍 一般搜尋</a>
+          <a class="r-link yung" href="https://www.google.com/search?q=農地銀行+${kw}" target="_blank">🌱 農地銀行</a>
         </div>
       ` : `
         <div class="r-link-row">
-          <a class="r-link s591" href="https://sale.591.com.tw/list/index?kw=${kw}" target="_blank">🏠 591房屋</a>
-          <a class="r-link sinyi" href="https://www.sinyi.com.tw/buy/list/${kw}-keyword" target="_blank">🏢 信義房屋</a>
-          <a class="r-link yung" href="https://buy.yungching.com.tw/region/${kw}-_c/" target="_blank">🏘️ 永慶</a>
-          <a class="r-link google" href="https://www.google.com/search?q=${kwArea}+房屋+出售" target="_blank">🔍 Google</a>
+          <a class="r-link s591" href="https://sale.591.com.tw/?kw=${kw}" target="_blank">🏠 591 房屋</a>
+          <a class="r-link sinyi" href="https://www.google.com/search?q=${kw}+信義房屋+出售+site:sinyi.com.tw" target="_blank">🏢 信義房屋</a>
+          <a class="r-link yung" href="https://www.google.com/search?q=${kw}+永慶+出售+site:yungching.com.tw" target="_blank">🏘️ 永慶房屋</a>
+          <a class="r-link google" href="https://www.google.com/maps/search/?api=1&query=${kwArea}" target="_blank">🗺️ Google 地圖</a>
           <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
-          <a class="r-link farm" href="https://sale.591.com.tw/list/index?shType=&kw=${kw}&type=2" target="_blank">🌾 591土地</a>
+          <a class="r-link farm" href="https://www.google.com/search?q=${kwArea}+房屋+出售" target="_blank">🔍 全網搜尋</a>
         </div>
       `;
       return `
@@ -454,7 +457,7 @@ function renderResults(list, isAgri){
           <div class="r-links">
             <div class="r-links-title">🔗 查看現有出售物件</div>
             ${links}
-            <button class="r-fetch-btn" onclick="fetchListings('${d.loc}','${d.area}',${isAgri?'true':'false'},this)">📥 直接抓取現售物件到此</button>
+            <button class="r-fetch-btn" onclick="openAllSearch('${d.loc}','${d.area}',${isAgri?'true':'false'},this)">🚀 一鍵開啟全網現售搜尋</button>
             <div class="r-fetch-panel"></div>
           </div>
         </div>
@@ -468,150 +471,50 @@ function renderResults(list, isAgri){
   },100);
 }
 
-// 透過 CORS 代理抓取 591 物件並去重
-async function fetchListings(loc, area, isAgri, btn){
-  const card = btn.closest('.r-card');
-  const panel = card.querySelector('.r-fetch-panel');
-
-  // 已載入過則切換顯示
-  if(panel.dataset.loaded === '1'){
-    panel.classList.toggle('show');
-    return;
-  }
-
-  panel.classList.add('show');
-  panel.innerHTML = '<div class="fetch-status">⏳ 透過代理抓取 591 現售物件中（首次可能需 5-10 秒）...</div>';
-  btn.disabled = true;
-
-  const types = isAgri ? [{t:2,label:'土地'}] : [{t:1,label:'房屋'},{t:2,label:'土地'}];
-  const allItems = [];
-
-  // 多重 CORS 代理 fallback
-  const proxies = [
-    u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+// 一鍵打開多個搜尋分頁（取代無法 work 的 CORS 抓取）
+// 591 是 SPA + CORS 阻擋，無法可靠抓資料回本頁；改用瀏覽器分頁開啟多個來源讓使用者直接比對
+function openAllSearch(loc, area, isAgri, btn){
+  const enc = encodeURIComponent;
+  const panel = btn.closest('.r-card').querySelector('.r-fetch-panel');
+  const targets = isAgri ? [
+    {name:'591 土地', url:`https://sale.591.com.tw/?type=2&kw=${enc(loc)}`, tag:'核心'},
+    {name:'Google 農地出售', url:`https://www.google.com/search?q=${enc(loc)}+農地+出售`, tag:'全網'},
+    {name:'Google 地圖', url:`https://www.google.com/maps/search/?api=1&query=${enc(area+' '+loc)}`, tag:'地理'},
+    {name:'樂屋/好房', url:`https://www.google.com/search?q=${enc(loc)}+農地+出售+site%3Arakuya.com.tw+OR+site%3Ahousefun.com.tw`, tag:'多站'},
+    {name:'農地銀行', url:`https://www.google.com/search?q=農地銀行+${enc(loc)}`, tag:'官方'},
+    {name:'實價登錄', url:`https://lvr.land.moi.gov.tw/`, tag:'官方'},
+  ] : [
+    {name:'591 房屋', url:`https://sale.591.com.tw/?kw=${enc(loc)}`, tag:'核心'},
+    {name:'Google 房屋出售', url:`https://www.google.com/search?q=${enc(area+' '+loc)}+房屋+出售`, tag:'全網'},
+    {name:'Google 地圖', url:`https://www.google.com/maps/search/?api=1&query=${enc(area+' '+loc)}`, tag:'地理'},
+    {name:'信義/永慶/樂屋', url:`https://www.google.com/search?q=${enc(loc)}+出售+site%3Asinyi.com.tw+OR+site%3Ayungching.com.tw+OR+site%3Arakuya.com.tw`, tag:'多站'},
+    {name:'實價登錄', url:`https://lvr.land.moi.gov.tw/`, tag:'官方'},
   ];
 
-  async function tryFetch(url){
-    for(const proxify of proxies){
-      try{
-        const res = await fetch(proxify(url),{signal:AbortSignal.timeout(12000)});
-        if(!res.ok) continue;
-        const ct = res.headers.get('content-type')||'';
-        if(ct.includes('application/json')){
-          const j = await res.json();
-          if(j.contents) return j.contents;
-        }
-        const txt = await res.text();
-        if(txt && txt.length > 500) return txt;
-      }catch(e){ /* try next */ }
-    }
-    return null;
-  }
-
-  for(const {t,label} of types){
-    const target = `https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}&type=${t}`;
-    const html = await tryFetch(target);
-    if(!html) continue;
-
-    const doc = new DOMParser().parseFromString(html,'text/html');
-
-    // 嘗試多種 591 用過的選擇器
-    const sels = ['.houseList-item','.itemBoxNew','.item','li[data-bind]','[class*="house-item"]','[class*="houseList"]','article'];
-    let foundNodes = [];
-    for(const sel of sels){
-      const nodes = doc.querySelectorAll(sel);
-      if(nodes.length>0){ foundNodes = [...nodes]; break; }
-    }
-
-    // 若 SPA 沒給內容，從整頁文字中抓取「XXX萬」的片段
-    if(foundNodes.length===0){
-      const allLinks = doc.querySelectorAll('a[href*="591"]');
-      allLinks.forEach(a=>{
-        const text = (a.textContent||'').replace(/\s+/g,' ').trim();
-        const priceM = text.match(/(\d[\d,]*)\s*萬/);
-        if(priceM && text.length > 10 && text.length < 150){
-          allItems.push({
-            title: text.slice(0,40),
-            price: priceM[1]+'萬',
-            priceNum: parseInt(priceM[1].replace(/,/g,'')),
-            link: a.href || target,
-            type: label
-          });
-        }
-      });
-    } else {
-      foundNodes.forEach(n=>{
-        const text = (n.textContent||'').replace(/\s+/g,' ').trim();
-        const priceM = text.match(/(\d[\d,]*)\s*萬/);
-        if(priceM){
-          const a = n.querySelector('a');
-          const title = (n.querySelector('[class*="title"],[class*="name"],h3,h4')?.textContent||a?.textContent||text).trim().slice(0,40);
-          allItems.push({
-            title: title || '物件',
-            price: priceM[1]+'萬',
-            priceNum: parseInt(priceM[1].replace(/,/g,'')),
-            link: a?.href || target,
-            type: label
-          });
-        }
-      });
-    }
-  }
-
-  // 去重：同價位+標題前綴相似視為同物件，只留第一個
-  const seen = new Map();
-  for(const item of allItems){
-    const titleKey = item.title.replace(/[\s,，。\.\-_]/g,'').slice(0,12);
-    const key = `${item.priceNum}_${titleKey}`;
-    if(!seen.has(key)) seen.set(key,item);
-  }
-  // 進一步：同價位若已有 3 個以上，再去掉
-  const priceCount = {};
-  const items = Array.from(seen.values()).filter(it=>{
-    priceCount[it.priceNum] = (priceCount[it.priceNum]||0)+1;
-    return priceCount[it.priceNum] <= 2; // 同價位最多保留 2 個
+  let opened = 0;
+  targets.slice(0,3).forEach(t=>{
+    const w = window.open(t.url,'_blank');
+    if(w) opened++;
   });
 
-  // 依價格排序
-  items.sort((a,b)=>a.priceNum-b.priceNum);
-  const top = items.slice(0,10);
-
-  panel.dataset.loaded = '1';
-  btn.disabled = false;
-
-  if(top.length === 0){
-    panel.innerHTML = `
-      <div class="fetch-empty">
-        ⚠️ 591 採 SPA 動態載入，靜態抓取受限。建議直接到 591 查看：
-        <br>
-        <a class="fetch-go" href="https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}" target="_blank">直接前往 591 搜尋「${loc}」 →</a>
-      </div>
-    `;
-    btn.textContent = '🔄 重新嘗試抓取';
-    btn.onclick = ()=>{ panel.dataset.loaded=''; panel.classList.remove('show'); btn.textContent='📥 直接抓取現售物件到此'; btn.onclick=()=>fetchListings(loc,area,isAgri,btn); fetchListings(loc,area,isAgri,btn); };
-    return;
-  }
-
+  panel.classList.add('show');
   panel.innerHTML = `
-    <div class="fetch-list-title">📦 從 591 抓到 ${top.length} 筆現售物件（已去重 · 依價格排序）</div>
-    ${top.map(it=>`
-      <div class="fetch-item">
-        <div class="fi-type">${it.type}</div>
+    <div class="fetch-list-title">${opened>=2 ? `✅ 已自動開啟 ${opened} 個分頁，下方為完整清單` : '⚠️ 瀏覽器擋下自動分頁，請點下方手動開啟'}</div>
+    ${targets.map(t=>`
+      <a class="fetch-item" href="${t.url}" target="_blank" style="text-decoration:none">
+        <div class="fi-type">${t.tag}</div>
         <div class="fi-info">
-          <div class="fi-title">${it.title}</div>
-          <div class="fi-price">💰 ${it.price}</div>
+          <div class="fi-title">${t.name}</div>
+          <div class="fi-price" style="font-size:10px;color:var(--muted);font-weight:400">${t.url.replace(/^https?:\/\//,'').slice(0,52)}...</div>
         </div>
-        <a class="fi-link" href="${it.link}" target="_blank" title="到 591 查看詳情">→</a>
-      </div>
+        <span class="fi-link">→</span>
+      </a>
     `).join('')}
-    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted)">
-      ⚠️ 透過第三方 CORS 代理抓取，資料以 591 即時為準 · <a href="https://sale.591.com.tw/list/index?kw=${encodeURIComponent(loc)}" target="_blank" style="color:#fb923c">查看完整列表</a>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted);line-height:1.7">
+      💡 Google 搜尋會自動去除重複物件、整合多家平台。<br>若被瀏覽器擋分頁，請允許彈出視窗或逐個點擊。
     </div>
   `;
-  btn.textContent = '🔄 重新抓取';
-  btn.onclick = ()=>{ panel.dataset.loaded=''; panel.innerHTML=''; fetchListings(loc,area,isAgri,btn); };
+  btn.textContent = '🔄 再次開啟';
 }
 </script>
 
