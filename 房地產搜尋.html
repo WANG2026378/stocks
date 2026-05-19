@@ -114,10 +114,61 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 
 .warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:12px;font-size:12px;color:#fcd34d;margin-top:16px;line-height:1.6}
 
+/* ===== 新增：物件比較器 ===== */
+.tools-section{margin-top:32px}
+.section-title-big{font-size:20px;font-weight:800;margin-bottom:6px;background:linear-gradient(90deg,#fb923c,#f59e0b,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.section-desc{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+
+/* 房貸試算器 */
+.calc-box{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(59,130,246,.05));border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:18px;margin-bottom:20px}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.calc-field{display:flex;flex-direction:column}
+.calc-label{font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.calc-input{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:14px;font-family:inherit;font-weight:600;text-align:center}
+.calc-input:focus{outline:none;border-color:#10b981}
+.calc-result{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;padding-top:14px;border-top:1px dashed var(--border)}
+.calc-result-item{text-align:center}
+.calc-result-val{font-size:22px;font-weight:800;color:#6ee7b7;margin-bottom:2px}
+.calc-result-lbl{font-size:11px;color:var(--muted)}
+
+/* 物件比較器 */
+.add-item-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;display:none}
+.add-item-box.show{display:block}
+.add-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.add-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.btn-save{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:10px 24px;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 20px;border-radius:8px;cursor:pointer;font-family:inherit}
+
+.add-toggle{width:100%;background:linear-gradient(135deg,rgba(251,146,60,.15),rgba(245,158,11,.1));border:2px dashed rgba(251,146,60,.4);color:#fdba74;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;margin-bottom:16px}
+.add-toggle:hover{background:linear-gradient(135deg,rgba(251,146,60,.25),rgba(245,158,11,.15));border-color:#fb923c}
+
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative}
+.item-card.best{border-color:#10b981;background:linear-gradient(135deg,rgba(16,185,129,.06),var(--card))}
+.item-card.best::before{content:'⭐ 最佳';position:absolute;top:-8px;left:14px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700}
+.item-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.item-name{font-size:16px;font-weight:800;flex:1}
+.item-del{background:transparent;border:1px solid var(--border);color:var(--muted);width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0}
+.item-del:hover{border-color:var(--red);color:var(--red)}
+.item-area{font-size:12px;color:var(--muted);margin-bottom:12px}
+.item-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.item-stat{background:var(--card2);border-radius:8px;padding:8px;text-align:center}
+.item-stat-val{font-size:16px;font-weight:800}
+.item-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.item-stat.hi .item-stat-val{color:#6ee7b7}
+.item-stat.warn .item-stat-val{color:#fcd34d}
+.item-stat.bad .item-stat-val{color:#fca5a5}
+.item-proj{font-size:12px;color:var(--muted);padding:8px;background:var(--card2);border-radius:8px;margin-bottom:8px;line-height:1.7}
+.item-proj strong{color:#fdba74}
+.item-link{display:block;text-align:center;color:#60a5fa;font-size:12px;text-decoration:none;padding:6px;border:1px solid var(--border);border-radius:6px}
+.item-link:hover{background:rgba(59,130,246,.08);border-color:#3b82f6}
+.no-items{text-align:center;padding:30px 20px;color:var(--muted);font-size:13px;background:var(--card);border:1px dashed var(--border);border-radius:12px}
+
 @media(max-width:600px){
   .header-title{font-size:22px}
   .btn{padding:8px 12px;font-size:13px}
   .step{padding:16px}
+  .item-stats{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -243,6 +294,61 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
   <div class="results" id="results">
     <div class="result-summary" id="summary"></div>
     <div class="result-grid" id="grid"></div>
+  </div>
+
+  <!-- ===== 新增：房貸試算 ===== -->
+  <div class="tools-section">
+    <div class="section-title-big">🧮 房貸快速試算</div>
+    <div class="section-desc">輸入總價即時試算月付金額、總利息（預設國泰世華首購利率 2.06% / 30 年 / 8 成貸）</div>
+    <div class="calc-box">
+      <div class="calc-grid">
+        <div class="calc-field"><label class="calc-label">總價（萬）</label><input class="calc-input" type="number" id="cPrice" value="1000" oninput="updCalc()"></div>
+        <div class="calc-field"><label class="calc-label">自備款（%）</label><input class="calc-input" type="number" id="cDown" value="20" oninput="updCalc()"></div>
+        <div class="calc-field"><label class="calc-label">利率（%）</label><input class="calc-input" type="number" id="cRate" value="2.06" step="0.01" oninput="updCalc()"></div>
+        <div class="calc-field"><label class="calc-label">年限</label><input class="calc-input" type="number" id="cYears" value="30" oninput="updCalc()"></div>
+      </div>
+      <div class="calc-result">
+        <div class="calc-result-item"><div class="calc-result-val" id="rMonthly">—</div><div class="calc-result-lbl">每月還款（元）</div></div>
+        <div class="calc-result-item"><div class="calc-result-val" id="rDown">—</div><div class="calc-result-lbl">自備款（萬）</div></div>
+        <div class="calc-result-item"><div class="calc-result-val" id="rLoan">—</div><div class="calc-result-lbl">貸款金額（萬）</div></div>
+        <div class="calc-result-item"><div class="calc-result-val" id="rInterest">—</div><div class="calc-result-lbl">總利息（萬）</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 新增：物件比較器 ===== -->
+  <div class="tools-section">
+    <div class="section-title-big">💼 我的物件比較器</div>
+    <div class="section-desc">從 591/信義/永慶找到喜歡的物件，把資料貼進來，工具自動算月付、單價、增值預估，幫你選最佳物件（資料存本機，關掉再打開都還在）</div>
+
+    <button class="add-toggle" onclick="toggleAddForm()">➕ 加入一個物件來比較</button>
+
+    <div class="add-item-box" id="addBox">
+      <div class="add-grid">
+        <div class="calc-field"><label class="calc-label">物件名稱*</label><input class="calc-input" id="iName" placeholder="如：青埔某重劃案"></div>
+        <div class="calc-field"><label class="calc-label">所在區域*</label>
+          <select class="calc-input" id="iLoc">
+            <option value="">-- 選擇 --</option>
+          </select>
+        </div>
+        <div class="calc-field"><label class="calc-label">類型</label>
+          <select class="calc-input" id="iType">
+            <option value="房">🏠 房屋</option>
+            <option value="地">🌾 農地</option>
+          </select>
+        </div>
+        <div class="calc-field"><label class="calc-label">總價（萬）*</label><input class="calc-input" type="number" id="iPrice" placeholder="1200"></div>
+        <div class="calc-field"><label class="calc-label">坪數*</label><input class="calc-input" type="number" id="iSize" placeholder="35" step="0.1"></div>
+        <div class="calc-field"><label class="calc-label">屋齡（年）</label><input class="calc-input" type="number" id="iAge" placeholder="5"></div>
+        <div class="calc-field" style="grid-column:span 2"><label class="calc-label">來源連結（選填）</label><input class="calc-input" id="iUrl" placeholder="貼上 591 物件網址" style="text-align:left"></div>
+      </div>
+      <div class="add-actions">
+        <button class="btn-cancel" onclick="toggleAddForm()">取消</button>
+        <button class="btn-save" onclick="saveItem()">💾 儲存物件</button>
+      </div>
+    </div>
+
+    <div id="itemsContainer"></div>
   </div>
 
   <div class="warn">
@@ -457,8 +563,7 @@ function renderResults(list, isAgri){
           <div class="r-links">
             <div class="r-links-title">🔗 查看現有出售物件</div>
             ${links}
-            <button class="r-fetch-btn" onclick="openAllSearch('${d.loc}','${d.area}',${isAgri?'true':'false'},this)">🚀 一鍵開啟全網現售搜尋</button>
-            <div class="r-fetch-panel"></div>
+            <button class="r-fetch-btn" onclick="quickAddItem('${d.loc}','${d.area}','${isAgri?'地':'房'}')">➕ 加入此區的物件到比較器</button>
           </div>
         </div>
       `;
@@ -516,6 +621,220 @@ function openAllSearch(loc, area, isAgri, btn){
   `;
   btn.textContent = '🔄 再次開啟';
 }
+
+// ===================== 房貸試算 =====================
+function calcMortgage(price, downPct, rate, years){
+  const downAmt = price * downPct / 100;
+  const loanAmt = price - downAmt;
+  const loanYuan = loanAmt * 10000;
+  const months = years * 12;
+  const mr = rate / 100 / 12;
+  let monthly;
+  if(mr === 0){ monthly = loanYuan / months; }
+  else { monthly = loanYuan * mr * Math.pow(1+mr,months) / (Math.pow(1+mr,months) - 1); }
+  const total = monthly * months;
+  const interest = (total - loanYuan) / 10000;
+  return {monthly: Math.round(monthly), downAmt, loanAmt, interest: Math.round(interest)};
+}
+
+function updCalc(){
+  const price = +document.getElementById('cPrice').value || 0;
+  const down = +document.getElementById('cDown').value || 0;
+  const rate = +document.getElementById('cRate').value || 0;
+  const years = +document.getElementById('cYears').value || 30;
+  if(price <= 0){ ['rMonthly','rDown','rLoan','rInterest'].forEach(id=>document.getElementById(id).textContent='—'); return; }
+  const r = calcMortgage(price, down, rate, years);
+  document.getElementById('rMonthly').textContent = r.monthly.toLocaleString();
+  document.getElementById('rDown').textContent = r.downAmt.toLocaleString();
+  document.getElementById('rLoan').textContent = r.loanAmt.toLocaleString();
+  document.getElementById('rInterest').textContent = r.interest.toLocaleString();
+}
+updCalc();
+
+// 區域下拉
+const locSelect = document.getElementById('iLoc');
+DATA.forEach(d=>{
+  const o = document.createElement('option');
+  o.value = d.loc; o.textContent = `${d.loc}（${d.area}）`;
+  locSelect.appendChild(o);
+});
+const oOther = document.createElement('option');
+oOther.value = '__other__'; oOther.textContent = '其他（手動輸入）';
+locSelect.appendChild(oOther);
+
+// ===================== 物件比較器（localStorage CRUD） =====================
+const STORAGE_KEY = 'realEstateItems_v1';
+function loadItems(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch(e){return [];} }
+function saveItems(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+function toggleAddForm(){
+  document.getElementById('addBox').classList.toggle('show');
+}
+
+function saveItem(){
+  const name = document.getElementById('iName').value.trim();
+  const loc = document.getElementById('iLoc').value;
+  const type = document.getElementById('iType').value;
+  const price = +document.getElementById('iPrice').value;
+  const size = +document.getElementById('iSize').value;
+  const age = +document.getElementById('iAge').value || 0;
+  const url = document.getElementById('iUrl').value.trim();
+
+  if(!name || !loc || !price || !size){
+    alert('請填寫：物件名稱、所在區域、總價、坪數');
+    return;
+  }
+
+  const items = loadItems();
+  items.push({id:Date.now(), name, loc, type, price, size, age, url, added:new Date().toISOString().slice(0,10)});
+  saveItems(items);
+
+  // 清空表單
+  ['iName','iPrice','iSize','iAge','iUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iLoc').value='';
+  document.getElementById('addBox').classList.remove('show');
+  renderItems();
+}
+
+function deleteItem(id){
+  if(!confirm('確定刪除此物件?')) return;
+  saveItems(loadItems().filter(i=>i.id!==id));
+  renderItems();
+}
+
+function projectValue(price, locName, years){
+  // 找到該區的投資評分,推算年化漲幅
+  const d = DATA.find(x=>x.loc===locName);
+  let annualRate = 0.015; // 預設 1.5%
+  if(d){
+    const s = d.scores.投資;
+    if(s>=90) annualRate = 0.08;
+    else if(s>=85) annualRate = 0.065;
+    else if(s>=80) annualRate = 0.05;
+    else if(s>=75) annualRate = 0.04;
+    else if(s>=70) annualRate = 0.03;
+    else if(s>=60) annualRate = 0.02;
+    else annualRate = 0.01;
+  }
+  return {value: price * Math.pow(1+annualRate, years), rate: annualRate};
+}
+
+function compareToAvg(item){
+  const d = DATA.find(x=>x.loc===item.loc);
+  if(!d) return null;
+  const avgPpsm = item.type==='地' ? d.price.地 : d.price.房;
+  const myPpsm = item.price / item.size;
+  const diff = ((myPpsm - avgPpsm) / avgPpsm) * 100;
+  return {avgPpsm, myPpsm, diff};
+}
+
+function scoreItem(item){
+  // 綜合評分:單價合理性(35) + 增值力(35) + 屋齡(15) + 區域熱度(15)
+  let score = 50;
+  const cmp = compareToAvg(item);
+  if(cmp){
+    if(cmp.diff < -10) score += 20;       // 比均價便宜10%以上
+    else if(cmp.diff < -3) score += 10;
+    else if(cmp.diff < 5) score += 5;
+    else if(cmp.diff > 15) score -= 15;   // 比均價貴15%以上
+    else if(cmp.diff > 8) score -= 8;
+  }
+  const d = DATA.find(x=>x.loc===item.loc);
+  if(d){
+    score += (d.scores.投資 - 60) * 0.3;
+    score += (d.scores.自住 - 60) * 0.15;
+  }
+  if(item.age >= 30) score -= 10;
+  else if(item.age >= 20) score -= 5;
+  else if(item.age <= 5) score += 5;
+  return Math.max(0,Math.min(100,Math.round(score)));
+}
+
+function renderItems(){
+  const items = loadItems();
+  const container = document.getElementById('itemsContainer');
+  if(items.length===0){
+    container.innerHTML = '<div class="no-items">📭 還沒有儲存的物件<br>從 591 或上方推薦地區挑到喜歡的物件後,按「➕ 加入物件」貼資料進來</div>';
+    return;
+  }
+
+  // 計算每個 item 的分數
+  const itemsWithScore = items.map(it=>({...it, score:scoreItem(it)}));
+  const maxScore = Math.max(...itemsWithScore.map(i=>i.score));
+
+  // 預設利率參數
+  const rate = +document.getElementById('cRate').value || 2.06;
+  const years = +document.getElementById('cYears').value || 30;
+  const down = +document.getElementById('cDown').value || 20;
+
+  container.innerHTML = '<div class="items-grid">' + itemsWithScore.map(it=>{
+    const isBest = it.score === maxScore && items.length > 1;
+    const ppsm = (it.price / it.size).toFixed(1);
+    const m = calcMortgage(it.price, down, rate, years);
+    const cmp = compareToAvg(it);
+    const p5 = projectValue(it.price, it.loc, 5);
+    const p10 = projectValue(it.price, it.loc, 10);
+
+    let cmpHTML = '';
+    if(cmp){
+      const diff = cmp.diff;
+      const cmpClass = diff < -5 ? 'hi' : diff > 8 ? 'bad' : 'warn';
+      const cmpText = diff < 0 ? `便宜 ${Math.abs(diff).toFixed(1)}%` : `貴 ${diff.toFixed(1)}%`;
+      cmpHTML = `<div class="item-stat ${cmpClass}"><div class="item-stat-val">${cmpText}</div><div class="item-stat-lbl">vs 該區均價 ${cmp.avgPpsm}萬/坪</div></div>`;
+    } else {
+      cmpHTML = `<div class="item-stat"><div class="item-stat-val">—</div><div class="item-stat-lbl">該區無均價資料</div></div>`;
+    }
+
+    const scoreClass = it.score >= 75 ? 'hi' : it.score >= 55 ? 'warn' : 'bad';
+    const d = DATA.find(x=>x.loc===it.loc);
+    const areaLabel = d ? `${d.area} · ${d.loc}` : it.loc;
+
+    return `
+      <div class="item-card ${isBest?'best':''}">
+        <div class="item-head">
+          <div class="item-name">${it.name}</div>
+          <button class="item-del" onclick="deleteItem(${it.id})" title="刪除">✕</button>
+        </div>
+        <div class="item-area">📍 ${areaLabel} · ${it.type==='地'?'農地':'房屋'}${it.age?' · 屋齡 '+it.age+'年':''} · 加入於 ${it.added}</div>
+
+        <div class="item-stats">
+          <div class="item-stat ${scoreClass}"><div class="item-stat-val">${it.score}</div><div class="item-stat-lbl">綜合評分 / 100</div></div>
+          <div class="item-stat"><div class="item-stat-val">${ppsm}</div><div class="item-stat-lbl">單價（萬/坪）</div></div>
+          <div class="item-stat hi"><div class="item-stat-val">${m.monthly.toLocaleString()}</div><div class="item-stat-lbl">月付（元）</div></div>
+          ${cmpHTML}
+        </div>
+
+        <div class="item-proj">
+          📈 <strong>${(p5.rate*100).toFixed(1)}%/年</strong> 預估增值（依該區投資評分）<br>
+          5 年後 ≈ <strong>${p5.value.toFixed(0)}萬</strong>（+${(p5.value-it.price).toFixed(0)}萬）<br>
+          10 年後 ≈ <strong>${p10.value.toFixed(0)}萬</strong>（+${(p10.value-it.price).toFixed(0)}萬）
+        </div>
+        ${it.url ? `<a class="item-link" href="${it.url}" target="_blank">🔗 開啟物件原始連結</a>` : ''}
+      </div>
+    `;
+  }).join('') + '</div>';
+}
+
+// 從推薦卡快速加入物件
+function quickAddItem(loc, area, type){
+  document.getElementById('addBox').classList.add('show');
+  document.getElementById('iName').value = `${area}${loc} 物件 ${new Date().toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'})}`;
+  document.getElementById('iLoc').value = loc;
+  document.getElementById('iType').value = type;
+  document.getElementById('iPrice').focus();
+  document.getElementById('addBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// 初始化
+renderItems();
+
+// 監聽試算參數變化,更新物件月付
+['cPrice','cDown','cRate','cYears'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    // 物件月付會隨著利率/年限變動而重算
+    if(loadItems().length>0) renderItems();
+  });
+});
 </script>
 
 </body>
