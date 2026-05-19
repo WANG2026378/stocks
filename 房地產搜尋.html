@@ -100,18 +100,24 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .r-insight{background:linear-gradient(135deg,rgba(251,146,60,.08),rgba(16,185,129,.05));border:1px solid rgba(251,146,60,.25);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text);line-height:1.5;margin-bottom:10px}
 .r-insight strong{color:#fdba74}
 .r-tags-mini{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
-.r-act-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:8px}
-.r-act{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 8px;font-size:12px;color:var(--text);text-decoration:none;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;border-color:rgba(239,68,68,.3);color:#fca5a5}
+.r-act-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.r-act{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 6px;font-size:11px;color:var(--text);text-decoration:none;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
 .r-act:hover{transform:translateY(-1px)}
 .r-act.s591{border-color:rgba(239,68,68,.4);color:#fca5a5}
 .r-act.s591:hover{background:rgba(239,68,68,.12)}
+.r-act.rakuya{border-color:rgba(16,185,129,.4);color:#6ee7b7}
+.r-act.rakuya:hover{background:rgba(16,185,129,.12)}
+.r-act.housefun{border-color:rgba(139,92,246,.4);color:#c4b5fd}
+.r-act.housefun:hover{background:rgba(139,92,246,.12)}
+.r-act.sinyi{border-color:rgba(59,130,246,.4);color:#93c5fd}
+.r-act.sinyi:hover{background:rgba(59,130,246,.12)}
 .r-act.gov{border-color:rgba(245,158,11,.4);color:#fcd34d}
 .r-act.gov:hover{background:rgba(245,158,11,.12)}
 .r-act.map{border-color:rgba(59,130,246,.4);color:#93c5fd}
 .r-act.map:hover{background:rgba(59,130,246,.12)}
 .r-act.farm{border-color:rgba(139,92,246,.4);color:#c4b5fd}
 .r-act.farm:hover{background:rgba(139,92,246,.12)}
-.r-act.add{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;width:42px}
+.r-act.add{grid-column:span 2;background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:10px;font-size:13px;margin-top:2px}
 .r-act.add:hover{box-shadow:0 4px 12px rgba(16,185,129,.3)}
 .r-summary-warn{background:rgba(245,158,11,.1);border-left:3px solid #f59e0b;border-radius:6px;padding:8px 12px;font-size:12px;color:#fcd34d;margin-top:8px;line-height:1.6}
 .r-summary-cmp{background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:6px;padding:8px 12px;font-size:12px;color:#a7f3d0;margin-top:8px;line-height:1.6}
@@ -504,18 +510,84 @@ function resetAll(){
   document.getElementById('results').classList.remove('show');
 }
 
-// 建構 591 完整過濾 URL（kw + price + room + shape + type）
+// ===== 多網站適配器：所有站點同步套用使用者過濾條件 =====
+// 預算對應各站格式
+const BUDGET_RANGE = {'300':[0,300],'500':[300,500],'800':[500,800],'1500':[800,1500],'3000':[1500,3000],'9999':[3000,99999]};
+
+// 591: 已知最完整 URL 過濾參數
 function build591URL(d, isAgri){
   const p = new URLSearchParams();
   p.set('kw', d.loc);
-  if(isAgri){ p.set('type','2'); return `https://sale.591.com.tw/?${p.toString()}`; }
+  if(isAgri){ p.set('type','2'); return `https://sale.591.com.tw/?${p}`; }
   if(state.budget && BUDGET_591[state.budget]) p.set('price', BUDGET_591[state.budget]);
   if(state.rooms.length) p.set('room', state.rooms.join(','));
   if(state.shape.length) p.set('shape', state.shape.join(','));
-  return `https://sale.591.com.tw/?${p.toString()}`;
+  return `https://sale.591.com.tw/?${p}`;
 }
 
-// 591 條件摘要（顯示給使用者看會傳什麼到 591）
+// 樂屋網: 支援 pricerange_s/e、roomnum、typecode
+// shape 對應: 我們(1公寓/2大樓/3透天/4別墅/5套房) → 樂屋(2公寓/3大樓/1透天/1別墅/6套房)
+function buildRakuyaURL(d){
+  const p = new URLSearchParams();
+  p.set('search','keyword');
+  p.set('keyword', d.loc);
+  if(state.budget && BUDGET_RANGE[state.budget]){
+    const [s,e] = BUDGET_RANGE[state.budget];
+    p.set('pricerange_s', s);
+    p.set('pricerange_e', e);
+  }
+  if(state.rooms.length) p.set('roomnum', Math.min(...state.rooms.map(Number)));
+  if(state.shape.length){
+    const map = {'1':2,'2':3,'3':1,'4':1,'5':6};
+    const codes = [...new Set(state.shape.map(s=>map[s]).filter(Boolean))];
+    if(codes.length) p.set('typecode', codes.join(','));
+  }
+  return `https://www.rakuya.com.tw/sell/result?${p}`;
+}
+
+// 好房網: 支援 K(關鍵字)、Price、Room
+function buildHousefunURL(d){
+  const p = new URLSearchParams();
+  p.set('K', d.loc);
+  if(state.budget && BUDGET_RANGE[state.budget]){
+    const [s,e] = BUDGET_RANGE[state.budget];
+    p.set('Price', `${s}-${e}`);
+  }
+  if(state.rooms.length) p.set('Room', state.rooms.join(','));
+  return `https://buy.housefun.com.tw/list/?${p}`;
+}
+
+// 信義/永慶: URL 過濾不穩,改用 Google 搜尋 site: + 過濾關鍵字（自動帶入）
+function buildGoogleSiteSearch(d, sites){
+  const tokens = [d.loc];
+  if(state.budget && BUDGET_LABEL[state.budget]) tokens.push(BUDGET_LABEL[state.budget]);
+  if(state.rooms.length) tokens.push(state.rooms.map(r=>ROOM_LABEL[r]).join(' '));
+  if(state.shape.length) tokens.push(state.shape.map(s=>SHAPE_LABEL[s]).join(' '));
+  const siteFilter = sites.map(s=>`site:${s}`).join(' OR ');
+  const q = `(${siteFilter}) ${tokens.join(' ')}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+
+// 多網站連結建構器
+function buildSiteLinks(d, state, isAgri){
+  const kwArea = encodeURIComponent(d.area + ' ' + d.loc);
+  if(isAgri){
+    return [
+      {ic:'🌾', lb:'591土地', url:build591URL(d, true), cls:'s591'},
+      {ic:'🏛️', lb:'農地銀行', url:`https://www.google.com/search?q=${encodeURIComponent('農地銀行 '+d.loc)}`, cls:'farm'},
+      {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
+      {ic:'📊', lb:'實價', url:`https://lvr.land.moi.gov.tw/`, cls:'gov'},
+    ];
+  }
+  return [
+    {ic:'🏠', lb:'591', url:build591URL(d, false), cls:'s591'},
+    {ic:'🏘️', lb:'樂屋', url:buildRakuyaURL(d), cls:'rakuya'},
+    {ic:'🏛️', lb:'好房', url:buildHousefunURL(d), cls:'housefun'},
+    {ic:'🏢', lb:'信義永慶', url:buildGoogleSiteSearch(d, ['sinyi.com.tw','yungching.com.tw']), cls:'sinyi'},
+  ];
+}
+
+// 過濾條件摘要文字
 function get591FilterText(){
   const parts = [];
   if(state.budget && BUDGET_LABEL[state.budget]) parts.push(BUDGET_LABEL[state.budget]);
@@ -566,22 +638,9 @@ function getTiming(d){
   return {ic:'🟡', t:'盤整中', cls:'yellow'};
 }
 
-// 智能配對連結：依用途給出 2 個最相關網站,591 帶完整過濾條件
+// 智能配對：呼叫多網站適配器
 function getSmartLinks(d, isAgri, purpose){
-  const kwArea=encodeURIComponent(d.area+' '+d.loc);
-  const url591 = build591URL(d, isAgri);
-  if(isAgri) return [
-    {ic:'🌾', lb:'591土地', url:url591, cls:'s591'},
-    {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
-  ];
-  if(purpose==='投資') return [
-    {ic:'🏠', lb:'591房屋', url:url591, cls:'s591'},
-    {ic:'📊', lb:'實價', url:`https://lvr.land.moi.gov.tw/`, cls:'gov'},
-  ];
-  return [
-    {ic:'🏠', lb:'591房屋', url:url591, cls:'s591'},
-    {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
-  ];
+  return buildSiteLinks(d, state, isAgri);
 }
 
 // 智能摘要：警示矛盾條件 + 升級/降級建議
@@ -712,7 +771,7 @@ function renderResults(list, isAgri){
   const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
   const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
 
-  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591 將套用過濾</strong>:${get591FilterText()} · 點下方推薦卡的「591」按鈕直接帶入</p>` : '';
+  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591 / 樂屋 / 好房 / 信義永慶</strong> 將同步套用過濾:${get591FilterText()} · 點推薦卡按鈕直接帶入</p>` : '';
   document.getElementById('summary').innerHTML = `
     <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
     <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
