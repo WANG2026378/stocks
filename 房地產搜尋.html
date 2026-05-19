@@ -91,6 +91,32 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .r-link.google{border-color:rgba(251,146,60,.3);color:#fdba74}
 .r-link.google:hover{background:rgba(251,146,60,.12);border-color:#fb923c}
 
+/* ===== 精簡版卡片新樣式 ===== */
+.r-score-line{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;gap:8px}
+.r-score-line .v{font-size:36px;font-weight:800;background:linear-gradient(90deg,#fb923c,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.r-score-line .d{font-size:11px;color:var(--muted);text-align:right;line-height:1.4}
+.r-bar-mini{height:5px;background:var(--card2);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.r-bar-mini-fill{height:100%;background:linear-gradient(90deg,#fb923c,#f59e0b);border-radius:3px;transition:width .8s}
+.r-insight{background:linear-gradient(135deg,rgba(251,146,60,.08),rgba(16,185,129,.05));border:1px solid rgba(251,146,60,.25);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text);line-height:1.5;margin-bottom:10px}
+.r-insight strong{color:#fdba74}
+.r-tags-mini{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.r-act-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:8px}
+.r-act{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 8px;font-size:12px;color:var(--text);text-decoration:none;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;border-color:rgba(239,68,68,.3);color:#fca5a5}
+.r-act:hover{transform:translateY(-1px)}
+.r-act.s591{border-color:rgba(239,68,68,.4);color:#fca5a5}
+.r-act.s591:hover{background:rgba(239,68,68,.12)}
+.r-act.gov{border-color:rgba(245,158,11,.4);color:#fcd34d}
+.r-act.gov:hover{background:rgba(245,158,11,.12)}
+.r-act.map{border-color:rgba(59,130,246,.4);color:#93c5fd}
+.r-act.map:hover{background:rgba(59,130,246,.12)}
+.r-act.farm{border-color:rgba(139,92,246,.4);color:#c4b5fd}
+.r-act.farm:hover{background:rgba(139,92,246,.12)}
+.r-act.add{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;width:42px}
+.r-act.add:hover{box-shadow:0 4px 12px rgba(16,185,129,.3)}
+.r-summary-warn{background:rgba(245,158,11,.1);border-left:3px solid #f59e0b;border-radius:6px;padding:8px 12px;font-size:12px;color:#fcd34d;margin-top:8px;line-height:1.6}
+.r-summary-cmp{background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:6px;padding:8px 12px;font-size:12px;color:#a7f3d0;margin-top:8px;line-height:1.6}
+.r-summary-cmp strong, .r-summary-warn strong{color:#fff}
+
 .r-fetch-btn{width:100%;margin-top:10px;background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
 .r-fetch-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,.3)}
 .r-fetch-btn:disabled{opacity:.6;cursor:wait}
@@ -440,6 +466,126 @@ function resetAll(){
   document.getElementById('results').classList.remove('show');
 }
 
+// ===================== 智能輔助函式 =====================
+// 縣市環境風險（1=極低,5=極高）來源：中央地調所+水利署潛勢圖+環保署
+const RISK = {
+  '北北基': {地震:3, 淹水:4, 土液:4, 空汙:2, 颱風:4},
+  '桃竹苗': {地震:2, 淹水:2, 土液:3, 空汙:3, 颱風:3},
+  '中彰投': {地震:4, 淹水:3, 土液:3, 空汙:4, 颱風:3},
+  '雲嘉南': {地震:3, 淹水:4, 土液:3, 空汙:4, 颱風:3},
+  '高屏':   {地震:3, 淹水:3, 土液:3, 空汙:5, 颱風:3},
+  '宜花東': {地震:5, 淹水:4, 土液:2, 空汙:1, 颱風:5},
+};
+function getRisk(region){
+  const r = RISK[region] || {地震:3,淹水:3,土液:3,空汙:3,颱風:3};
+  return {...r, avg:(r.地震+r.淹水+r.土液+r.空汙+r.颱風)/5};
+}
+
+// AI 洞察：根據區段特徵判讀一句話定位
+function getInsight(d){
+  const s=d.scores, p=d.price, tg=d.tags.join(',');
+  if(s.投資>=88 && p.房<=45) return {icon:'🔥', label:'性價比之王', desc:'投資評分高+單價尚未飆高'};
+  if(s.投資>=80 && tg.includes('重劃')) return {icon:'🏗️', label:'重劃區新星', desc:'規劃完整+題材熱'};
+  if(s.投資>=80 && d.bonus.includes('科技')) return {icon:'💻', label:'科技外溢買盤', desc:'園區帶動+租金穩'};
+  if(d.region==='宜花東' && s.退休>=75) return {icon:'🌅', label:'退休慢活天堂', desc:'環境最佳+成本低'};
+  if(s.投資>=70 && p.房<=25) return {icon:'💎', label:'隱藏寶石', desc:'低總價+題材潛力'};
+  if(d.bonus.includes('捷運') && d.bonus.includes('學區')) return {icon:'🚇', label:'剛需首選', desc:'捷運+學區機能完整'};
+  if(tg.includes('高鐵')) return {icon:'🚄', label:'高鐵效應區', desc:'三鐵共構+商業聚落'};
+  if(p.房>=70) return {icon:'⚠️', label:'單價已偏高', desc:'題材多已反映,進場宜謹慎'};
+  if(s.休閒>=80) return {icon:'🏕️', label:'休閒度假首選', desc:'景觀+觀光雙加分'};
+  if(s.農耕>=85 && p.地<=10) return {icon:'🌾', label:'農地黃金價位', desc:'水源好+門檻低'};
+  return {icon:'📌', label:'平衡型選擇', desc:'各項條件均衡無短板'};
+}
+
+// 時機燈號：當下進場時機評估
+function getTiming(d){
+  const inv=d.scores.投資, p=d.price.房;
+  if(inv>=85 && p<=45) return {ic:'🟢', t:'低點進場', cls:'green'};
+  if(inv>=78 && p<=40) return {ic:'🟢', t:'動能佳', cls:'green'};
+  if(inv>=80 && p>=60) return {ic:'🟡', t:'合理偏高', cls:'yellow'};
+  if(inv<=65 && p>=50) return {ic:'🔴', t:'價量背離', cls:'red'};
+  if(inv>=72) return {ic:'🟢', t:'看漲', cls:'green'};
+  return {ic:'🟡', t:'盤整中', cls:'yellow'};
+}
+
+// 智能配對連結：依用途給出 2 個最相關網站
+function getSmartLinks(d, isAgri, purpose){
+  const kw=encodeURIComponent(d.loc), kwArea=encodeURIComponent(d.area+' '+d.loc);
+  if(isAgri) return [
+    {ic:'🌾', lb:'591土地', url:`https://sale.591.com.tw/?type=2&kw=${kw}`, cls:'s591'},
+    {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
+  ];
+  if(purpose==='投資') return [
+    {ic:'🏠', lb:'591房屋', url:`https://sale.591.com.tw/?kw=${kw}`, cls:'s591'},
+    {ic:'📊', lb:'實價', url:`https://lvr.land.moi.gov.tw/`, cls:'gov'},
+  ];
+  return [
+    {ic:'🏠', lb:'591房屋', url:`https://sale.591.com.tw/?kw=${kw}`, cls:'s591'},
+    {ic:'🗺️', lb:'地圖', url:`https://www.google.com/maps/search/?api=1&query=${kwArea}`, cls:'map'},
+  ];
+}
+
+// 智能摘要：警示矛盾條件 + 升級/降級建議
+function getSmartSummary(list, state, isAgri){
+  const warnings=[], cmps=[];
+  if(!list.length) return {warnings, cmps};
+  const t1=list[0];
+
+  // 矛盾條件
+  if(state.personal.includes('通勤北') && !['北北基','桃竹苗'].includes(t1.region) && !(t1.region==='宜花東' && t1.loc.includes('宜蘭'))){
+    warnings.push(`你勾選「通勤台北」但最佳區位於 ${REGION_LABEL[t1.region]},通勤負擔重 → 建議改桃竹苗或宜蘭礁溪`);
+  }
+  if(state.personal.includes('短期') && t1.scores.投資 < 75){
+    warnings.push('「短期 5 年內」需更高動能 → 優先重劃區與科技帶 (青埔/楠梓橋頭/寶山/新化善化)');
+  }
+  if(isAgri && !state.personal.includes('自耕農')){
+    warnings.push('購買農牧用地需自耕農身分 (連續耕作 2 年+審核),請先確認資格再出價');
+  }
+  if(state.budget==='300' && state.region.includes('北北基')){
+    warnings.push('300萬預算在雙北選擇極少 → 建議擴大至桃竹苗 (頭份/楊梅) 或宜蘭三星/冬山');
+  }
+
+  // Top1 vs Top2 對比
+  if(list.length>=2){
+    const t2=list[1];
+    const pf = isAgri ? '地':'房';
+    const pd = Math.round(((t2.price[pf]-t1.price[pf])/t1.price[pf])*100);
+    const sd = t1.scores[state.purpose] - t2.scores[state.purpose];
+    if(pd>5){
+      cmps.push(`🏆 <strong>${t1.loc}</strong> 比第二名 <strong>${t2.loc}</strong> 便宜 ${pd}%,${state.purpose}評分高 ${sd} 分 → 雙重優勢首選`);
+    } else if(pd<-5){
+      cmps.push(`💰 <strong>${t2.loc}</strong> 比 <strong>${t1.loc}</strong> 便宜 ${Math.abs(pd)}% 可作平價替代,評分僅低 ${Math.abs(sd)} 分`);
+    }
+  }
+
+  // 升級/降級替代方案
+  const budgetMax = state.budget ? parseInt(state.budget) : 9999;
+  if(budgetMax < 9999){
+    const upgrade = DATA.filter(d=>{
+      const rp = isAgri ? d.price.地*30 : d.price.房*15;
+      if(rp <= budgetMax*1.1 || rp > budgetMax*1.5) return false;
+      if(state.region.length>0 && !state.region.includes(d.region)) return false;
+      return d.scores[state.purpose] > t1.scores[state.purpose]+3;
+    }).sort((a,b)=>b.scores[state.purpose]-a.scores[state.purpose])[0];
+    if(upgrade){
+      const rp = isAgri ? upgrade.price.地*30 : upgrade.price.房*15;
+      cmps.push(`💡 <strong>升級選項</strong>:預算拉到 ${Math.round(rp)}萬 (+${Math.round(rp-budgetMax)}萬) 可進入 <strong>${upgrade.loc}</strong>,${state.purpose}評分 ${upgrade.scores[state.purpose]}`);
+    }
+    const downgrade = DATA.filter(d=>{
+      const rp = isAgri ? d.price.地*30 : d.price.房*15;
+      if(rp >= budgetMax*0.8 || rp < 100) return false;
+      if(state.region.length>0 && !state.region.includes(d.region)) return false;
+      return d.scores[state.purpose] >= 65;
+    }).sort((a,b)=>b.scores[state.purpose]-a.scores[state.purpose])[0];
+    if(downgrade){
+      const rp = isAgri ? downgrade.price.地*30 : downgrade.price.房*15;
+      cmps.push(`💸 <strong>平價替代</strong>:<strong>${downgrade.loc}</strong> 約 ${Math.round(rp)}萬 (省 ${Math.round(budgetMax-rp)}萬),${state.purpose}評分仍有 ${downgrade.scores[state.purpose]}`);
+    }
+  }
+
+  return {warnings, cmps};
+}
+
 function search(){
   if(!state.purpose){ alert('請先選擇主要用途'); return; }
 
@@ -481,6 +627,11 @@ function search(){
     if(state.personal.includes('自耕農') && d.size.some(s=>s.startsWith('農'))) score += 6;
     if(!state.personal.includes('自耕農') && isAgri) score -= 5; // 提醒沒身分不能買農牧用地
 
+    // 災害環境風險懲罰（自住/退休影響大，投資影響中）
+    const risk = getRisk(d.region);
+    const riskWeight = ['自住','退休'].includes(state.purpose) ? 3 : 1.5;
+    score -= (risk.avg - 3) * riskWeight;
+
     score = Math.max(0,Math.min(100,Math.round(score)));
     return {...d,score,bonusHit,refPrice};
   });
@@ -497,9 +648,16 @@ function renderResults(list, isAgri){
   const regionLabel = state.region.length>0 ? state.region.map(r=>REGION_LABEL[r]).join('、') : '全台';
   const budgetLabel = state.budget ? (state.budget==='9999'?'3000萬以上':`${state.budget}萬以下`) : '不限';
 
+  // 智能摘要
+  const smart = getSmartSummary(list, state, isAgri);
+  const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
+  const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
+
   document.getElementById('summary').innerHTML = `
-    <h3>🎯 推薦結果：${purposeLabel} · ${regionLabel} · 預算 ${budgetLabel}</h3>
-    <p>已從全台 ${DATA.length} 個熱門區段中，依你的條件智能評分。前 3 名為最佳配對，建議優先實地勘查。${isAgri?'<br><strong>農地提醒：</strong>農牧用地需具自然人身分，建地/林地/養殖地法規不同，購買前務必確認地目。':''}</p>
+    <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
+    <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
+    ${cmpHTML}
+    ${warnHTML}
   `;
 
   const grid = document.getElementById('grid');
@@ -509,61 +667,43 @@ function renderResults(list, isAgri){
     grid.innerHTML = list.map((d,i)=>{
       const rank = i+1;
       const isTop = rank===1;
-      const tags = d.tags.map((t,idx)=>{
-        const cls = ['','g','y','p','r'][idx%5];
+      const insight = getInsight(d);
+      const timing = getTiming(d);
+      const risk = getRisk(d.region);
+      const riskStars = '★'.repeat(Math.round(risk.avg)) + '☆'.repeat(5-Math.round(risk.avg));
+      const totalEst = isAgri ? (d.price.地*30) : (d.price.房*15);
+      const ppsm = isAgri ? d.price.地 : d.price.房;
+      const purposeScore = d.scores[state.purpose];
+      const invScore = d.scores.投資;
+      const smartLinks = getSmartLinks(d, isAgri, state.purpose);
+      const topTags = d.tags.slice(0,3).map((t,idx)=>{
+        const cls = ['','g','y'][idx];
         return `<span class="r-tag ${cls}">${t}</span>`;
       }).join('');
-      const scoreInvest = d.scores.投資;
-      const scoreLive = d.scores.自住;
-      const scoreFarm = d.scores.農耕;
-      const scoreLeisure = d.scores.休閒;
-      const totalEst = isAgri ? (d.price.地*30) : (d.price.房*15);
-      const kw = encodeURIComponent(d.loc);
-      const kwArea = encodeURIComponent(d.area + ' ' + d.loc);
-      // 用 Google 搜尋當路由，避免各家網站 URL 變動失效；地圖與實價登錄為官方 URL，穩定
-      const links = isAgri ? `
-        <div class="r-link-row">
-          <a class="r-link s591" href="https://www.google.com/search?q=${kw}+農地+出售+site:591.com.tw" target="_blank">🌾 591 農地</a>
-          <a class="r-link farm" href="https://www.google.com/search?q=${kw}+農地+出售+site:sale.591.com.tw+OR+site:rakuya.com.tw+OR+site:housefun.com.tw" target="_blank">🏛️ 全網農地</a>
-          <a class="r-link sinyi" href="https://www.google.com/maps/search/?api=1&query=${kwArea}" target="_blank">🗺️ Google 地圖</a>
-          <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
-          <a class="r-link google" href="https://www.google.com/search?q=${kw}+農地+出售" target="_blank">🔍 一般搜尋</a>
-          <a class="r-link yung" href="https://www.google.com/search?q=農地銀行+${kw}" target="_blank">🌱 農地銀行</a>
-        </div>
-      ` : `
-        <div class="r-link-row">
-          <a class="r-link s591" href="https://sale.591.com.tw/?kw=${kw}" target="_blank">🏠 591 房屋</a>
-          <a class="r-link sinyi" href="https://www.google.com/search?q=${kw}+信義房屋+出售+site:sinyi.com.tw" target="_blank">🏢 信義房屋</a>
-          <a class="r-link yung" href="https://www.google.com/search?q=${kw}+永慶+出售+site:yungching.com.tw" target="_blank">🏘️ 永慶房屋</a>
-          <a class="r-link google" href="https://www.google.com/maps/search/?api=1&query=${kwArea}" target="_blank">🗺️ Google 地圖</a>
-          <a class="r-link gov" href="https://lvr.land.moi.gov.tw/" target="_blank">📊 實價登錄</a>
-          <a class="r-link farm" href="https://www.google.com/search?q=${kwArea}+房屋+出售" target="_blank">🔍 全網搜尋</a>
-        </div>
-      `;
+
       return `
         <div class="r-card ${isTop?'top1':''}">
           <div class="r-rank">#${rank}</div>
           <div class="r-loc">${d.loc}</div>
-          <div class="r-area">📍 ${d.area} · ${REGION_LABEL[d.region]}</div>
-          <div class="r-score">
-            <div class="r-score-val">${d.score}</div>
-            <div class="r-score-lbl">/ 100 匹配分數</div>
+          <div class="r-area">📍 ${d.area} · ${isAgri?'農地':'房屋'} · 估 ${totalEst}萬 (${ppsm}萬/坪)</div>
+
+          <div class="r-score-line">
+            <div class="v">${d.score}</div>
+            <div class="d">/ 100 匹配<br>${state.purpose} ${purposeScore} · 增值 ${invScore}</div>
           </div>
-          <div class="r-bars">
-            <div class="r-bar"><div class="r-bar-lbl">自住性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreLive}%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div><div class="r-bar-val">${scoreLive}</div></div>
-            <div class="r-bar"><div class="r-bar-lbl">農耕性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreFarm}%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><div class="r-bar-val">${scoreFarm}</div></div>
-            <div class="r-bar"><div class="r-bar-lbl">休閒性</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreLeisure}%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div><div class="r-bar-val">${scoreLeisure}</div></div>
-            <div class="r-bar"><div class="r-bar-lbl">增值力</div><div class="r-bar-track"><div class="r-bar-fill" style="width:${scoreInvest}%;background:linear-gradient(90deg,#fb923c,#f59e0b)"></div></div><div class="r-bar-val">${scoreInvest}</div></div>
+          <div class="r-bar-mini"><div class="r-bar-mini-fill" style="width:${d.score}%"></div></div>
+
+          <div class="r-insight">${insight.icon} <strong>${insight.label}</strong> · ${insight.desc}</div>
+          <div class="r-insight" style="display:flex;justify-content:space-between;gap:8px">
+            <span>${timing.ic} <strong>進場時機</strong>:${timing.t}</span>
+            <span>⚡ <strong>環境風險</strong>:${riskStars}</span>
           </div>
-          <div class="r-info">
-            💰 房價約 <strong>${d.price.房}萬/坪</strong> · 農地約 <strong>${d.price.地}萬/坪</strong><br>
-            📊 ${d.desc}
-          </div>
-          <div class="r-tags">${tags}</div>
-          <div class="r-links">
-            <div class="r-links-title">🔗 查看現有出售物件</div>
-            ${links}
-            <button class="r-fetch-btn" onclick="quickAddItem('${d.loc}','${d.area}','${isAgri?'地':'房'}')">➕ 加入此區的物件到比較器</button>
+
+          <div class="r-tags-mini">${topTags}</div>
+
+          <div class="r-act-row">
+            ${smartLinks.map(l=>`<a class="r-act ${l.cls}" href="${l.url}" target="_blank">${l.ic} ${l.lb}</a>`).join('')}
+            <button class="r-act add" onclick="quickAddItem('${d.loc}','${d.area}','${isAgri?'地':'房'}')" title="加入比較器">➕</button>
           </div>
         </div>
       `;
@@ -574,52 +714,6 @@ function renderResults(list, isAgri){
   setTimeout(()=>{
     document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
   },100);
-}
-
-// 一鍵打開多個搜尋分頁（取代無法 work 的 CORS 抓取）
-// 591 是 SPA + CORS 阻擋，無法可靠抓資料回本頁；改用瀏覽器分頁開啟多個來源讓使用者直接比對
-function openAllSearch(loc, area, isAgri, btn){
-  const enc = encodeURIComponent;
-  const panel = btn.closest('.r-card').querySelector('.r-fetch-panel');
-  const targets = isAgri ? [
-    {name:'591 土地', url:`https://sale.591.com.tw/?type=2&kw=${enc(loc)}`, tag:'核心'},
-    {name:'Google 農地出售', url:`https://www.google.com/search?q=${enc(loc)}+農地+出售`, tag:'全網'},
-    {name:'Google 地圖', url:`https://www.google.com/maps/search/?api=1&query=${enc(area+' '+loc)}`, tag:'地理'},
-    {name:'樂屋/好房', url:`https://www.google.com/search?q=${enc(loc)}+農地+出售+site%3Arakuya.com.tw+OR+site%3Ahousefun.com.tw`, tag:'多站'},
-    {name:'農地銀行', url:`https://www.google.com/search?q=農地銀行+${enc(loc)}`, tag:'官方'},
-    {name:'實價登錄', url:`https://lvr.land.moi.gov.tw/`, tag:'官方'},
-  ] : [
-    {name:'591 房屋', url:`https://sale.591.com.tw/?kw=${enc(loc)}`, tag:'核心'},
-    {name:'Google 房屋出售', url:`https://www.google.com/search?q=${enc(area+' '+loc)}+房屋+出售`, tag:'全網'},
-    {name:'Google 地圖', url:`https://www.google.com/maps/search/?api=1&query=${enc(area+' '+loc)}`, tag:'地理'},
-    {name:'信義/永慶/樂屋', url:`https://www.google.com/search?q=${enc(loc)}+出售+site%3Asinyi.com.tw+OR+site%3Ayungching.com.tw+OR+site%3Arakuya.com.tw`, tag:'多站'},
-    {name:'實價登錄', url:`https://lvr.land.moi.gov.tw/`, tag:'官方'},
-  ];
-
-  let opened = 0;
-  targets.slice(0,3).forEach(t=>{
-    const w = window.open(t.url,'_blank');
-    if(w) opened++;
-  });
-
-  panel.classList.add('show');
-  panel.innerHTML = `
-    <div class="fetch-list-title">${opened>=2 ? `✅ 已自動開啟 ${opened} 個分頁，下方為完整清單` : '⚠️ 瀏覽器擋下自動分頁，請點下方手動開啟'}</div>
-    ${targets.map(t=>`
-      <a class="fetch-item" href="${t.url}" target="_blank" style="text-decoration:none">
-        <div class="fi-type">${t.tag}</div>
-        <div class="fi-info">
-          <div class="fi-title">${t.name}</div>
-          <div class="fi-price" style="font-size:10px;color:var(--muted);font-weight:400">${t.url.replace(/^https?:\/\//,'').slice(0,52)}...</div>
-        </div>
-        <span class="fi-link">→</span>
-      </a>
-    `).join('')}
-    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted);line-height:1.7">
-      💡 Google 搜尋會自動去除重複物件、整合多家平台。<br>若被瀏覽器擋分頁，請允許彈出視窗或逐個點擊。
-    </div>
-  `;
-  btn.textContent = '🔄 再次開啟';
 }
 
 // ===================== 房貸試算 =====================
