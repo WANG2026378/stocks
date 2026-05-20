@@ -538,58 +538,38 @@ const SEARCH_KEY = {
 function locKey(d){ return SEARCH_KEY[d.loc] || d.loc; }
 function locCityKey(d){ return d.area + locKey(d); }
 
-// 591: regionid 鎖定縣市 + kw 鎖定區段（防 cookie 殘留跑錯縣市）
-function build591URL(d, isAgri){
-  const p = new URLSearchParams();
-  p.set('kw', locKey(d));
-  if(CITY_591[d.area]) p.set('regionid', CITY_591[d.area]);
-  if(isAgri){ p.set('type','2'); return `https://sale.591.com.tw/?${p}`; }
-  if(state.budget && BUDGET_591[state.budget]) p.set('price', BUDGET_591[state.budget]);
-  if(state.rooms.length) p.set('room', state.rooms.join(','));
-  if(state.shape.length) p.set('shape', state.shape.join(','));
-  return `https://sale.591.com.tw/?${p}`;
-}
-
-// 樂屋網: keyword 用「縣市+區」確保不跑錯縣市
-function buildRakuyaURL(d){
-  const p = new URLSearchParams();
-  p.set('search','keyword');
-  p.set('keyword', locCityKey(d));
-  if(state.budget && BUDGET_RANGE[state.budget]){
-    const [s,e] = BUDGET_RANGE[state.budget];
-    p.set('pricerange_s', s);
-    p.set('pricerange_e', e);
-  }
-  if(state.rooms.length) p.set('roomnum', Math.min(...state.rooms.map(Number)));
-  if(state.shape.length){
-    const map = {'1':2,'2':3,'3':1,'4':1,'5':6};
-    const codes = [...new Set(state.shape.map(s=>map[s]).filter(Boolean))];
-    if(codes.length) p.set('typecode', codes.join(','));
-  }
-  return `https://www.rakuya.com.tw/sell/result?${p}`;
-}
-
-// 好房網: K 用「縣市+區」
-function buildHousefunURL(d){
-  const p = new URLSearchParams();
-  p.set('K', locCityKey(d));
-  if(state.budget && BUDGET_RANGE[state.budget]){
-    const [s,e] = BUDGET_RANGE[state.budget];
-    p.set('Price', `${s}-${e}`);
-  }
-  if(state.rooms.length) p.set('Room', state.rooms.join(','));
-  return `https://buy.housefun.com.tw/list/?${p}`;
-}
-
-// 信義/永慶: Google site: 搜尋,把縣市名也加入 tokens 確保不混淆
-function buildGoogleSiteSearch(d, sites){
+// 591/樂屋/好房 經實測都不支援 URL 深層連結（會被 cookie 強制覆蓋為預設台北）
+// → 改用 Google site: 搜尋當路由器,所有結果都是已對好縣市的真實物件
+function buildSiteGoogleSearch(d, isAgri, ...sites){
   const tokens = [d.area, locKey(d)];
-  if(state.budget && BUDGET_LABEL[state.budget]) tokens.push(BUDGET_LABEL[state.budget]);
-  if(state.rooms.length) tokens.push(state.rooms.map(r=>ROOM_LABEL[r]).join(' '));
-  if(state.shape.length) tokens.push(state.shape.map(s=>SHAPE_LABEL[s]).join(' '));
-  const siteFilter = sites.map(s=>`site:${s}`).join(' OR ');
-  const q = `(${siteFilter}) ${tokens.join(' ')}`;
+  if(isAgri){
+    tokens.push('土地','出售');
+  } else {
+    tokens.push('出售');
+    if(state.budget && BUDGET_LABEL[state.budget]) tokens.push(BUDGET_LABEL[state.budget]);
+    if(state.rooms.length) tokens.push(state.rooms.map(r=>ROOM_LABEL[r]).join(' '));
+    if(state.shape.length) tokens.push(state.shape.map(s=>SHAPE_LABEL[s]).join(' '));
+  }
+  const siteFilter = sites.length===1 ? `site:${sites[0]}` : `(${sites.map(s=>`site:${s}`).join(' OR ')})`;
+  const q = `${siteFilter} ${tokens.join(' ')}`;
   return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+
+// 591: Google 路由到 sale.591.com.tw 已索引頁面
+function build591URL(d, isAgri){
+  return buildSiteGoogleSearch(d, isAgri, 'sale.591.com.tw');
+}
+// 樂屋網
+function buildRakuyaURL(d){
+  return buildSiteGoogleSearch(d, false, 'rakuya.com.tw');
+}
+// 好房網
+function buildHousefunURL(d){
+  return buildSiteGoogleSearch(d, false, 'housefun.com.tw');
+}
+// 信義+永慶 (兩站合搜)
+function buildGoogleSiteSearch(d, sites){
+  return buildSiteGoogleSearch(d, false, ...sites);
 }
 
 // 多網站連結建構器
@@ -795,7 +775,7 @@ function renderResults(list, isAgri){
   const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
   const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
 
-  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591 / 樂屋 / 好房 / 信義永慶</strong> 將同步套用過濾:${get591FilterText()} · 點推薦卡按鈕直接帶入</p>` : '';
+  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591/樂屋/好房/信義永慶</strong> 經 Google 智能路由（這些網站本身不支援 URL 深層連結會跳台北預設）→ Google 結果頁皆已對應縣市,條件:${get591FilterText()}</p>` : '';
   document.getElementById('summary').innerHTML = `
     <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
     <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
