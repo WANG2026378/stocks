@@ -514,10 +514,35 @@ function resetAll(){
 // 預算對應各站格式
 const BUDGET_RANGE = {'300':[0,300],'500':[300,500],'800':[500,800],'1500':[800,1500],'3000':[1500,3000],'9999':[3000,99999]};
 
-// 591: 已知最完整 URL 過濾參數
+// 591 縣市代碼（避免 cookie 殘留導致跑錯縣市）
+const CITY_591 = {
+  '台北市':1,'宜蘭縣':2,'新北市':3,'新竹縣':4,'屏東縣':5,
+  '桃園市':6,'新竹市':7,'台中市':8,'基隆市':11,'苗栗縣':12,
+  '彰化縣':14,'南投縣':15,'台南市':17,'高雄市':18,'雲林縣':19,
+  '嘉義市':21,'嘉義縣':22,'花蓮縣':24,'台東縣':25,
+};
+
+// 我們的合併地段名 → 各站可識別的單一行政區名
+const SEARCH_KEY = {
+  '三峽北大':'三峽','金山萬里':'金山','石碇坪林':'石碇',
+  '青埔高鐵':'青埔','楊梅富岡':'楊梅','竹北高鐵':'竹北',
+  '頭份竹南':'頭份','三義銅鑼':'三義','北屯14期':'北屯',
+  '烏日高鐵':'烏日','大肚龍井':'大肚','員林田中':'員林',
+  '草屯埔里':'草屯','斗六虎尾':'斗六','嘉義太保':'太保',
+  '新化善化':'新化','安南安平':'安南','永康仁德':'永康',
+  '楠梓橋頭':'楠梓','美術館農16':'鼓山','鳳山仁武':'鳳山',
+  '屏東潮州':'潮州','恆春墾丁':'恆春','宜蘭礁溪':'礁溪',
+  '宜蘭員山':'員山','冬山三星':'冬山','花蓮市':'花蓮',
+  '吉安壽豐':'吉安','台東市':'台東','池上關山':'池上',
+};
+function locKey(d){ return SEARCH_KEY[d.loc] || d.loc; }
+function locCityKey(d){ return d.area + locKey(d); }
+
+// 591: regionid 鎖定縣市 + kw 鎖定區段（防 cookie 殘留跑錯縣市）
 function build591URL(d, isAgri){
   const p = new URLSearchParams();
-  p.set('kw', d.loc);
+  p.set('kw', locKey(d));
+  if(CITY_591[d.area]) p.set('regionid', CITY_591[d.area]);
   if(isAgri){ p.set('type','2'); return `https://sale.591.com.tw/?${p}`; }
   if(state.budget && BUDGET_591[state.budget]) p.set('price', BUDGET_591[state.budget]);
   if(state.rooms.length) p.set('room', state.rooms.join(','));
@@ -525,12 +550,11 @@ function build591URL(d, isAgri){
   return `https://sale.591.com.tw/?${p}`;
 }
 
-// 樂屋網: 支援 pricerange_s/e、roomnum、typecode
-// shape 對應: 我們(1公寓/2大樓/3透天/4別墅/5套房) → 樂屋(2公寓/3大樓/1透天/1別墅/6套房)
+// 樂屋網: keyword 用「縣市+區」確保不跑錯縣市
 function buildRakuyaURL(d){
   const p = new URLSearchParams();
   p.set('search','keyword');
-  p.set('keyword', d.loc);
+  p.set('keyword', locCityKey(d));
   if(state.budget && BUDGET_RANGE[state.budget]){
     const [s,e] = BUDGET_RANGE[state.budget];
     p.set('pricerange_s', s);
@@ -545,10 +569,10 @@ function buildRakuyaURL(d){
   return `https://www.rakuya.com.tw/sell/result?${p}`;
 }
 
-// 好房網: 支援 K(關鍵字)、Price、Room
+// 好房網: K 用「縣市+區」
 function buildHousefunURL(d){
   const p = new URLSearchParams();
-  p.set('K', d.loc);
+  p.set('K', locCityKey(d));
   if(state.budget && BUDGET_RANGE[state.budget]){
     const [s,e] = BUDGET_RANGE[state.budget];
     p.set('Price', `${s}-${e}`);
@@ -557,9 +581,9 @@ function buildHousefunURL(d){
   return `https://buy.housefun.com.tw/list/?${p}`;
 }
 
-// 信義/永慶: URL 過濾不穩,改用 Google 搜尋 site: + 過濾關鍵字（自動帶入）
+// 信義/永慶: Google site: 搜尋,把縣市名也加入 tokens 確保不混淆
 function buildGoogleSiteSearch(d, sites){
-  const tokens = [d.loc];
+  const tokens = [d.area, locKey(d)];
   if(state.budget && BUDGET_LABEL[state.budget]) tokens.push(BUDGET_LABEL[state.budget]);
   if(state.rooms.length) tokens.push(state.rooms.map(r=>ROOM_LABEL[r]).join(' '));
   if(state.shape.length) tokens.push(state.shape.map(s=>SHAPE_LABEL[s]).join(' '));
