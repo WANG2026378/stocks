@@ -2,15 +2,6 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<script>
-if (!window.crossOriginIsolated && 'serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./coi-serviceworker.js').then(reg => {
-    const sw = reg.installing || reg.waiting;
-    if (sw) { sw.addEventListener('statechange', e => { if (e.target.state === 'activated') location.reload(); }); }
-    else if (reg.active) { location.reload(); }
-  }).catch(() => {});
-}
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎵 音樂播放器</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
@@ -564,6 +555,86 @@ if (!window.crossOriginIsolated && 'serviceWorker' in navigator) {
   .item-del:hover { color: #f87171; background: rgba(248,113,113,0.1); }
   .item-del svg { width: 13px; height: 13px; fill: currentColor; }
 
+  /* 最愛按鈕 */
+  .item-fav {
+    opacity: 0;
+    background: none; border: none;
+    color: rgba(251,113,133,0.5); cursor: pointer;
+    padding: 4px; border-radius: 4px;
+    transition: all 0.2s; flex-shrink: 0;
+    font-size: 15px; line-height: 1;
+  }
+  .item-fav.active { opacity: 1; color: #fb7185; }
+  .playlist-item:hover .item-fav { opacity: 1; }
+  .item-fav:hover { color: #fb7185; background: rgba(251,113,133,0.1); }
+
+  /* 播放清單分頁 */
+  .playlist-tabs { display: flex; gap: 6px; padding: 0 16px 8px; }
+  .playlist-tab {
+    background: none; border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.4); cursor: pointer;
+    padding: 3px 12px; border-radius: 20px; font-size: 0.75rem;
+    transition: all 0.2s;
+  }
+  .playlist-tab.active {
+    border-color: rgba(167,139,250,0.5);
+    color: #a78bfa; background: rgba(124,58,237,0.15);
+  }
+
+  /* YouTube 搜尋 modal */
+  .yt-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+  }
+  .yt-modal.open { display: flex; }
+  .yt-box {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 24px;
+    width: min(600px, 95vw); max-height: 85vh;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .yt-title { font-size: 1rem; font-weight: 600; color: #fff; }
+  .yt-search-row { display: flex; gap: 8px; }
+  .yt-input {
+    flex: 1; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 9px 14px;
+    color: #fff; font-size: 0.88rem; outline: none;
+  }
+  .yt-input:focus { border-color: rgba(167,139,250,0.5); }
+  .yt-search-btn {
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    border: none; border-radius: 10px; padding: 9px 18px;
+    color: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+  }
+  .yt-results { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; min-height: 80px; }
+  .yt-result {
+    display: flex; gap: 10px; align-items: center;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 8px 10px;
+  }
+  .yt-thumb { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .yt-info { flex: 1; min-width: 0; }
+  .yt-result-title { font-size: 0.82rem; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yt-result-ch { font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .yt-dl-btn {
+    background: rgba(124,58,237,0.2); border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 8px; padding: 5px 10px; color: #a78bfa; cursor: pointer;
+    font-size: 0.75rem; white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
+  }
+  .yt-dl-btn:hover:not(:disabled) { background: rgba(124,58,237,0.4); }
+  .yt-dl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .yt-status { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center; }
+  .yt-close-btn {
+    background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    color: rgba(255,255,255,0.4); cursor: pointer; padding: 6px 12px;
+    font-size: 0.82rem; transition: all 0.2s;
+  }
+  .yt-close-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
   /* WMA 轉檔進度條 */
   .convert-bar {
     position: absolute;
@@ -818,7 +889,15 @@ if (!window.crossOriginIsolated && 'serviceWorker' in navigator) {
           <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
           清空
         </button>
+        <button class="load-btn" id="ytSearchBtn" style="color:rgba(252,165,165,0.85);border-color:rgba(252,100,100,0.25)" onclick="openYtModal()">
+          <svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
+          YouTube
+        </button>
       </div>
+    </div>
+    <div class="playlist-tabs">
+      <button class="playlist-tab active" id="tabAll" onclick="setTab('all')">全部</button>
+      <button class="playlist-tab" id="tabFav" onclick="setTab('fav')">♥ 最愛</button>
     </div>
     <div class="playlist-body" id="playlistBody">
       <div class="empty-state">
@@ -873,6 +952,22 @@ if (!window.crossOriginIsolated && 'serviceWorker' in navigator) {
   </div>
 </div>
 
+<!-- YouTube 搜尋 modal -->
+<div class="yt-modal" id="ytModal">
+  <div class="yt-box">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="yt-title">🎬 YouTube 搜尋</div>
+      <button class="yt-close-btn" onclick="closeYtModal()">✕ 關閉</button>
+    </div>
+    <div class="yt-search-row">
+      <input class="yt-input" id="ytInput" placeholder="輸入歌名或藝人…" onkeydown="if(event.key==='Enter')ytSearch()">
+      <button class="yt-search-btn" onclick="ytSearch()">搜尋</button>
+    </div>
+    <div class="yt-status" id="ytStatus">輸入關鍵字開始搜尋</div>
+    <div class="yt-results" id="ytResults"></div>
+  </div>
+</div>
+
 <input type="file" id="fileInput" accept="audio/*,.wma,.wmv" multiple>
 <input type="file" id="folderInput" accept="audio/*,.wma,.wmv" webkitdirectory multiple>
 
@@ -897,6 +992,8 @@ const state = {
   animFrame: null,
   lyricsOpen: false,
   fetchAbort: null,
+  favorites: new Set(JSON.parse(localStorage.getItem('ytPlayerFavs') || '[]')),
+  favFilter: false,
 };
 
 // ===== DOM =====
@@ -1652,14 +1749,21 @@ function renderPlaylistItem(idx) {
 // ===== 渲染清單 =====
 function renderPlaylist() {
   countBadge.textContent = `${state.playlist.length} 首`;
-  if (!state.playlist.length) {
-    playlistBody.innerHTML = `<div class="empty-state"><div class="icon">🎵</div><p>尚無音樂<br>點擊「載入檔案」或直接<strong>拖曳 MP3 到此頁面</strong></p></div>`;
+  const displayItems = state.favFilter
+    ? state.playlist.map((item, i) => ({ item, i })).filter(({ item }) => state.favorites.has(favKey(item)))
+    : state.playlist.map((item, i) => ({ item, i }));
+
+  if (!displayItems.length) {
+    playlistBody.innerHTML = state.playlist.length
+      ? `<div class="empty-state"><div class="icon">♥</div><p>還沒有最愛<br>點擊歌曲旁的 <strong>♡</strong> 加入最愛</p></div>`
+      : `<div class="empty-state"><div class="icon">🎵</div><p>尚無音樂<br>點擊「載入檔案」或直接<strong>拖曳 MP3 到此頁面</strong></p></div>`;
     return;
   }
-  playlistBody.innerHTML = state.playlist.map((item, i) => {
+  playlistBody.innerHTML = displayItems.map(({ item, i }) => {
     const thumb = item.coverUrl
       ? `<img src="${item.coverUrl}" alt="">`
       : getAlbumEmoji(item);
+    const isFav = state.favorites.has(favKey(item));
     return `
     <div class="playlist-item ${i === state.currentIndex ? 'active' : ''}" data-idx="${i}" onclick="play(${i})">
       <div class="wave-icon">
@@ -1679,6 +1783,7 @@ function renderPlaylist() {
             ? `<span style="color:#f87171;font-size:0.7rem">失敗</span>`
             : item.duration ? fmtTime(item.duration) : '--:--'
       }</div>
+      <button class="item-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${i})" title="最愛">${isFav ? '♥' : '♡'}</button>
       <button class="item-del" onclick="event.stopPropagation();removeItem(${i})" title="移除">
         <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
       </button>
@@ -1699,6 +1804,100 @@ function removeItem(idx) {
     state.currentIndex--;
   }
   renderPlaylist();
+}
+
+// ===== 最愛 =====
+function favKey(item) { return (item.title || '') + '||' + (item.artist || ''); }
+
+function toggleFavorite(idx) {
+  const item = state.playlist[idx];
+  const key = favKey(item);
+  if (state.favorites.has(key)) state.favorites.delete(key);
+  else state.favorites.add(key);
+  localStorage.setItem('ytPlayerFavs', JSON.stringify([...state.favorites]));
+  renderPlaylist();
+}
+
+function setTab(tab) {
+  state.favFilter = (tab === 'fav');
+  document.getElementById('tabAll').classList.toggle('active', tab === 'all');
+  document.getElementById('tabFav').classList.toggle('active', tab === 'fav');
+  renderPlaylist();
+}
+
+// ===== YouTube 搜尋 =====
+function openYtModal() {
+  document.getElementById('ytModal').classList.add('open');
+  setTimeout(() => document.getElementById('ytInput').focus(), 100);
+}
+function closeYtModal() {
+  document.getElementById('ytModal').classList.remove('open');
+}
+
+async function ytSearch() {
+  const q = document.getElementById('ytInput').value.trim();
+  if (!q) return;
+  const statusEl = document.getElementById('ytStatus');
+  const resultsEl = document.getElementById('ytResults');
+  statusEl.textContent = '搜尋中…';
+  resultsEl.innerHTML = '';
+  try {
+    const res = await fetch(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(q)}&filter=music_songs`);
+    if (!res.ok) throw new Error('API 回應錯誤');
+    const data = await res.json();
+    const items = (data.items || []).filter(x => x.url && x.url.startsWith('/watch'));
+    if (!items.length) { statusEl.textContent = '找不到結果，請換關鍵字試試'; return; }
+    statusEl.textContent = `找到 ${items.length} 筆結果`;
+    resultsEl.innerHTML = items.slice(0, 15).map(v => {
+      const vid = v.url.replace('/watch?v=', '');
+      const dur = v.duration > 0 ? ' · ' + fmtTime(v.duration) : '';
+      const safeTitle = escHtml(v.title || '');
+      const safeCh = escHtml(v.uploaderName || '');
+      const thumb = v.thumbnail ? `<img class="yt-thumb" src="${escHtml(v.thumbnail)}" alt="" onerror="this.style.display='none'">` : '';
+      return `<div class="yt-result">
+        ${thumb}
+        <div class="yt-info">
+          <div class="yt-result-title" title="${safeTitle}">${safeTitle}</div>
+          <div class="yt-result-ch">${safeCh}${dur}</div>
+        </div>
+        <button class="yt-dl-btn" data-vid="${escHtml(vid)}" data-title="${safeTitle}" onclick="ytDownload(this)">⬇ 下載 MP3</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    statusEl.textContent = '搜尋失敗：' + e.message;
+  }
+}
+
+async function ytDownload(btn) {
+  const videoId = btn.dataset.vid;
+  const title   = btn.dataset.title || videoId;
+  btn.disabled = true;
+  btn.textContent = '請求中…';
+  try {
+    const apiRes = await fetch('https://api.cobalt.tools/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ url: `https://www.youtube.com/watch?v=${videoId}`, downloadMode: 'audio', audioFormat: 'mp3' })
+    });
+    const data = await apiRes.json();
+    if (data.status === 'error') throw new Error(data.error?.code || '下載被拒絕');
+    const dlUrl = data.url;
+    if (!dlUrl) throw new Error('無下載連結');
+    btn.textContent = '下載中…';
+    const mp3Res = await fetch(dlUrl);
+    if (!mp3Res.ok) throw new Error('音訊取得失敗');
+    const buf = await mp3Res.arrayBuffer();
+    const blob = new Blob([buf], { type: 'audio/mpeg' });
+    const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
+    loadFiles([file]);
+    btn.textContent = '✓ 已加入播放清單';
+    btn.style.color = '#4ade80';
+    btn.style.borderColor = 'rgba(74,222,128,0.3)';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '⚠ ' + (e.message.length > 12 ? e.message.slice(0,12) + '…' : e.message);
+    btn.style.color = '#f87171';
+  }
 }
 
 // ===== 播放 =====
