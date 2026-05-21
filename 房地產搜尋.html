@@ -126,6 +126,17 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .r-detail-desc strong{color:#fdba74}
 .r-detail-tags{display:flex;flex-wrap:wrap;gap:4px}
 
+/* 即時條件預覽 + Google 直連 */
+.live-cond{background:linear-gradient(135deg,rgba(251,146,60,.1),rgba(16,185,129,.05));border:1px solid rgba(251,146,60,.3);border-radius:12px;padding:14px;margin:16px 0 8px;position:sticky;top:0;z-index:50;backdrop-filter:blur(8px)}
+.lc-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lc-row+.lc-row{margin-top:10px}
+.lc-label{font-size:12px;color:var(--muted);font-weight:700;flex-shrink:0}
+.lc-text{flex:1;font-size:13px;color:#fdba74;font-weight:700;line-height:1.5;min-width:200px}
+.lc-google{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#fb923c,#f59e0b);color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:800;transition:all .15s;box-shadow:0 4px 14px rgba(251,146,60,.3)}
+.lc-google:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,146,60,.45)}
+.lc-google.sub{background:transparent;border:1px solid rgba(251,146,60,.4);color:#fdba74;padding:8px 12px;font-size:12px;box-shadow:none}
+.lc-google.sub:hover{background:rgba(251,146,60,.15)}
+
 /* 頂部「去找物件」小行 */
 .find-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:12px;flex-wrap:wrap}
 .find-bar-label{color:var(--muted);font-weight:600}
@@ -362,6 +373,19 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
     </div>
   </div>
 
+  <!-- 即時條件預覽 + Google 直連 -->
+  <div class="live-cond" id="liveCond">
+    <div class="lc-row">
+      <div class="lc-label">📋 你目前條件:</div>
+      <div class="lc-text" id="liveCondText">— 尚未選擇 —</div>
+    </div>
+    <div class="lc-row">
+      <a class="lc-google" id="liveGoogleBtn" target="_blank" href="https://www.google.com/search?q=房屋+出售">🔍 用此條件 Google 搜尋全網</a>
+      <a class="lc-google sub" id="live591Btn" target="_blank" href="https://www.google.com/search?q=site:sale.591.com.tw+房屋+出售">→ 限 591</a>
+      <a class="lc-google sub" id="liveRakuBtn" target="_blank" href="https://www.google.com/search?q=site:rakuya.com.tw+房屋+出售">→ 限樂屋</a>
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-primary" onclick="search()">🔍 智能推薦</button>
     <button class="btn-reset" onclick="resetAll()">🔄 重新選擇</button>
@@ -512,14 +536,54 @@ document.querySelectorAll('.btn-row').forEach(row=>{
           state[group] = state[group].filter(x=>x!==v);
         }
       }
+      updateLiveCondition(); // 即時更新 Google 連結
     });
   });
 });
+
+// 即時更新「目前條件 + Google 搜尋連結」
+const PURPOSE_LABEL = {自住:'自住房屋',農耕:'農地耕作',休閒:'休閒農場',投資:'投資增值',退休:'退休養老'};
+const SIZE_LABEL = {小:'小坪數',中:'中坪數',大:'大坪數',農小:'小農地',農中:'中農地',農大:'大農地'};
+function updateLiveCondition(){
+  const parts = [];
+  if(state.purpose) parts.push(PURPOSE_LABEL[state.purpose]);
+  if(state.region.length) parts.push(state.region.map(r=>REGION_LABEL[r]).join('/'));
+  if(state.budget && BUDGET_LABEL[state.budget]) parts.push(BUDGET_LABEL[state.budget]);
+  if(state.size) parts.push(SIZE_LABEL[state.size]);
+  if(state.bonus.length) parts.push(state.bonus.join('/'));
+  if(state.personal.length) parts.push(state.personal.join('/'));
+  if(state.rooms.length) parts.push(state.rooms.map(r=>ROOM_LABEL[r]).join('/'));
+  if(state.shape.length) parts.push(state.shape.map(s=>SHAPE_LABEL[s]).join('/'));
+
+  const display = parts.length>0 ? parts.join(' · ') : '— 尚未選擇任何條件 —';
+  document.getElementById('liveCondText').textContent = display;
+
+  // 組 Google query: 把條件展平成關鍵字
+  const isAgri = ['農耕','休閒','退休'].includes(state.purpose) || (state.size||'').startsWith('農');
+  const qParts = [];
+  if(state.region.length) qParts.push(state.region.map(r=>REGION_LABEL[r]).join(' OR '));
+  qParts.push(isAgri ? '農地' : '房屋','出售');
+  if(state.budget && BUDGET_LABEL[state.budget]) qParts.push(BUDGET_LABEL[state.budget]);
+  if(state.rooms.length) qParts.push(state.rooms.map(r=>ROOM_LABEL[r]).join(' OR '));
+  if(state.shape.length) qParts.push(state.shape.map(s=>SHAPE_LABEL[s]).join(' OR '));
+  if(state.bonus.length) qParts.push(state.bonus.join(' '));
+
+  const baseQ = qParts.join(' ');
+  const fullQ = encodeURIComponent(baseQ + ' (site:sale.591.com.tw OR site:rakuya.com.tw OR site:housefun.com.tw OR site:sinyi.com.tw OR site:yungching.com.tw)');
+  const q591 = encodeURIComponent(baseQ + ' site:sale.591.com.tw');
+  const qRaku = encodeURIComponent(baseQ + ' site:rakuya.com.tw');
+
+  document.getElementById('liveGoogleBtn').href = `https://www.google.com/search?q=${fullQ}`;
+  document.getElementById('live591Btn').href = `https://www.google.com/search?q=${q591}`;
+  document.getElementById('liveRakuBtn').href = `https://www.google.com/search?q=${qRaku}`;
+}
+updateLiveCondition();
 
 function resetAll(){
   document.querySelectorAll('.btn.active').forEach(b=>b.classList.remove('active'));
   state.purpose=''; state.region=[]; state.budget=''; state.size=''; state.bonus=[]; state.personal=[]; state.rooms=[]; state.shape=[];
   document.getElementById('results').classList.remove('show');
+  if(typeof updateLiveCondition==='function') updateLiveCondition();
 }
 
 // ===== 多網站適配器：所有站點同步套用使用者過濾條件 =====
