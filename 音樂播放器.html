@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<script>
+if (!window.crossOriginIsolated && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./coi-serviceworker.js').then(reg => {
+    const sw = reg.installing || reg.waiting;
+    if (sw) { sw.addEventListener('statechange', e => { if (e.target.state === 'activated') location.reload(); }); }
+    else if (reg.active) { location.reload(); }
+  }).catch(() => {});
+}
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎵 音樂播放器</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+<script>!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.FFmpeg=t():e.FFmpeg=t()}(self,(function(){return(()=>{var e={725:(e,t,r)=>{"use strict";e.exports=r.p+"046d0074eee1d99a674a.js"},839:(e,t,r)=>{"use strict";r.r(t),r.d(t,{defaultOptions:()=>o,fetchFile:()=>m,getCreateFFmpegCore:()=>u});var n=r(306);const o={corePath:"https://unpkg.com/@ffmpeg/core@".concat(n.devDependencies["@ffmpeg/core"].substring(1),"/dist/ffmpeg-core.js")};var a=r(185),i=r(835);function c(e,t,r,n,o,a,i){try{var c=e[a](i),s=c.value}catch(e){return void r(e)}c.done?t(s):Promise.resolve(s).then(n,o)}function s(e){return function(){var t=this,r=arguments;return new Promise((function(n,o){var a=e.apply(t,r);function i(e){c(a,n,o,i,s,"next",e)}function s(e){c(a,n,o,i,s,"throw",e)}i(void 0)}))}}var f=function(){var e=s(regeneratorRuntime.mark((function e(t,r){var n,o,i;return regeneratorRuntime.wrap((function(e){for(;;)switch(e.prev=e.next){case 0:return(0,a.log)("info","fetch ".concat(t)),e.next=3,fetch(t);case 3:return e.next=5,e.sent.arrayBuffer();case 5:return n=e.sent,(0,a.log)("info","".concat(t," file size = ").concat(n.byteLength," bytes")),o=new Blob([n],{type:r}),i=URL.createObjectURL(o),(0,a.log)("info","".concat(t," blob URL = ").concat(i)),e.abrupt("return",i);case 11:case"end":return e.stop()}}),e)})));return function(t,r){return e.apply(this,arguments)}}(),u=function(){var e=s(regeneratorRuntime.mark((function e(t){var r,n,o,c,s,u,l,p,m,h,g;return regeneratorRuntime.wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(r=t.corePath,n=t.workerPath,o=t.wasmPath,!("undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope)){e.next=18;break}if("string"==typeof r){e.next=4;break}throw Error("corePath should be a string!");case 4:return c=new URL(r,"file:///home/jeromewu/repos/ffmpeg.wasm/src/browser/getCreateFFmpegCore.js").href,e.next=7,f(c,"application/javascript");case 7:return s=e.sent,e.next=10,f(void 0!==o?o:c.replace("ffmpeg-core.js","ffmpeg-core.wasm"),"application/wasm");case 10:return u=e.sent,e.next=13,f(void 0!==n?n:c.replace("ffmpeg-core.js","ffmpeg-core.worker.js"),"application/javascript");case 13:if(l=e.sent,"undefined"!=typeof createFFmpegCore){e.next=16;break}return e.abrupt("return",new Promise((function(e){if(globalThis.importScripts(s),"undefined"==typeof createFFmpegCore)throw Error((0,i.CREATE_FFMPEG_CORE_IS_NOT_DEFINED)(c));(0,a.log)("info","ffmpeg-core.js script loaded"),e({createFFmpegCore,corePath:s,wasmPath:u,workerPath:l})})));case 16:return(0,a.log)("info","ffmpeg-core.js script is loaded already"),e.abrupt("return",Promise.resolve({createFFmpegCore,corePath:s,wasmPath:u,workerPath:l}));case 18:if("string"==typeof r){e.next=20;break}throw Error("corePath should be a string!");case 20:return p=new URL(r,"file:///home/jeromewu/repos/ffmpeg.wasm/src/browser/getCreateFFmpegCore.js").href,e.next=23,f(p,"application/javascript");case 23:return m=e.sent,e.next=26,f(void 0!==o?o:p.replace("ffmpeg-core.js","ffmpeg-core.wasm"),"application/wasm");case 26:return h=e.sent,e.next=29,f(void 0!==n?n:p.replace("ffmpeg-core.js","ffmpeg-core.worker.js"),"application/javascript");case 29:if(g=e.sent,"undefined"!=typeof createFFmpegCore){e.next=32;break}return e.abrupt("return",new Promise((function(e){var t=document.createElement("script");t.src=m,t.type="text/javascript",t.addEventListener("load",(function r(){if(t.removeEventListener("load",r),"undefined"==typeof createFFmpegCore)throw Error((0,i.CREATE_FFMPEG_CORE_IS_NOT_DEFINED)(p));(0,a.log)("info","ffmpeg-core.js script loaded"),e({createFFmpegCore,corePath:m,wasmPath:h,workerPath:g})})),document.getElementsByTagName("head")[0].appendChild(t)})));case 32:return(0,a.log)("info","ffmpeg-core.js script is loaded already"),e.abrupt("return",Promise.resolve({createFFmpegCore,corePath:m,wasmPath:h,workerPath:g}));case 34:case"end":return e.stop()}}),e)})));return function(t){return e.apply(this,arguments)}}();function l(e,t,r,n,o,a,i){try{var c=e[a](i),s=c.value}catch(e){return void r(e)}c.done?t(s):Promise.resolve(s).then(n,o)}var p=function(e){return new Promise((function(t,r){var n=new FileReader;n.onload=function(){t(n.result)},n.onerror=function(e){var t=e.target.error.code;r(Error("File could not be read! Code=".concat(t)))},n.readAsArrayBuffer(e)}))},m=function(){var e,t=(e=regeneratorRuntime.mark((function e(t){var r,n;return regeneratorRuntime.wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(r=t,void 0!==t){e.next=3;break}return e.abrupt("return",new Uint8Array);case 3:if("string"!=typeof t){e.next=16;break}if(!/data:_data\/([a-zA-Z]*);base64,([^"]*)/.test(t)){e.next=8;break}r=atob(t.split(",")[1]).split("").map((function(e){return e.charCodeAt(0)})),e.next=14;break;case 8:return e.next=10,fetch(new URL(t,"file:///home/jeromewu/repos/ffmpeg.wasm/src/browser/fetchFile.js").href);case 10:return n=e.sent,e.next=13,n.arrayBuffer();case 13:r=e.sent;case 14:e.next=20;break;case 16:if(!(t instanceof File||t instanceof Blob)){e.next=20;break}return e.next=19,p(t);case 19:r=e.sent;case 20:return e.abrupt("return",new Uint8Array(r));case 21:case"end":return e.stop()}}),e)})),function(){var t=this,r=arguments;return new Promise((function(n,o){var a=e.apply(t,r);function i(e){l(a,n,o,i,c,"next",e)}function c(e){l(a,n,o,i,c,"throw",e)}i(void 0)}))});return function(e){return t.apply(this,arguments)}}()},500:e=>{e.exports={defaultArgs:["./ffmpeg","-nostdin","-y"],baseOptions:{log:!1,logger:function(){},progress:function(){},corePath:""}}},906:(e,t,r)=>{function n(e){return function(e){if(Array.isArray(e))return s(e)}(e)||function(e){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}(e)||c(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function o(e,t,r,n,o,a,i){try{var c=e[a](i),s=c.value}catch(e){return void r(e)}c.done?t(s):Promise.resolve(s).then(n,o)}function a(e){return function(){var t=this,r=arguments;return new Promise((function(n,a){var i=e.apply(t,r);function c(e){o(i,n,a,c,s,"next",e)}function s(e){o(i,n,a,c,s,"throw",e)}c(void 0)}))}}function i(e,t){return function(e){if(Array.isArray(e))return e}(e)||function(e,t){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e)){var r=[],n=!0,o=!1,a=void 0;try{for(var i,c=e[Symbol.iterator]();!(n=(i=c.next()).done)&&(r.push(i.value),!t||r.length!==t);n=!0);}catch(e){o=!0,a=e}finally{try{n||null==c.return||c.return()}finally{if(o)throw a}}return r}}(e,t)||c(e,t)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function c(e,t){if(e){if("string"==typeof e)return s(e,t);var r=Object.prototype.toString.call(e).slice(8,-1);return"Object"===r&&e.constructor&&(r=e.constructor.name),"Map"===r||"Set"===r?Array.from(e):"Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?s(e,t):void 0}}function s(e,t){(null==t||t>e.length)&&(t=e.length);for(var r=0,n=new Array(t);r<t;r++)n[r]=e[r];return n}function f(e,t){var r=Object.keys(e);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(e);t&&(n=n.filter((function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable}))),r.push.apply(r,n)}return r}function u(e){for(var t=1;t<arguments.length;t++){var r=null!=arguments[t]?arguments[t]:{};t%2?f(Object(r),!0).forEach((function(t){l(e,t,r[t])})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(r)):f(Object(r)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(r,t))}))}return e}function l(e,t,r){return t in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}function p(e,t){if(null==e)return{};var r,n,o=function(e,t){if(null==e)return{};var r,n,o={},a=Object.keys(e);for(n=0;n<a.length;n++)r=a[n],t.indexOf(r)>=0||(o[r]=e[r]);return o}(e,t);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(n=0;n<a.length;n++)r=a[n],t.indexOf(r)>=0||Object.prototype.propertyIsEnumerable.call(e,r)&&(o[r]=e[r])}return o}var m=r(500),h=m.defaultArgs,g=m.baseOptions,d=r(319),y=r(839),v=y.defaultOptions,w=y.getCreateFFmpegCore,b=r(306).version,x=Error("ffmpeg.wasm is not ready, make sure you have completed load().");e.exports=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=u(u(u({},g),v),e),r=t.log,o=(t.logger,t.progress),c=p(t,["log","logger","progress"]),s=null,f=null,l=null,m=null,y=!1,F=function(){},j=r,E=o,P=0,O=0,k=!1,L=0,S=function(e){"FFMPEG_END"===e&&null!==l&&(l(),l=null,m=null,y=!1)},_=function(e,t){F({type:e,message:t}),j&&console.log("[".concat(e,"] ").concat(t))},C=function(e){var t=i(e.split(":"),3),r=t[0],n=t[1],o=t[2];return 60*parseFloat(r)*60+60*parseFloat(n)+parseFloat(o)},A=function(e,t){if("string"==typeof e)if(e.startsWith("  Duration")){var r=e.split(", ")[0].split(": ")[1],n=C(r);t({duration:n,ratio:L}),(0===P||P>n)&&(P=n,k=!0)}else if(k&&e.startsWith("    Stream")){var o=e.match(/([\d.]+) fps/);if(o){var a=parseFloat(o[1]);O=P*a}else O=0;k=!1}else if(e.startsWith("frame")||e.startsWith("size")){var i=e.split("time=")[1].split(" ")[0],c=C(i),s=e.match(/frame=\s*(\d+)/);if(O&&s){var f=parseFloat(s[1]);L=Math.min(f/O,1)}else L=c/P;t({ratio:L,time:c})}else e.startsWith("video:")&&(t({ratio:1}),P=0)},T=function(e){var t=e.type,r=e.message;_(t,r),A(r,E),S(r)},R=function(){var e=a(regeneratorRuntime.mark((function e(){var t,r,n,o,a;return regeneratorRuntime.wrap((function(e){for(;;)switch(e.prev=e.next){case 0:if(_("info","load ffmpeg-core"),null!==s){e.next=17;break}return _("info","loading ffmpeg-core"),e.next=5,w(c);case 5:return t=e.sent,r=t.createFFmpegCore,n=t.corePath,o=t.workerPath,a=t.wasmPath,e.next=12,r({mainScriptUrlOrBlob:n,printErr:function(e){return T({type:"fferr",message:e})},print:function(e){return T({type:"ffout",message:e})},locateFile:function(e,t){if("undefined"!=typeof window||"undefined"!=typeof WorkerGlobalScope){if(void 0!==a&&e.endsWith("ffmpeg-core.wasm"))return a;if(void 0!==o&&e.endsWith("ffmpeg-core.worker.js"))return o}return t+e}});case 12:s=e.sent,f=s.cwrap(c.mainName||"proxy_main","number",["number","number"]),_("info","ffmpeg-core loaded"),e.next=18;break;case 17:throw Error("ffmpeg.wasm was loaded, you should not load it again, use ffmpeg.isLoaded() to check next time.");case 18:case"end":return e.stop()}}),e)})));return function(){return e.apply(this,arguments)}}(),N=function(){return null!==s},I=function(){for(var e=arguments.length,t=new Array(e),r=0;r<e;r++)t[r]=arguments[r];if(_("info","run ffmpeg command: ".concat(t.join(" "))),null===s)throw x;if(y)throw Error("ffmpeg.wasm can only run one command at a time");return y=!0,new Promise((function(e,r){var o=[].concat(n(h),t).filter((function(e){return 0!==e.length}));l=e,m=r,f.apply(void 0,n(d(s,o)))}))},U=function(e){for(var t=arguments.length,r=new Array(t>1?t-1:0),n=1;n<t;n++)r[n-1]=arguments[n];if(_("info","run FS.".concat(e," ").concat(r.map((function(e){return"string"==typeof e?e:"<".concat(e.length," bytes binary file>")})).join(" "))),null===s)throw x;var o=null;try{var a;o=(a=s.FS)[e].apply(a,r)}catch(t){throw"readdir"===e?Error("ffmpeg.FS('readdir', '".concat(r[0],"') error. Check if the path exists, ex: ffmpeg.FS('readdir', '/')")):"readFile"===e?Error("ffmpeg.FS('readFile', '".concat(r[0],"') error. Check if the path exists")):Error("Oops, something went wrong in FS operation.")}return o},G=function(){if(null===s)throw x;m&&m("ffmpeg has exited"),y=!1;try{s.exit(1)}catch(e){_(e.message),m&&m(e)}finally{s=null,f=null,l=null,m=null}},D=function(e){E=e},W=function(e){F=e},B=function(e){j=e};return _("info","use ffmpeg.wasm v".concat(b)),{setProgress:D,setLogger:W,setLogging:B,load:R,isLoaded:N,run:I,exit:G,FS:U}}},352:(e,t,r)=>{r(666);var n=r(906),o=r(839).fetchFile;e.exports={createFFmpeg:n,fetchFile:o}},835:e=>{e.exports={CREATE_FFMPEG_CORE_IS_NOT_DEFINED:function(e){return"\ncreateFFmpegCore is not defined. ffmpeg.wasm is unable to find createFFmpegCore after loading ffmpeg-core.js from ".concat(e,". Use another URL when calling createFFmpeg():\n\nconst ffmpeg = createFFmpeg({\n  corePath: 'http://localhost:3000/ffmpeg-core.js',\n});\n")}}},185:e=>{var t=!1,r=function(){};e.exports={logging:t,setLogging:function(e){t=e},setCustomLogger:function(e){r=e},log:function(e,n){r({type:e,message:n}),t&&console.log("[".concat(e,"] ").concat(n))}}},319:e=>{e.exports=function(e,t){var r=e._malloc(t.length*Uint32Array.BYTES_PER_ELEMENT);return t.forEach((function(t,n){var o=e.lengthBytesUTF8(t)+1,a=e._malloc(o);e.stringToUTF8(t,a,o),e.setValue(r+Uint32Array.BYTES_PER_ELEMENT*n,a,"i32")})),[t.length,r]}},666:e=>{var t=function(e){"use strict";var t,r=Object.prototype,n=r.hasOwnProperty,o="function"==typeof Symbol?Symbol:{},a=o.iterator||"@@iterator",i=o.asyncIterator||"@@asyncIterator",c=o.toStringTag||"@@toStringTag";function s(e,t,r){return Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}),e[t]}try{s({},"")}catch(e){s=function(e,t,r){return e[t]=r}}function f(e,t,r,n){var o=t&&t.prototype instanceof d?t:d,a=Object.create(o.prototype),i=new L(n||[]);return a._invoke=function(e,t,r){var n=l;return function(o,a){if(n===m)throw new Error("Generator is already running");if(n===h){if("throw"===o)throw a;return _()}for(r.method=o,r.arg=a;;){var i=r.delegate;if(i){var c=P(i,r);if(c){if(c===g)continue;return c}}if("next"===r.method)r.sent=r._sent=r.arg;else if("throw"===r.method){if(n===l)throw n=h,r.arg;r.dispatchException(r.arg)}else"return"===r.method&&r.abrupt("return",r.arg);n=m;var s=u(e,t,r);if("normal"===s.type){if(n=r.done?h:p,s.arg===g)continue;return{value:s.arg,done:r.done}}"throw"===s.type&&(n=h,r.method="throw",r.arg=s.arg)}}}(e,r,i),a}function u(e,t,r){try{return{type:"normal",arg:e.call(t,r)}}catch(e){return{type:"throw",arg:e}}}e.wrap=f;var l="suspendedStart",p="suspendedYield",m="executing",h="completed",g={};function d(){}function y(){}function v(){}var w={};w[a]=function(){return this};var b=Object.getPrototypeOf,x=b&&b(b(S([])));x&&x!==r&&n.call(x,a)&&(w=x);var F=v.prototype=d.prototype=Object.create(w);function j(e){["next","throw","return"].forEach((function(t){s(e,t,(function(e){return this._invoke(t,e)}))}))}function E(e,t){function r(o,a,i,c){var s=u(e[o],e,a);if("throw"!==s.type){var f=s.arg,l=f.value;return l&&"object"==typeof l&&n.call(l,"__await")?t.resolve(l.__await).then((function(e){r("next",e,i,c)}),(function(e){r("throw",e,i,c)})):t.resolve(l).then((function(e){f.value=e,i(f)}),(function(e){return r("throw",e,i,c)}))}c(s.arg)}var o;this._invoke=function(e,n){function a(){return new t((function(t,o){r(e,n,t,o)}))}return o=o?o.then(a,a):a()}}function P(e,r){var n=e.iterator[r.method];if(n===t){if(r.delegate=null,"throw"===r.method){if(e.iterator.return&&(r.method="return",r.arg=t,P(e,r),"throw"===r.method))return g;r.method="throw",r.arg=new TypeError("The iterator does not provide a 'throw' method")}return g}var o=u(n,e.iterator,r.arg);if("throw"===o.type)return r.method="throw",r.arg=o.arg,r.delegate=null,g;var a=o.arg;return a?a.done?(r[e.resultName]=a.value,r.next=e.nextLoc,"return"!==r.method&&(r.method="next",r.arg=t),r.delegate=null,g):a:(r.method="throw",r.arg=new TypeError("iterator result is not an object"),r.delegate=null,g)}function O(e){var t={tryLoc:e[0]};1 in e&&(t.catchLoc=e[1]),2 in e&&(t.finallyLoc=e[2],t.afterLoc=e[3]),this.tryEntries.push(t)}function k(e){var t=e.completion||{};t.type="normal",delete t.arg,e.completion=t}function L(e){this.tryEntries=[{tryLoc:"root"}],e.forEach(O,this),this.reset(!0)}function S(e){if(e){var r=e[a];if(r)return r.call(e);if("function"==typeof e.next)return e;if(!isNaN(e.length)){var o=-1,i=function r(){for(;++o<e.length;)if(n.call(e,o))return r.value=e[o],r.done=!1,r;return r.value=t,r.done=!0,r};return i.next=i}}return{next:_}}function _(){return{value:t,done:!0}}return y.prototype=F.constructor=v,v.constructor=y,y.displayName=s(v,c,"GeneratorFunction"),e.isGeneratorFunction=function(e){var t="function"==typeof e&&e.constructor;return!!t&&(t===y||"GeneratorFunction"===(t.displayName||t.name))},e.mark=function(e){return Object.setPrototypeOf?Object.setPrototypeOf(e,v):(e.__proto__=v,s(e,c,"GeneratorFunction")),e.prototype=Object.create(F),e},e.awrap=function(e){return{__await:e}},j(E.prototype),E.prototype[i]=function(){return this},e.AsyncIterator=E,e.async=function(t,r,n,o,a){void 0===a&&(a=Promise);var i=new E(f(t,r,n,o),a);return e.isGeneratorFunction(r)?i:i.next().then((function(e){return e.done?e.value:i.next()}))},j(F),s(F,c,"Generator"),F[a]=function(){return this},F.toString=function(){return"[object Generator]"},e.keys=function(e){var t=[];for(var r in e)t.push(r);return t.reverse(),function r(){for(;t.length;){var n=t.pop();if(n in e)return r.value=n,r.done=!1,r}return r.done=!0,r}},e.values=S,L.prototype={constructor:L,reset:function(e){if(this.prev=0,this.next=0,this.sent=this._sent=t,this.done=!1,this.delegate=null,this.method="next",this.arg=t,this.tryEntries.forEach(k),!e)for(var r in this)"t"===r.charAt(0)&&n.call(this,r)&&!isNaN(+r.slice(1))&&(this[r]=t)},stop:function(){this.done=!0;var e=this.tryEntries[0].completion;if("throw"===e.type)throw e.arg;return this.rval},dispatchException:function(e){if(this.done)throw e;var r=this;function o(n,o){return c.type="throw",c.arg=e,r.next=n,o&&(r.method="next",r.arg=t),!!o}for(var a=this.tryEntries.length-1;a>=0;--a){var i=this.tryEntries[a],c=i.completion;if("root"===i.tryLoc)return o("end");if(i.tryLoc<=this.prev){var s=n.call(i,"catchLoc"),f=n.call(i,"finallyLoc");if(s&&f){if(this.prev<i.catchLoc)return o(i.catchLoc,!0);if(this.prev<i.finallyLoc)return o(i.finallyLoc)}else if(s){if(this.prev<i.catchLoc)return o(i.catchLoc,!0)}else{if(!f)throw new Error("try statement without catch or finally");if(this.prev<i.finallyLoc)return o(i.finallyLoc)}}}},abrupt:function(e,t){for(var r=this.tryEntries.length-1;r>=0;--r){var o=this.tryEntries[r];if(o.tryLoc<=this.prev&&n.call(o,"finallyLoc")&&this.prev<o.finallyLoc){var a=o;break}}a&&("break"===e||"continue"===e)&&a.tryLoc<=t&&t<=a.finallyLoc&&(a=null);var i=a?a.completion:{};return i.type=e,i.arg=t,a?(this.method="next",this.next=a.finallyLoc,g):this.complete(i)},complete:function(e,t){if("throw"===e.type)throw e.arg;return"break"===e.type||"continue"===e.type?this.next=e.arg:"return"===e.type?(this.rval=this.arg=e.arg,this.method="return",this.next="end"):"normal"===e.type&&t&&(this.next=t),g},finish:function(e){for(var t=this.tryEntries.length-1;t>=0;--t){var r=this.tryEntries[t];if(r.finallyLoc===e)return this.complete(r.completion,r.afterLoc),k(r),g}},catch:function(e){for(var t=this.tryEntries.length-1;t>=0;--t){var r=this.tryEntries[t];if(r.tryLoc===e){var n=r.completion;if("throw"===n.type){var o=n.arg;k(r)}return o}}throw new Error("illegal catch attempt")},delegateYield:function(e,r,n){return this.delegate={iterator:S(e),resultName:r,nextLoc:n},"next"===this.method&&(this.arg=t),g}},e}(e.exports);try{regeneratorRuntime=t}catch(e){Function("r","regeneratorRuntime = r")(t)}},306:e=>{"use strict";e.exports=JSON.parse('{"name":"@ffmpeg/ffmpeg","version":"0.11.6","description":"FFmpeg WebAssembly version","main":"src/index.js","types":"src/index.d.ts","directories":{"example":"examples"},"scripts":{"start":"node scripts/server.js","start:worker":"node scripts/worker-server.js","build":"rimraf dist && webpack --config scripts/webpack.config.prod.js","build:worker":"rimraf dist && webpack --config scripts/webpack.config.worker.prod.js","prepublishOnly":"npm run build","lint":"eslint src","wait":"rimraf dist && wait-on http://localhost:3000/dist/ffmpeg.dev.js","test":"npm-run-all -p -r start test:all","test:all":"npm-run-all wait test:browser:ffmpeg test:node:all","test:node":"node node_modules/mocha/bin/_mocha --exit --bail --require ./scripts/test-helper.js","test:node:all":"npm run test:node -- ./tests/*.test.js","test:browser":"mocha-headless-chrome -a allow-file-access-from-files -a incognito -a no-sandbox -a disable-setuid-sandbox -a disable-logging -t 300000","test:browser:ffmpeg":"npm run test:browser -- -f ./tests/ffmpeg.test.html"},"browser":{"./src/node/index.js":"./src/browser/index.js"},"repository":{"type":"git","url":"git+https://github.com/ffmpegwasm/ffmpeg.wasm.git"},"keywords":["ffmpeg","WebAssembly","video"],"author":"Jerome Wu <jeromewus@gmail.com>","license":"MIT","bugs":{"url":"https://github.com/ffmpegwasm/ffmpeg.wasm/issues"},"engines":{"node":">=12.16.1"},"homepage":"https://github.com/ffmpegwasm/ffmpeg.wasm#readme","dependencies":{"is-url":"^1.2.4","node-fetch":"^2.6.1","regenerator-runtime":"^0.13.7","resolve-url":"^0.2.1"},"devDependencies":{"@babel/core":"^7.12.3","@babel/preset-env":"^7.12.1","@ffmpeg/core":"^0.11.0","@types/emscripten":"^1.39.4","babel-eslint":"^10.1.0","babel-loader":"^8.1.0","chai":"^4.2.0","cors":"^2.8.5","eslint":"^7.12.1","eslint-config-airbnb-base":"^14.1.0","eslint-plugin-import":"^2.22.1","express":"^4.17.1","mocha":"^8.2.1","mocha-headless-chrome":"^2.0.3","npm-run-all":"^4.1.5","wait-on":"^5.3.0","webpack":"^5.3.2","webpack-cli":"^4.1.0","webpack-dev-middleware":"^4.0.0"}}')}},t={};function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{}};return e[n](o,o.exports,r),o.exports}return r.m=e,r.d=(e,t)=>{for(var n in t)r.o(t,n)&&!r.o(e,n)&&Object.defineProperty(e,n,{enumerable:!0,get:t[n]})},r.g=function(){if("object"==typeof globalThis)return globalThis;try{return this||new Function("return this")()}catch(e){if("object"==typeof window)return window}}(),r.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),r.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},(()=>{var e;r.g.importScripts&&(e=r.g.location+"");var t=r.g.document;if(!e&&t&&(t.currentScript&&(e=t.currentScript.src),!e)){var n=t.getElementsByTagName("script");n.length&&(e=n[n.length-1].src)}if(!e)e=document.location.href;e=e.replace(/#.*$/,"").replace(/\?.*$/,"").replace(/\/[^\/]+$/,"/"),r.p=e})(),r.b=document.baseURI||self.location.href,r(352)})()}));</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(120,40,200,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(20,100,200,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(200,50,100,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 背景封面模糊 */
+  .bg-cover {
+    position: fixed;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(60px) brightness(0.15) saturate(2);
+    opacity: 0;
+    transition: opacity 1.2s, background-image 1.2s;
+    z-index: 0;
+  }
+  .bg-cover.show { opacity: 1; }
+
+  .container {
+    width: 100%;
+    max-width: 940px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 標題 */
+  .header { text-align: center; margin-bottom: 24px; }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+  }
+  .header p { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-top: 4px; }
+
+  /* 主播放區 */
+  .player-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 28px 32px;
+    margin-bottom: 16px;
+  }
+
+  /* 上半：封面 + 資訊 + 歌詞按鈕 */
+  .album-section {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .album-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 148px;
+    height: 148px;
+  }
+  .album-art {
+    width: 148px;
+    height: 148px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4c1d95, #1e3a8a, #831843);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    transition: box-shadow 0.6s;
+  }
+  .album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+  }
+  .album-art.glow { animation: glowPulse 3s ease-in-out infinite; }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 16px 40px rgba(120,40,200,0.4); }
+    50% { box-shadow: 0 24px 60px rgba(80,120,240,0.6); }
+  }
+
+  /* 封面 loading 旋轉圈 */
+  .cover-loading {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .cover-loading.show { display: flex; }
+  .cover-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: #a78bfa;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .track-info {
+    flex: 1;
+    min-width: 0;
+    padding-top: 4px;
+  }
+  .track-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .track-artist {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .track-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .track-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(167,139,250,0.15);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    color: #a78bfa;
+  }
+  .track-badge svg { width: 11px; height: 11px; fill: currentColor; }
+
+  /* 歌詞按鈕 */
+  .btn-lyrics {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-lyrics:hover { background: rgba(167,139,250,0.2); border-color: #a78bfa; color: #a78bfa; }
+  .btn-lyrics.active { background: rgba(167,139,250,0.25); border-color: #a78bfa; color: #a78bfa; }
+  .btn-lyrics svg { width: 15px; height: 15px; fill: currentColor; }
+  .lyrics-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    display: none;
+  }
+  .lyrics-dot.show { display: block; }
+
+  /* 視覺化 */
+  .visualizer {
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    margin-bottom: 18px;
+  }
+  .bar {
+    flex: 1;
+    background: linear-gradient(to top, #7c3aed, #a78bfa);
+    border-radius: 3px 3px 0 0;
+    min-height: 3px;
+    opacity: 0.6;
+  }
+
+  /* 進度條 */
+  .progress-section { margin-bottom: 18px; }
+  .time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 7px;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: visible;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #7c3aed, #a78bfa);
+    border-radius: 10px;
+    width: 0%;
+    position: relative;
+    transition: width 0.2s linear;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(167,139,250,0.8);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .progress-bar:hover .progress-fill::after { opacity: 1; }
+
+  /* 控制 */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 8px;
+  }
+  .btn:hover { color: #fff; transform: scale(1.12); }
+  .btn svg { width: 22px; height: 22px; fill: currentColor; }
+  .btn-play {
+    width: 58px;
+    height: 58px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    border-radius: 50%;
+    color: #fff !important;
+    box-shadow: 0 8px 24px rgba(124,58,237,0.5);
+  }
+  .btn-play:hover { transform: scale(1.08); box-shadow: 0 12px 32px rgba(124,58,237,0.7); }
+  .btn-play svg { width: 26px; height: 26px; }
+
+  /* 音量 */
+  .volume-section { display: flex; align-items: center; gap: 10px; }
+  .volume-section svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.45); flex-shrink: 0; }
+  .volume-slider {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px; outline: none; cursor: pointer;
+  }
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: #a78bfa; border-radius: 50%; cursor: pointer;
+    box-shadow: 0 0 6px rgba(167,139,250,0.6);
+  }
+  .volume-val { font-size: 0.75rem; color: rgba(255,255,255,0.4); width: 32px; text-align: right; }
+
+  /* ===== 歌詞面板 ===== */
+  .lyrics-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    max-height: 0;
+    transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s;
+    opacity: 0;
+  }
+  .lyrics-card.open { max-height: 600px; opacity: 1; }
+
+  .lyrics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .lyrics-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+  }
+  .lyrics-header-left svg { width: 16px; height: 16px; fill: #a78bfa; }
+
+  /* 手動搜尋列 */
+  .lyrics-search {
+    display: flex;
+    gap: 8px;
+    padding: 12px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .lyrics-input {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 7px 12px;
+    color: #fff;
+    font-size: 0.82rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .lyrics-input::placeholder { color: rgba(255,255,255,0.3); }
+  .lyrics-input:focus { border-color: rgba(167,139,250,0.5); }
+  .lyrics-search-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(167,139,250,0.3);
+    background: rgba(124,58,237,0.2);
+    color: #a78bfa;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .lyrics-search-btn:hover { background: rgba(124,58,237,0.35); }
+  .lyrics-search-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* 歌詞內容 */
+  .lyrics-body {
+    padding: 20px 22px;
+    max-height: 380px;
+    overflow-y: auto;
+    line-height: 1.95;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.75);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .lyrics-body::-webkit-scrollbar { width: 4px; }
+  .lyrics-body::-webkit-scrollbar-track { background: transparent; }
+  .lyrics-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .lyrics-loading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.88rem;
+  }
+  .lyrics-spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: #a78bfa;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  .lyrics-source {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.25);
+    text-align: right;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .lyrics-source a { color: rgba(167,139,250,0.5); text-decoration: none; }
+  .lyrics-source a:hover { color: #a78bfa; }
+
+  /* ===== 播放清單 ===== */
+  .playlist-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .playlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .playlist-header h3 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .playlist-count {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.08);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .load-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+  .load-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,0.13);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .load-btn:hover { background: rgba(124,58,237,0.22); border-color: rgba(167,139,250,0.4); color: #a78bfa; }
+  .load-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+  /* 清單項目 */
+  .playlist-body { max-height: 300px; overflow-y: auto; padding: 6px 0; }
+  .playlist-body::-webkit-scrollbar { width: 4px; }
+  .playlist-body::-webkit-scrollbar-track { background: transparent; }
+  .playlist-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 22px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .playlist-item:hover { background: rgba(255,255,255,0.05); }
+  .playlist-item.active { background: rgba(124,58,237,0.15); border-left: 3px solid #7c3aed; }
+
+  .item-thumb {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4c1d95, #1e3a8a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .item-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+
+  .wave-icon {
+    display: none;
+    gap: 2px;
+    align-items: flex-end;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .item-num { font-size: 0.75rem; color: rgba(255,255,255,0.25); width: 22px; text-align: center; flex-shrink: 0; }
+  .playlist-item.active .item-num { display: none; }
+  .playlist-item.active .wave-icon { display: flex; position: static; transform: none; }
+
+  .wave-bar {
+    width: 3px;
+    background: #a78bfa;
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite alternate;
+  }
+  .wave-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .wave-bar:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+  .wave-bar:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+  .wave-bar:nth-child(4) { height: 16px; animation-delay: 0.1s; }
+  @keyframes wave { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
+
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 0.86rem;
+    color: rgba(255,255,255,0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .playlist-item.active .item-name { color: #a78bfa; font-weight: 600; }
+  .item-meta { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+  .item-dur { font-size: 0.75rem; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+  .item-del {
+    opacity: 0;
+    background: none; border: none;
+    color: rgba(255,80,80,0.55); cursor: pointer;
+    padding: 4px; border-radius: 4px;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .playlist-item:hover .item-del { opacity: 1; }
+  .item-del:hover { color: #f87171; background: rgba(248,113,113,0.1); }
+  .item-del svg { width: 13px; height: 13px; fill: currentColor; }
+
+  /* WMA 轉檔進度條 */
+  .convert-bar {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(to right, #7c3aed, #a78bfa);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.4s ease;
+    pointer-events: none;
+  }
+
+  /* 引擎安裝 modal */
+  .engine-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 400;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .engine-modal.show { display: flex; }
+  .engine-box {
+    background: rgba(15,8,30,0.98);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 20px;
+    padding: 28px 32px;
+    max-width: 460px;
+    width: calc(100% - 40px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  }
+  .engine-box h3 {
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 12px; color: #a78bfa;
+  }
+  .engine-box p { font-size: 0.84rem; color: rgba(255,255,255,0.65); line-height: 1.75; margin-bottom: 16px; }
+  .engine-steps { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 2; margin-bottom: 20px; padding-left: 4px; }
+  .engine-steps a { color: #a78bfa; }
+  .engine-pick-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .engine-pick-btn {
+    flex: 1; min-width: 120px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 14px;
+    border-radius: 10px; border: 1px dashed rgba(167,139,250,0.4);
+    background: rgba(124,58,237,0.1); color: rgba(255,255,255,0.7);
+    cursor: pointer; font-size: 0.8rem; font-family: inherit;
+    transition: all 0.2s; text-align: center;
+  }
+  .engine-pick-btn:hover { border-color: #a78bfa; color: #a78bfa; background: rgba(124,58,237,0.2); }
+  .engine-pick-btn.done { border-color: #4ade80; color: #4ade80; border-style: solid; }
+  .engine-pick-btn svg { width: 14px; height: 14px; fill: currentColor; }
+  .engine-close {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px; border: none;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: #fff; font-family: inherit; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; opacity: 0.4; transition: opacity 0.2s;
+  }
+  .engine-close.ready { opacity: 1; }
+
+  /* FFmpeg 載入提示 */
+  .ffmpeg-toast {
+    position: fixed;
+    bottom: 28px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15,8,30,0.96);
+    border: 1px solid rgba(167,139,250,0.35);
+    border-radius: 14px;
+    padding: 13px 22px;
+    font-size: 0.84rem;
+    color: rgba(255,255,255,0.88);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+    backdrop-filter: blur(14px);
+    transition: opacity 0.35s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .ffmpeg-toast .t-bar {
+    width: 160px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ffmpeg-toast .t-fill {
+    height: 100%;
+    background: linear-gradient(to right, #7c3aed, #a78bfa);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  /* 空清單 */
+  .empty-state { text-align: center; padding: 44px 24px; color: rgba(255,255,255,0.22); }
+  .empty-state .icon { font-size: 2.8rem; margin-bottom: 10px; }
+  .empty-state p { font-size: 0.86rem; line-height: 1.7; }
+
+  /* 拖曳覆蓋 */
+  .drop-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(124,58,237,0.28);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+    border: 4px dashed rgba(167,139,250,0.6);
+  }
+  .drop-overlay.show { display: flex; }
+  .drop-overlay .icon { font-size: 5rem; }
+  .drop-overlay p { font-size: 1.4rem; font-weight: 600; color: #a78bfa; }
+
+  #fileInput, #folderInput { display: none; }
+
+  @media (max-width: 600px) {
+    .album-section { flex-direction: column; align-items: center; text-align: center; }
+    .track-badges { justify-content: center; }
+    .controls { gap: 8px; }
+    .lyrics-search { flex-direction: column; }
+    .playlist-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 背景封面 -->
+<div class="bg-cover" id="bgCover"></div>
+
+<div class="container">
+  <div class="header">
+    <h1>🎵 音樂播放器</h1>
+    <p>支援 MP3 · WAV · FLAC · OGG · AAC · WMA — 拖曳檔案或資料夾 · 自動抓封面與歌詞</p>
+  </div>
+
+  <!-- 主播放器 -->
+  <div class="player-card">
+    <div class="album-section">
+      <!-- 封面 -->
+      <div class="album-wrap">
+        <div class="album-art" id="albumArt">🎵</div>
+        <div class="cover-loading" id="coverLoading">
+          <div class="cover-spinner"></div>
+        </div>
+      </div>
+
+      <!-- 資訊 -->
+      <div class="track-info">
+        <div class="track-title" id="trackTitle">尚未載入音樂</div>
+        <div class="track-artist" id="trackArtist">請載入 MP3 檔案開始播放</div>
+        <div class="track-badges">
+          <div class="track-badge">
+            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            <span id="trackFormat">MP3 播放器</span>
+          </div>
+          <div class="track-badge" id="coverBadge" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            封面已載入
+          </div>
+        </div>
+        <button class="btn-lyrics" id="btnLyrics">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
+          歌詞
+          <div class="lyrics-dot" id="lyricsDot"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 視覺化 -->
+    <div class="visualizer" id="visualizer"></div>
+
+    <!-- 進度條 -->
+    <div class="progress-section">
+      <div class="time-row">
+        <span id="currentTime">0:00</span>
+        <span id="totalTime">0:00</span>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- 控制按鈕 -->
+    <div class="controls">
+      <button class="btn" id="btnShuffle" title="隨機播放">
+        <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+      </button>
+      <button class="btn" id="btnPrev" title="上一首">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button class="btn btn-play" id="btnPlay" title="播放/暫停">
+        <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="btn" id="btnNext" title="下一首">
+        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+      <button class="btn" id="btnLoop" title="循環播放">
+        <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+      </button>
+    </div>
+
+    <!-- 音量 -->
+    <div class="volume-section">
+      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80">
+      <span class="volume-val" id="volVal">80%</span>
+    </div>
+  </div>
+
+  <!-- 歌詞面板 -->
+  <div class="lyrics-card" id="lyricsCard">
+    <div class="lyrics-header">
+      <div class="lyrics-header-left">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+        歌詞
+      </div>
+      <button class="btn-lyrics" id="btnLyricsClose" style="padding:4px 10px;font-size:0.75rem">收起</button>
+    </div>
+    <!-- 手動搜尋 -->
+    <div class="lyrics-search">
+      <input class="lyrics-input" id="lyricsArtist" placeholder="藝人名稱" style="max-width:180px">
+      <input class="lyrics-input" id="lyricsTitle" placeholder="歌曲名稱">
+      <button class="lyrics-search-btn" id="lyricsSearchBtn">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        搜尋歌詞
+      </button>
+    </div>
+    <!-- 歌詞內容 -->
+    <div class="lyrics-body" id="lyricsBody">
+      <span style="color:rgba(255,255,255,0.25);font-size:0.86rem">播放音樂後將自動抓取歌詞，或在上方輸入手動搜尋</span>
+    </div>
+  </div>
+
+  <!-- 播放清單 -->
+  <div class="playlist-card">
+    <div class="playlist-header">
+      <h3>
+        🎶 播放清單
+        <span class="playlist-count" id="countBadge">0 首</span>
+      </h3>
+      <div class="load-btns">
+        <button class="load-btn" id="loadFileBtn">
+          <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+          載入檔案
+        </button>
+        <button class="load-btn" id="loadFolderBtn">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+          載入資料夾
+        </button>
+        <button class="load-btn" id="clearBtn" style="color:rgba(248,113,113,0.7);border-color:rgba(248,113,113,0.2)">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          清空
+        </button>
+      </div>
+    </div>
+    <div class="playlist-body" id="playlistBody">
+      <div class="empty-state">
+        <div class="icon">🎵</div>
+        <p>尚無音樂<br>點擊「載入檔案」或直接<strong>拖曳 MP3 到此頁面</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FFmpeg 引擎安裝 modal -->
+<div class="engine-modal" id="engineModal">
+  <div class="engine-box">
+    <h3>⚙️ 轉檔引擎安裝</h3>
+    <p>WMA → MP3 需要 FFmpeg 引擎。學校網路擋住自動下載，請選擇以下任一方式：</p>
+
+    <!-- 方案 A：選資料夾（推薦，隨身碟只選一次）-->
+    <div style="background:rgba(124,58,237,0.12);border:1px solid rgba(167,139,250,0.25);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-size:0.82rem;color:#a78bfa;font-weight:600;margin-bottom:8px">📂 方案 A：選引擎所在資料夾（推薦）</div>
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-bottom:10px;line-height:1.7">
+        先用手機下載兩個檔案存到隨身碟，之後換電腦只要點下面這顆按鈕選資料夾就好
+      </div>
+      <button class="engine-pick-btn" id="pickFolderBtn" style="width:100%;justify-content:center;padding:10px">
+        <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+        選擇資料夾（自動找 ffmpeg-core 檔案）
+      </button>
+    </div>
+
+    <!-- 方案 B：個別選檔 -->
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:8px">或分別選取兩個檔案：</div>
+    <div class="engine-pick-row">
+      <label class="engine-pick-btn" id="pickJsBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+        選 .js 檔
+        <input type="file" id="pickJs" accept=".js" style="display:none">
+      </label>
+      <label class="engine-pick-btn" id="pickWasmBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+        選 .wasm 檔
+        <input type="file" id="pickWasm" accept=".wasm" style="display:none">
+      </label>
+    </div>
+
+    <!-- 下載連結 -->
+    <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-bottom:16px;line-height:2">
+      沒有引擎檔案？用手機下載後存到隨身碟：<br>
+      <a href="https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js"  target="_blank" style="color:#a78bfa">ffmpeg-core.js</a>（1.2 MB）
+      <a href="https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm" target="_blank" style="color:#a78bfa">ffmpeg-core.wasm</a>（12 MB）
+    </div>
+
+    <button class="engine-close" id="engineCloseBtn" disabled>載入引擎並開始轉檔</button>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept="audio/*,.wma,.wmv" multiple>
+<input type="file" id="folderInput" accept="audio/*,.wma,.wmv" webkitdirectory multiple>
+
+<div class="drop-overlay" id="dropOverlay">
+  <div class="icon">🎵</div>
+  <p>放開以載入音樂檔案</p>
+</div>
+
+<audio id="audioPlayer" preload="metadata"></audio>
+
+<script>
+// ===== 狀態 =====
+const state = {
+  playlist: [],
+  currentIndex: -1,
+  isPlaying: false,
+  isShuffle: false,
+  loopMode: 0,
+  audioCtx: null,
+  analyser: null,
+  source: null,
+  animFrame: null,
+  lyricsOpen: false,
+  fetchAbort: null,
+};
+
+// ===== DOM =====
+const audio        = document.getElementById('audioPlayer');
+const albumArt     = document.getElementById('albumArt');
+const bgCover      = document.getElementById('bgCover');
+const coverLoading = document.getElementById('coverLoading');
+const coverBadge   = document.getElementById('coverBadge');
+const trackTitle   = document.getElementById('trackTitle');
+const trackArtist  = document.getElementById('trackArtist');
+const trackFormat  = document.getElementById('trackFormat');
+const progressFill = document.getElementById('progressFill');
+const progressBar  = document.getElementById('progressBar');
+const currentTimeEl= document.getElementById('currentTime');
+const totalTimeEl  = document.getElementById('totalTime');
+const playIcon     = document.getElementById('playIcon');
+const btnPlay      = document.getElementById('btnPlay');
+const btnPrev      = document.getElementById('btnPrev');
+const btnNext      = document.getElementById('btnNext');
+const btnShuffle   = document.getElementById('btnShuffle');
+const btnLoop      = document.getElementById('btnLoop');
+const btnLyrics    = document.getElementById('btnLyrics');
+const btnLyricsClose = document.getElementById('btnLyricsClose');
+const lyricsDot    = document.getElementById('lyricsDot');
+const lyricsCard   = document.getElementById('lyricsCard');
+const lyricsBody   = document.getElementById('lyricsBody');
+const lyricsArtistInput = document.getElementById('lyricsArtist');
+const lyricsTitleInput  = document.getElementById('lyricsTitle');
+const lyricsSearchBtn   = document.getElementById('lyricsSearchBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const volVal       = document.getElementById('volVal');
+const playlistBody = document.getElementById('playlistBody');
+const countBadge   = document.getElementById('countBadge');
+const visualizer   = document.getElementById('visualizer');
+const dropOverlay  = document.getElementById('dropOverlay');
+
+// ===== 視覺化 =====
+(function initVisualizer() {
+  for (let i = 0; i < 32; i++) {
+    const b = document.createElement('div');
+    b.className = 'bar';
+    b.style.height = '3px';
+    visualizer.appendChild(b);
+  }
+})();
+
+function setupAudioContext() {
+  if (state.audioCtx) return;
+  state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  state.analyser = state.audioCtx.createAnalyser();
+  state.analyser.fftSize = 64;
+  state.source = state.audioCtx.createMediaElementSource(audio);
+  state.source.connect(state.analyser);
+  state.analyser.connect(state.audioCtx.destination);
+}
+
+function animateVisualizer() {
+  const bars = visualizer.querySelectorAll('.bar');
+  if (!state.analyser) { bars.forEach(b => b.style.height = '3px'); return; }
+  const data = new Uint8Array(state.analyser.frequencyBinCount);
+  state.analyser.getByteFrequencyData(data);
+  bars.forEach((bar, i) => {
+    const v = data[i] || 0;
+    bar.style.height = Math.max(3, (v / 255) * 42) + 'px';
+    bar.style.opacity = state.isPlaying ? 0.6 + (v / 255) * 0.4 : 0.25;
+  });
+  if (state.isPlaying) state.animFrame = requestAnimationFrame(animateVisualizer);
+}
+
+// ===== 工具 =====
+function fmtTime(sec) {
+  if (isNaN(sec)) return '0:00';
+  return `${Math.floor(sec/60)}:${String(Math.floor(sec%60)).padStart(2,'0')}`;
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function parseName(filename) {
+  const name = filename.replace(/\.(mp3|wav|flac|ogg|aac|m4a|opus)$/i, '');
+  const m = name.match(/^(.+?)\s*[-–—]\s*(.+)$/);
+  return m ? { artist: m[1].trim(), title: m[2].trim() } : { artist: '', title: name };
+}
+
+// ===== 讀取 MP3 內建 ID3 Tag =====
+function readID3Tags(file) {
+  return new Promise(resolve => {
+    if (typeof jsmediatags === 'undefined') { resolve({}); return; }
+    jsmediatags.read(file, {
+      onSuccess(tag) {
+        const t = tag.tags;
+        const result = {
+          title:  (t.title  || '').trim(),
+          artist: (t.artist || '').trim(),
+          album:  (t.album  || '').trim(),
+        };
+        // 內嵌封面 APIC frame → data URL
+        if (t.picture) {
+          const { data, format } = t.picture;
+          const bytes = new Uint8Array(data);
+          let bin = '';
+          bytes.forEach(b => bin += String.fromCharCode(b));
+          result.embeddedCover = `data:${format};base64,${btoa(bin)}`;
+        }
+        resolve(result);
+      },
+      onError() { resolve({}); },
+    });
+  });
+}
+
+// ===== 抓封面（iTunes Search API，支援多組查詢策略） =====
+async function fetchAlbumArtOnline(artist, title, album) {
+  // 依優先順序嘗試：「藝人+標題」→「藝人+專輯」→「藝人」→「標題」
+  const queries = [];
+  if (artist && title)  queries.push(`${artist} ${title}`);
+  if (artist && album)  queries.push(`${artist} ${album}`);
+  if (artist)           queries.push(artist);
+  if (title)            queries.push(title);
+
+  for (const q of queries) {
+    try {
+      const url = `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&entity=song&limit=5`;
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].artworkUrl100.replace('100x100bb', '600x600bb').replace('100x100', '600x600');
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
+async function applyAlbumArt(item) {
+  // 1. 內嵌封面（ID3 APIC）→ 直接用，不需連網
+  if (item.embeddedCover) {
+    setCover(item.embeddedCover, item);
+    coverLoading.classList.remove('show');
+    return;
+  }
+
+  // 2. 已快取過線上封面
+  if (item.coverUrl !== undefined) {
+    if (item.coverUrl) setCover(item.coverUrl, item);
+    else clearCover(item);
+    coverLoading.classList.remove('show');
+    return;
+  }
+
+  // 3. 尚未查過 → 向 iTunes 查
+  item.coverUrl = null;
+  coverLoading.classList.add('show');
+  coverBadge.style.display = 'none';
+  try {
+    const url = await fetchAlbumArtOnline(item.artist, item.title, item.album);
+    item.coverUrl = url || null;
+    // 同步更新清單縮圖
+    if (url) {
+      const idx = state.playlist.indexOf(item);
+      const thumbEl = playlistBody.querySelector(`[data-idx="${idx}"] .item-thumb`);
+      if (thumbEl) thumbEl.innerHTML = `<img src="${url}" alt="">`;
+    }
+  } finally {
+    coverLoading.classList.remove('show');
+  }
+
+  if (item.coverUrl) setCover(item.coverUrl, item);
+  else clearCover(item);
+}
+
+function setCover(src, item) {
+  albumArt.innerHTML = `<img src="${src}" alt="封面">`;
+  bgCover.style.backgroundImage = `url(${src})`;
+  bgCover.classList.add('show');
+  coverBadge.style.display = 'inline-flex';
+  albumArt.classList.add('glow');
+}
+
+function clearCover(item) {
+  albumArt.innerHTML = getAlbumEmoji(item);
+  bgCover.classList.remove('show');
+  coverBadge.style.display = 'none';
+  albumArt.classList.add('glow');
+}
+
+function getAlbumEmoji(item) {
+  const f = (item.format || '').toLowerCase();
+  if (f === 'wav')  return '🎤';
+  if (f === 'flac') return '🎶';
+  if (f === 'ogg')  return '🎸';
+  if (f === 'wma' || f === 'wmv') return '🎼';
+  return '🎵';
+}
+
+function showPlayError(item) {
+  trackTitle.textContent = item.title || '無法播放';
+  trackFormat.textContent = `⚠️ ${item.format} 不支援`;
+  albumArt.innerHTML = '⚠️';
+  albumArt.style.background = 'linear-gradient(135deg,#7f1d1d,#450a0a)';
+  trackArtist.innerHTML = `「${escHtml(item.title || item.format)}」轉檔失敗，請確認檔案是否損毀`;
+  const el = playlistBody.querySelector(`[data-idx="${state.currentIndex}"]`);
+  if (el) {
+    el.style.opacity = '0.5';
+    const dur = el.querySelector('.item-dur');
+    if (dur) dur.innerHTML = '<span style="color:#f87171;font-size:0.7rem">失敗</span>';
+  }
+}
+
+// ===== FFmpeg.wasm WMA 自動轉檔 =====
+let _ffInst = null;
+let _ffReady = false;
+let _ffLoading = false;
+const _cvQueue = [];
+let _cvRunning = false;
+
+// 手動選檔暫存
+const _manualFiles = { js: null, wasm: null };
+let _engineResolve = null;   // Promise resolver 等使用者選完
+
+// ── Toast ──
+function showToast(html) {
+  let t = document.getElementById('ffToast');
+  if (!t) { t = document.createElement('div'); t.id = 'ffToast'; t.className = 'ffmpeg-toast'; document.body.appendChild(t); }
+  t.innerHTML = html; t.style.opacity = '1';
+}
+function hideToast() {
+  const t = document.getElementById('ffToast');
+  if (t) { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }
+}
+
+// ── IndexedDB 快取 ──
+function _idb() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('mp-ffmpeg', 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore('files');
+    r.onsuccess = e => res(e.target.result);
+    r.onerror = rej;
+  });
+}
+async function _idbGet(key) {
+  const db = await _idb();
+  return new Promise((res, rej) => {
+    const r = db.transaction('files','readonly').objectStore('files').get(key);
+    r.onsuccess = e => res(e.target.result); r.onerror = rej;
+  });
+}
+async function _idbPut(key, val) {
+  const db = await _idb();
+  return new Promise((res, rej) => {
+    const r = db.transaction('files','readwrite').objectStore('files').put(val, key);
+    r.onsuccess = res; r.onerror = rej;
+  });
+}
+
+// ── 從 JS 文字 + WASM buffer 建立 corePath blob URL ──
+async function _buildBlobUrls(jsText, wasmBuf) {
+  const wasmBlob = new Blob([wasmBuf], { type: 'application/wasm' });
+  const wasmUrl  = URL.createObjectURL(wasmBlob);
+  const jsBlob   = new Blob([jsText],  { type: 'text/javascript' });
+  const jsUrl    = URL.createObjectURL(jsBlob);
+  return { jsUrl, wasmUrl };
+}
+
+// ── 試 CDN（帶 timeout）──
+async function _tryCDN(jsUrl, wasmUrl, timeoutMs = 12000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    showToast(`<div class="cover-spinner" style="width:18px;height:18px;border-width:2px;flex-shrink:0"></div>下載轉檔引擎中…`);
+    const [jsRes, wasmRes] = await Promise.all([
+      fetch(jsUrl,   { signal: ctrl.signal }),
+      fetch(wasmUrl, { signal: ctrl.signal }),
+    ]);
+    if (!jsRes.ok || !wasmRes.ok) throw new Error('HTTP error');
+    const jsText  = await jsRes.text();
+    const wasmBuf = await wasmRes.arrayBuffer();
+    clearTimeout(timer);
+    // 存入 IndexedDB 供離線使用
+    try { await _idbPut('js', jsText); await _idbPut('wasm', wasmBuf); } catch(_) {}
+    // 提示可存到隨身碟
+    setTimeout(() => _offerSaveToUsb(jsText, wasmBuf), 800);
+    return { jsText, wasmBuf };
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+// ── 等使用者手動選檔 ──
+function _waitForManualFiles() {
+  return new Promise(resolve => {
+    _engineResolve = resolve;
+    document.getElementById('engineModal').classList.add('show');
+  });
+}
+
+// ── 手動選檔與資料夾按鈕事件 ──
+function _checkEngineReady() {
+  const ok = _manualFiles.js && _manualFiles.wasm;
+  document.getElementById('engineCloseBtn').disabled = !ok;
+  document.getElementById('engineCloseBtn').classList.toggle('ready', ok);
+}
+
+function _markFileDone(btnId, name) {
+  const btn = document.getElementById(btnId);
+  btn.classList.add('done');
+  btn.innerHTML = `✓ ${name}`;
+}
+
+// 方案 A：選資料夾（自動找 ffmpeg-core.js + ffmpeg-core.wasm）
+document.getElementById('pickFolderBtn').addEventListener('click', async () => {
+  if (!window.showDirectoryPicker) {
+    alert('此瀏覽器不支援資料夾選取，請改用「個別選檔」方式');
+    return;
+  }
+  try {
+    const dir = await window.showDirectoryPicker();
+    let jsFile = null, wasmFile = null;
+    for await (const [name, handle] of dir.entries()) {
+      if (handle.kind !== 'file') continue;
+      if (name === 'ffmpeg-core.js')   jsFile   = await handle.getFile();
+      if (name === 'ffmpeg-core.wasm') wasmFile  = await handle.getFile();
+    }
+    if (!jsFile || !wasmFile) {
+      alert('此資料夾找不到 ffmpeg-core.js 和 ffmpeg-core.wasm，請確認兩個檔案都在同一個資料夾');
+      return;
+    }
+    _manualFiles.js   = jsFile;
+    _manualFiles.wasm = wasmFile;
+    document.getElementById('pickFolderBtn').classList.add('done');
+    document.getElementById('pickFolderBtn').innerHTML =
+      `✓ 已找到引擎檔案（${dir.name}）`;
+    _checkEngineReady();
+  } catch(e) {
+    if (e.name !== 'AbortError') console.error(e);
+  }
+});
+
+// 方案 B：個別選檔
+document.getElementById('pickJs').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  _manualFiles.js = f;
+  _markFileDone('pickJsBtn', f.name);
+  _checkEngineReady();
+});
+document.getElementById('pickWasm').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  _manualFiles.wasm = f;
+  _markFileDone('pickWasmBtn', f.name);
+  _checkEngineReady();
+});
+
+// 確認載入
+document.getElementById('engineCloseBtn').addEventListener('click', async () => {
+  if (!_manualFiles.js || !_manualFiles.wasm) return;
+  document.getElementById('engineModal').classList.remove('show');
+  showToast(`<div class="cover-spinner" style="width:18px;height:18px;border-width:2px;flex-shrink:0"></div>讀取引擎檔案…`);
+  const jsText  = await _manualFiles.js.text();
+  const wasmBuf = await _manualFiles.wasm.arrayBuffer();
+  // 存入 IndexedDB 供本機快取
+  try { await _idbPut('js', jsText); await _idbPut('wasm', wasmBuf); } catch(_) {}
+  hideToast();
+  if (_engineResolve) { _engineResolve({ jsText, wasmBuf }); _engineResolve = null; }
+});
+
+// CDN 下載成功後，提示可存到隨身碟
+async function _offerSaveToUsb(jsText, wasmBuf) {
+  if (!window.showDirectoryPicker) return;
+  const toast = document.createElement('div');
+  toast.className = 'ffmpeg-toast';
+  toast.style.cssText = 'bottom:80px;cursor:pointer;pointer-events:auto';
+  toast.innerHTML = `💾 引擎已下載，點此存到隨身碟（下次免下載）`;
+  document.body.appendChild(toast);
+  toast.addEventListener('click', async () => {
+    try {
+      const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
+      const jsHandle   = await dir.getFileHandle('ffmpeg-core.js',   { create: true });
+      const wasmHandle = await dir.getFileHandle('ffmpeg-core.wasm', { create: true });
+      const jsW   = await jsHandle.createWritable();
+      const wasmW = await wasmHandle.createWritable();
+      await jsW.write(jsText);     await jsW.close();
+      await wasmW.write(wasmBuf);  await wasmW.close();
+      toast.innerHTML = `✓ 已儲存到「${dir.name}」，換電腦時選此資料夾即可`;
+      setTimeout(() => toast.remove(), 3000);
+    } catch(e) { if (e.name !== 'AbortError') toast.remove(); }
+  });
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 12000);
+}
+
+// ── 主入口 ──
+const _CORE_CDNS = [
+  'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+  'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+];
+
+function _timeout(ms, msg) {
+  return new Promise((_, r) => setTimeout(() => r(new Error(msg || 'timeout')), ms));
+}
+
+async function _loadFF(corePath, wasmPath) {
+  const { createFFmpeg } = FFmpeg;
+  const opts = { log: false, corePath };
+  if (wasmPath) opts.wasmPath = wasmPath;
+  const ff = createFFmpeg(opts);
+  await Promise.race([ ff.load(), _timeout(25000, 'load timeout') ]);
+  return ff;
+}
+
+async function ensureFFmpeg() {
+  if (_ffReady) return _ffInst;
+  if (_ffLoading) {
+    return new Promise(r => {
+      const iv = setInterval(() => { if (_ffReady) { clearInterval(iv); r(_ffInst); } }, 150);
+    });
+  }
+  _ffLoading = true;
+
+  // 1️⃣ CDN 直連（最快最穩，CDN 可用時直接搞定）
+  for (const cdnUrl of _CORE_CDNS) {
+    try {
+      showToast(`<div class="cover-spinner" style="width:18px;height:18px;border-width:2px;flex-shrink:0"></div>載入轉檔引擎…（CDN）`);
+      _ffInst = await _loadFF(cdnUrl);
+      _ffReady = true; _ffLoading = false;
+      hideToast();
+      // 背景下載並存 IndexedDB，供日後離線用
+      _cacheFromCDN(cdnUrl.replace('ffmpeg-core.js',''), cdnUrl, cdnUrl.replace('.js','.wasm'));
+      return _ffInst;
+    } catch(e) { console.warn('CDN 直連失敗:', cdnUrl, e.message); }
+  }
+
+  // 2️⃣ CDN 被擋 → 試 IndexedDB 快取 + Blob URL
+  let jsText = null, wasmBuf = null;
+  try {
+    showToast(`<div class="cover-spinner" style="width:18px;height:18px;border-width:2px;flex-shrink:0"></div>讀取本機快取…`);
+    jsText  = await _idbGet('js');
+    wasmBuf = await _idbGet('wasm');
+  } catch(_) {}
+
+  // 3️⃣ 沒有快取 → 請使用者手動選檔
+  if (!jsText || !wasmBuf) {
+    hideToast();
+    const manual = await _waitForManualFiles();
+    jsText = manual.jsText; wasmBuf = manual.wasmBuf;
+  }
+
+  // 用 Blob URL 初始化
+  try {
+    showToast(`<div class="cover-spinner" style="width:18px;height:18px;border-width:2px;flex-shrink:0"></div>初始化轉檔引擎…`);
+    const { jsUrl, wasmUrl } = await _buildBlobUrls(jsText, wasmBuf);
+    _ffInst = await _loadFF(jsUrl, wasmUrl);
+    _ffReady = true; _ffLoading = false;
+    hideToast();
+    return _ffInst;
+  } catch(e) {
+    _ffLoading = false;
+    hideToast();
+    throw e;
+  }
+}
+
+// 背景靜默下載並快取（不阻塞播放）
+async function _cacheFromCDN(base, jsUrl, wasmUrl) {
+  try {
+    const cached = await _idbGet('js');
+    if (cached) return;  // 已有快取，不重複下載
+    const [jsRes, wasmRes] = await Promise.all([fetch(jsUrl), fetch(wasmUrl)]);
+    if (!jsRes.ok || !wasmRes.ok) return;
+    const jsText  = await jsRes.text();
+    const wasmBuf = await wasmRes.arrayBuffer();
+    await _idbPut('js', jsText);
+    await _idbPut('wasm', wasmBuf);
+    // 提示可存到隨身碟
+    setTimeout(() => _offerSaveToUsb(jsText, wasmBuf), 1000);
+  } catch(_) {}
+}
+
+async function convertWmaItem(item, globalIdx) {
+  item.converting = true;
+  item.convertProgress = 0;
+  renderPlaylistItem(globalIdx);
+
+  // 若此首正在顯示中，更新播放器 UI
+  if (state.currentIndex === globalIdx) showConvertingUI(item);
+
+  try {
+    const ff = await ensureFFmpeg();
+    const { fetchFile } = FFmpeg;
+
+    const inName  = `in_${globalIdx}.wma`;
+    const outName = `out_${globalIdx}.mp3`;
+
+    ff.setProgress(({ ratio }) => {
+      const pct = Math.min(99, Math.round(ratio * 100));
+      item.convertProgress = pct;
+      // 更新清單進度條
+      const bar = playlistBody.querySelector(`[data-idx="${globalIdx}"] .convert-bar`);
+      if (bar) bar.style.width = pct + '%';
+      const dur = playlistBody.querySelector(`[data-idx="${globalIdx}"] .item-dur`);
+      if (dur) dur.innerHTML = `<span style="color:#a78bfa;font-size:0.7rem">轉檔 ${pct}%</span>`;
+      // 更新播放器 format 標籤
+      if (state.currentIndex === globalIdx) trackFormat.textContent = `WMA → MP3  ${pct}%`;
+    });
+
+    ff.FS('writeFile', inName, await fetchFile(item.file));
+    await ff.run('-i', inName, '-acodec', 'libmp3lame', '-q:a', '2', outName);
+    const data = ff.FS('readFile', outName);
+    try { ff.FS('unlink', inName); } catch(_) {}
+    try { ff.FS('unlink', outName); } catch(_) {}
+
+    // 替換 URL 為轉好的 MP3
+    URL.revokeObjectURL(item.url);
+    const blob = new Blob([data.buffer], { type: 'audio/mpeg' });
+    item.url = URL.createObjectURL(blob);
+    item.format = 'MP3';
+    item.converting = false;
+    item.convertProgress = 100;
+    item.coverUrl = undefined;  // 重新觸發封面查詢
+
+    renderPlaylistItem(globalIdx);
+
+    // 更新時長
+    const tmp = new Audio();
+    tmp.src = item.url;
+    tmp.addEventListener('loadedmetadata', () => {
+      item.duration = tmp.duration;
+      updateItemDuration(globalIdx, tmp.duration);
+    });
+
+    // 若使用者正在等這首 → 直接播
+    if (state.currentIndex === globalIdx) play(globalIdx);
+
+  } catch(err) {
+    console.error('WMA 轉檔失敗:', err);
+    item.converting = false;
+    item.convertError = true;
+    renderPlaylistItem(globalIdx);
+    if (state.currentIndex === globalIdx) showPlayError(item);
+  }
+}
+
+async function processConvertQueue() {
+  if (_cvRunning || _cvQueue.length === 0) return;
+  _cvRunning = true;
+  while (_cvQueue.length > 0) {
+    const job = _cvQueue.shift();
+    if (!job.item.convertError) await convertWmaItem(job.item, job.idx);
+  }
+  _cvRunning = false;
+}
+
+function showConvertingUI(item) {
+  trackTitle.textContent = item.title || '轉檔中…';
+  trackArtist.innerHTML  = '🔄 WMA 自動轉成 MP3，請稍候';
+  trackFormat.textContent = 'WMA → MP3  0%';
+  albumArt.innerHTML = '🔄';
+  albumArt.style.background = 'linear-gradient(135deg,#1e1b4b,#312e81)';
+  albumArt.classList.remove('glow');
+  bgCover.classList.remove('show');
+}
+
+// ===== 抓歌詞（lyrics.ovh + lrclib 雙重） =====
+async function fetchLyrics(artist, title) {
+  lyricsBody.innerHTML = `<div class="lyrics-loading"><div class="lyrics-spinner"></div>正在搜尋歌詞…</div>`;
+  lyricsDot.classList.remove('show');
+
+  // 方案1：lyrics.ovh
+  try {
+    const a = encodeURIComponent(artist);
+    const t = encodeURIComponent(title);
+    const res = await fetch(`https://api.lyrics.ovh/v1/${a}/${t}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.lyrics && data.lyrics.trim()) {
+        showLyrics(data.lyrics, 'lyrics.ovh');
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // 方案2：lrclib.net
+  try {
+    const q = encodeURIComponent(`${artist} ${title}`);
+    const res = await fetch(`https://lrclib.net/api/search?q=${q}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const lrc = data[0].plainLyrics || data[0].syncedLyrics || '';
+        if (lrc.trim()) {
+          // 去除 lrc 時間標籤
+          const plain = lrc.replace(/\[\d+:\d+\.\d+\]/g, '').trim();
+          showLyrics(plain, 'lrclib.net');
+          return;
+        }
+      }
+    }
+  } catch(e) {}
+
+  lyricsBody.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.86rem;line-height:2">
+    找不到「${escHtml(title)}」的歌詞<br>
+    <span style="font-size:0.78rem">可在上方欄位手動輸入藝人和歌名重新搜尋</span>
+  </div>`;
+  lyricsDot.classList.remove('show');
+}
+
+function showLyrics(text, source) {
+  lyricsBody.innerHTML = `${escHtml(text).replace(/\n/g,'<br>')}
+    <div class="lyrics-source">歌詞來源：<a href="https://${source}" target="_blank">${source}</a></div>`;
+  lyricsDot.classList.add('show');
+  if (state.lyricsOpen) lyricsBody.scrollTop = 0;
+}
+
+// ===== 歌詞面板 =====
+function toggleLyrics() {
+  state.lyricsOpen = !state.lyricsOpen;
+  lyricsCard.classList.toggle('open', state.lyricsOpen);
+  btnLyrics.classList.toggle('active', state.lyricsOpen);
+  if (state.lyricsOpen && state.currentIndex >= 0) {
+    const item = state.playlist[state.currentIndex];
+    lyricsArtistInput.value = item.artist || '';
+    lyricsTitleInput.value = item.title || '';
+    fetchLyrics(item.artist || '', item.title || '');
+  }
+}
+
+btnLyrics.addEventListener('click', toggleLyrics);
+btnLyricsClose.addEventListener('click', toggleLyrics);
+lyricsSearchBtn.addEventListener('click', () => {
+  const a = lyricsArtistInput.value.trim() || '未知藝人';
+  const t = lyricsTitleInput.value.trim();
+  if (!t) return;
+  fetchLyrics(a, t);
+});
+lyricsTitleInput.addEventListener('keydown', e => { if (e.key === 'Enter') lyricsSearchBtn.click(); });
+
+// ===== 載入檔案 =====
+function loadFiles(files) {
+  const audioTypes = /\.(mp3|wav|flac|ogg|aac|m4a|opus|wma|wmv)$/i;
+  const newItems = [];
+  for (const file of files) {
+    if (!audioTypes.test(file.name)) continue;
+    const url = URL.createObjectURL(file);
+    const parsed = parseName(file.name);
+    newItems.push({
+      url, file,
+      title:  parsed.title,
+      artist: parsed.artist,
+      album:  '',
+      format: file.name.split('.').pop().toUpperCase(),
+      duration: null,
+      coverUrl: undefined,
+      embeddedCover: null,
+      metaReady: false,
+    });
+  }
+  if (!newItems.length) return;
+  const startIdx = state.playlist.length;
+  state.playlist.push(...newItems);
+  renderPlaylist();
+
+  newItems.forEach((item, localIdx) => {
+    const globalIdx = startIdx + localIdx;
+
+    // WMA → 加入轉檔佇列，不預讀時長
+    if (/wma|wmv/i.test(item.format)) {
+      item.converting = true;
+      item.convertProgress = 0;
+      _cvQueue.push({ item, idx: globalIdx });
+      renderPlaylistItem(globalIdx);
+      processConvertQueue();
+      return;
+    }
+
+    // 讀時長
+    const tmp = new Audio();
+    tmp.src = item.url;
+    tmp.addEventListener('loadedmetadata', () => {
+      item.duration = tmp.duration;
+      updateItemDuration(globalIdx, tmp.duration);
+      tmp.src = '';
+    });
+
+    // 讀 ID3 Tag（非同步，不阻塞播放）
+    readID3Tags(item.file).then(meta => {
+      let changed = false;
+      if (meta.title  && !item.title)  { item.title  = meta.title;  changed = true; }
+      if (meta.title  && item.title !== meta.title && item.title === parseName(item.file.name).title) {
+        item.title = meta.title; changed = true;
+      }
+      if (meta.artist) { item.artist = meta.artist; changed = true; }
+      if (meta.album)  { item.album  = meta.album;  changed = true; }
+      if (meta.embeddedCover) {
+        item.embeddedCover = meta.embeddedCover;
+        // 內嵌封面優先，標記 coverUrl 已確定
+        item.coverUrl = meta.embeddedCover;
+        changed = true;
+      }
+      item.metaReady = true;
+
+      if (changed) {
+        // 更新清單顯示
+        renderPlaylistItem(globalIdx);
+        // 若正在播這首，刷新播放器資訊
+        if (state.currentIndex === globalIdx) {
+          updateTrackUI(item);
+          applyAlbumArt(item);
+          if (state.lyricsOpen) fetchLyrics(item.artist, item.title);
+        }
+      }
+    });
+  });
+
+  if (state.currentIndex === -1) play(0);
+}
+
+function updateItemDuration(idx, dur) {
+  const el = playlistBody.querySelector(`[data-idx="${idx}"] .item-dur`);
+  if (el) el.textContent = fmtTime(dur);
+}
+
+// 只更新單一清單項目（ID3 讀完後局部刷新，不重繪整個清單）
+function renderPlaylistItem(idx) {
+  const item = state.playlist[idx];
+  if (!item) return;
+  const el = playlistBody.querySelector(`[data-idx="${idx}"]`);
+  if (!el) return;
+  const nameEl  = el.querySelector('.item-name');
+  const metaEl  = el.querySelector('.item-meta');
+  const thumbEl = el.querySelector('.item-thumb');
+  const durEl   = el.querySelector('.item-dur');
+  if (nameEl) nameEl.textContent = item.title;
+  if (metaEl) metaEl.textContent = `${item.artist || '未知藝人'}${item.album ? ' · ' + item.album : ''} · ${item.format}`;
+  if (thumbEl && item.embeddedCover) thumbEl.innerHTML = `<img src="${item.embeddedCover}" alt="">`;
+
+  // 轉檔進度條
+  let bar = el.querySelector('.convert-bar');
+  if (item.converting) {
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.className = 'convert-bar';
+      el.appendChild(bar);
+    }
+    bar.style.width = (item.convertProgress || 0) + '%';
+    if (durEl) durEl.innerHTML = `<span style="color:#a78bfa;font-size:0.7rem">轉檔 ${item.convertProgress||0}%</span>`;
+  } else {
+    if (bar) bar.remove();
+    if (durEl) {
+      if (item.convertError) durEl.innerHTML = `<span style="color:#f87171;font-size:0.7rem">失敗</span>`;
+      else durEl.textContent = item.duration ? fmtTime(item.duration) : '--:--';
+    }
+  }
+}
+
+// ===== 渲染清單 =====
+function renderPlaylist() {
+  countBadge.textContent = `${state.playlist.length} 首`;
+  if (!state.playlist.length) {
+    playlistBody.innerHTML = `<div class="empty-state"><div class="icon">🎵</div><p>尚無音樂<br>點擊「載入檔案」或直接<strong>拖曳 MP3 到此頁面</strong></p></div>`;
+    return;
+  }
+  playlistBody.innerHTML = state.playlist.map((item, i) => {
+    const thumb = item.coverUrl
+      ? `<img src="${item.coverUrl}" alt="">`
+      : getAlbumEmoji(item);
+    return `
+    <div class="playlist-item ${i === state.currentIndex ? 'active' : ''}" data-idx="${i}" onclick="play(${i})">
+      <div class="wave-icon">
+        <div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div>
+      </div>
+      <div class="item-num">${i + 1}</div>
+      <div class="item-thumb">${thumb}</div>
+      <div class="item-info">
+        <div class="item-name">${escHtml(item.title)}</div>
+        <div class="item-meta">${escHtml(item.artist || '未知藝人')}${item.album ? ' · ' + escHtml(item.album) : ''} · ${item.format}</div>
+      </div>
+      <div class="item-dur">${
+        item.converting
+          ? `<span style="color:#a78bfa;font-size:0.7rem">轉檔 ${item.convertProgress||0}%</span>`
+          : item.convertError
+            ? `<span style="color:#f87171;font-size:0.7rem">失敗</span>`
+            : item.duration ? fmtTime(item.duration) : '--:--'
+      }</div>
+      <button class="item-del" onclick="event.stopPropagation();removeItem(${i})" title="移除">
+        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+      </button>
+      ${item.converting ? `<div class="convert-bar" style="width:${item.convertProgress||0}%"></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function removeItem(idx) {
+  URL.revokeObjectURL(state.playlist[idx].url);
+  state.playlist.splice(idx, 1);
+  if (state.currentIndex === idx) {
+    audio.pause();
+    state.isPlaying = false;
+    if (state.playlist.length) play(Math.min(idx, state.playlist.length - 1));
+    else { state.currentIndex = -1; resetUI(); }
+  } else if (state.currentIndex > idx) {
+    state.currentIndex--;
+  }
+  renderPlaylist();
+}
+
+// ===== 播放 =====
+function play(idx) {
+  if (idx < 0 || idx >= state.playlist.length) return;
+  state.currentIndex = idx;
+  const item = state.playlist[idx];
+
+  // WMA 還在轉檔中 → 顯示等待 UI，轉完後 convertWmaItem 會自動呼叫 play()
+  if (item.converting) {
+    renderPlaylist();
+    scrollToActive();
+    showConvertingUI(item);
+    return;
+  }
+
+  audio.src = item.url;
+  audio.load();
+  audio.play().then(() => {
+    state.isPlaying = true;
+    updatePlayBtn();
+    updateTrackUI(item);
+    renderPlaylist();
+    setupAudioContext();
+    if (state.audioCtx?.state === 'suspended') state.audioCtx.resume();
+    cancelAnimationFrame(state.animFrame);
+    animateVisualizer();
+    scrollToActive();
+    // 抓封面
+    applyAlbumArt(item);
+    // 若歌詞面板開著就自動抓
+    if (state.lyricsOpen) {
+      lyricsArtistInput.value = item.artist || '';
+      lyricsTitleInput.value = item.title || '';
+      fetchLyrics(item.artist || '', item.title || '');
+    }
+  }).catch(e => {
+    console.warn('播放失敗:', e.message);
+    showPlayError(item);
+  });
+}
+
+function updateTrackUI(item) {
+  trackTitle.textContent = item.title || '未知標題';
+  trackArtist.innerHTML = escHtml([item.artist, item.album].filter(Boolean).join(' — ') || '未知藝人');
+  trackFormat.textContent = `${item.format} 格式`;
+  albumArt.innerHTML = getAlbumEmoji(item);
+  albumArt.style.background = '';   // 清除錯誤時的紅色背景
+  albumArt.classList.remove('glow');
+  bgCover.classList.remove('show');
+  coverBadge.style.display = 'none';
+  lyricsDot.classList.remove('show');
+}
+
+function resetUI() {
+  trackTitle.textContent = '尚未載入音樂';
+  trackArtist.textContent = '請載入 MP3 檔案開始播放';
+  trackFormat.textContent = 'MP3 播放器';
+  albumArt.innerHTML = '🎵';
+  albumArt.classList.remove('glow');
+  bgCover.classList.remove('show');
+  coverBadge.style.display = 'none';
+  lyricsDot.classList.remove('show');
+  progressFill.style.width = '0%';
+  currentTimeEl.textContent = '0:00';
+  totalTimeEl.textContent = '0:00';
+  updatePlayBtn();
+}
+
+function scrollToActive() {
+  const el = playlistBody.querySelector('.active');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ===== 播放/暫停 =====
+function togglePlay() {
+  if (!state.playlist.length) return;
+  if (state.currentIndex === -1) { play(0); return; }
+  if (state.isPlaying) {
+    audio.pause();
+    state.isPlaying = false;
+    albumArt.classList.remove('glow');
+    cancelAnimationFrame(state.animFrame);
+    animateVisualizer();
+  } else {
+    audio.play();
+    state.isPlaying = true;
+    albumArt.classList.add('glow');
+    animateVisualizer();
+  }
+  updatePlayBtn();
+}
+
+function updatePlayBtn() {
+  playIcon.setAttribute('d', state.isPlaying
+    ? 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'
+    : 'M8 5v14l11-7z');
+}
+
+function prevTrack() {
+  if (!state.playlist.length) return;
+  if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+  play(state.currentIndex <= 0 ? state.playlist.length - 1 : state.currentIndex - 1);
+}
+
+function nextTrack() {
+  if (!state.playlist.length) return;
+  const idx = state.isShuffle
+    ? Math.floor(Math.random() * state.playlist.length)
+    : (state.currentIndex + 1) % state.playlist.length;
+  play(idx);
+}
+
+function cycleLoop() {
+  state.loopMode = (state.loopMode + 1) % 3;
+  audio.loop = state.loopMode === 2;
+  const titles = ['循環播放(關)', '全部循環', '單曲循環'];
+  btnLoop.title = titles[state.loopMode];
+  btnLoop.style.color = state.loopMode === 0 ? '' : '#a78bfa';
+}
+
+// ===== 進度 / 時間 =====
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+  currentTimeEl.textContent = fmtTime(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', () => {
+  totalTimeEl.textContent = fmtTime(audio.duration);
+  const item = state.playlist[state.currentIndex];
+  if (item && !item.duration) {
+    item.duration = audio.duration;
+    updateItemDuration(state.currentIndex, audio.duration);
+  }
+});
+
+audio.addEventListener('ended', () => {
+  if (state.loopMode === 1) nextTrack();
+  else if (state.loopMode === 0) {
+    if (state.currentIndex < state.playlist.length - 1) nextTrack();
+    else { state.isPlaying = false; albumArt.classList.remove('glow'); updatePlayBtn(); }
+  }
+});
+
+progressBar.addEventListener('click', e => {
+  if (!audio.duration) return;
+  const rect = progressBar.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+// ===== 音量 =====
+volumeSlider.addEventListener('input', () => {
+  audio.volume = volumeSlider.value / 100;
+  volVal.textContent = volumeSlider.value + '%';
+});
+audio.volume = 0.8;
+
+// ===== 按鈕事件 =====
+btnPlay.addEventListener('click', togglePlay);
+btnPrev.addEventListener('click', prevTrack);
+btnNext.addEventListener('click', nextTrack);
+btnShuffle.addEventListener('click', () => {
+  state.isShuffle = !state.isShuffle;
+  btnShuffle.style.color = state.isShuffle ? '#a78bfa' : '';
+  btnShuffle.title = state.isShuffle ? '隨機播放(開)' : '隨機播放(關)';
+});
+btnLoop.addEventListener('click', cycleLoop);
+
+// ===== 檔案載入 =====
+document.getElementById('loadFileBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+document.getElementById('loadFolderBtn').addEventListener('click', () => document.getElementById('folderInput').click());
+document.getElementById('fileInput').addEventListener('change', e => loadFiles(e.target.files));
+document.getElementById('folderInput').addEventListener('change', e => loadFiles(e.target.files));
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (!state.playlist.length || !confirm('確定要清空播放清單嗎？')) return;
+  audio.pause();
+  state.playlist.forEach(item => URL.revokeObjectURL(item.url));
+  state.playlist = [];
+  state.currentIndex = -1;
+  state.isPlaying = false;
+  resetUI();
+  renderPlaylist();
+});
+
+// ===== 拖曳 =====
+document.addEventListener('dragover', e => { e.preventDefault(); dropOverlay.classList.add('show'); });
+document.addEventListener('dragleave', e => {
+  if (!e.relatedTarget || e.relatedTarget === document.documentElement) dropOverlay.classList.remove('show');
+});
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  dropOverlay.classList.remove('show');
+  if (e.dataTransfer.files.length) loadFiles(e.dataTransfer.files);
+});
+
+// ===== 鍵盤 =====
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  switch(e.key) {
+    case ' ':         e.preventDefault(); togglePlay(); break;
+    case 'ArrowRight':audio.currentTime = Math.min(audio.duration||0, audio.currentTime + 10); break;
+    case 'ArrowLeft': audio.currentTime = Math.max(0, audio.currentTime - 10); break;
+    case 'ArrowUp':   volumeSlider.value = Math.min(100, +volumeSlider.value + 10); audio.volume = volumeSlider.value/100; volVal.textContent = volumeSlider.value+'%'; break;
+    case 'ArrowDown': volumeSlider.value = Math.max(0,  +volumeSlider.value - 10); audio.volume = volumeSlider.value/100; volVal.textContent = volumeSlider.value+'%'; break;
+    case 'n': case 'N': nextTrack(); break;
+    case 'p': case 'P': prevTrack(); break;
+    case 'l': case 'L': toggleLyrics(); break;
+  }
+});
+
+// ===== 偵測 Safari，提示改用 Chrome =====
+(function() {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (!isSafari) return;
+
+  const banner = document.createElement('div');
+  banner.style.cssText = `
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    background: linear-gradient(135deg, #7c2d12, #9a3412);
+    color: #fff; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; font-size: 0.88rem; font-family: sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  `;
+  banner.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.5rem">⚠️</span>
+      <div>
+        <strong>請改用 Google Chrome 開啟此頁面</strong><br>
+        <span style="opacity:0.8;font-size:0.8rem">Safari 不支援 WMA 轉檔功能（FFmpeg.wasm）。用 Chrome 開啟同一個檔案即可正常使用。</span>
+      </div>
+    </div>
+    <button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;white-space:nowrap">知道了</button>
+  `;
+  document.body.prepend(banner);
+})();
+</script>
+</body>
+</html>
