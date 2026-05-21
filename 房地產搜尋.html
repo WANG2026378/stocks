@@ -100,25 +100,37 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 .r-insight{background:linear-gradient(135deg,rgba(251,146,60,.08),rgba(16,185,129,.05));border:1px solid rgba(251,146,60,.25);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text);line-height:1.5;margin-bottom:10px}
 .r-insight strong{color:#fdba74}
 .r-tags-mini{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
-.r-act-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
-.r-act{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 6px;font-size:11px;color:var(--text);text-decoration:none;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.r-act-row{display:grid;grid-template-columns:1fr 1fr 42px;gap:5px;margin-top:8px}
+.r-act{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 6px;font-size:12px;color:var(--text);text-decoration:none;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
 .r-act:hover{transform:translateY(-1px)}
-.r-act.s591{border-color:rgba(239,68,68,.4);color:#fca5a5}
-.r-act.s591:hover{background:rgba(239,68,68,.12)}
-.r-act.rakuya{border-color:rgba(16,185,129,.4);color:#6ee7b7}
-.r-act.rakuya:hover{background:rgba(16,185,129,.12)}
-.r-act.housefun{border-color:rgba(139,92,246,.4);color:#c4b5fd}
-.r-act.housefun:hover{background:rgba(139,92,246,.12)}
-.r-act.sinyi{border-color:rgba(59,130,246,.4);color:#93c5fd}
-.r-act.sinyi:hover{background:rgba(59,130,246,.12)}
-.r-act.gov{border-color:rgba(245,158,11,.4);color:#fcd34d}
-.r-act.gov:hover{background:rgba(245,158,11,.12)}
-.r-act.map{border-color:rgba(59,130,246,.4);color:#93c5fd}
-.r-act.map:hover{background:rgba(59,130,246,.12)}
-.r-act.farm{border-color:rgba(139,92,246,.4);color:#c4b5fd}
-.r-act.farm:hover{background:rgba(139,92,246,.12)}
-.r-act.add{grid-column:span 2;background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:10px;font-size:13px;margin-top:2px}
+.r-act.copy{border-color:rgba(251,146,60,.4);color:#fdba74}
+.r-act.copy:hover{background:rgba(251,146,60,.12)}
+.r-act.copy.copied{background:rgba(16,185,129,.25);border-color:#10b981;color:#6ee7b7}
+.r-act.detail{border-color:rgba(59,130,246,.4);color:#93c5fd}
+.r-act.detail:hover{background:rgba(59,130,246,.12)}
+.r-act.add{background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff}
 .r-act.add:hover{box-shadow:0 4px 12px rgba(16,185,129,.3)}
+
+/* 深入分析展開區 */
+.r-detail-panel{display:none;margin-top:10px;padding:12px;background:var(--card2);border:1px dashed var(--border);border-radius:8px}
+.r-detail-panel.show{display:block}
+.r-dim-bars{margin-bottom:10px}
+.r-dim-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11px}
+.r-dim-bar .l{width:50px;color:var(--muted)}
+.r-dim-bar .t{flex:1;height:5px;background:var(--card);border-radius:3px;overflow:hidden}
+.r-dim-bar .f{height:100%;border-radius:3px}
+.r-dim-bar .v{width:28px;text-align:right;color:var(--text);font-weight:700}
+.r-proj-mini{font-size:11px;color:var(--muted);padding:8px;background:var(--card);border-radius:6px;line-height:1.7;margin-bottom:8px}
+.r-proj-mini strong{color:#fdba74}
+.r-detail-desc{font-size:11px;color:var(--text);line-height:1.7;padding:8px;background:var(--card);border-radius:6px;margin-bottom:8px}
+.r-detail-desc strong{color:#fdba74}
+.r-detail-tags{display:flex;flex-wrap:wrap;gap:4px}
+
+/* 頂部「去找物件」小行 */
+.find-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;font-size:12px;flex-wrap:wrap}
+.find-bar-label{color:var(--muted);font-weight:600}
+.find-bar a{color:#93c5fd;text-decoration:none;padding:4px 10px;border:1px solid rgba(59,130,246,.3);border-radius:6px;font-weight:600;font-size:12px}
+.find-bar a:hover{background:rgba(59,130,246,.1)}
 .r-summary-warn{background:rgba(245,158,11,.1);border-left:3px solid #f59e0b;border-radius:6px;padding:8px 12px;font-size:12px;color:#fcd34d;margin-top:8px;line-height:1.6}
 .r-summary-cmp{background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:6px;padding:8px 12px;font-size:12px;color:#a7f3d0;margin-top:8px;line-height:1.6}
 .r-summary-cmp strong, .r-summary-warn strong{color:#fff}
@@ -775,7 +787,7 @@ function renderResults(list, isAgri){
   const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
   const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
 
-  const filter591 = !isAgri ? `<p style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:6px;font-size:12px;color:#fca5a5">🔗 <strong>591/樂屋/好房/信義永慶</strong> 經 Google 智能路由（這些網站本身不支援 URL 深層連結會跳台北預設）→ Google 結果頁皆已對應縣市,條件:${get591FilterText()}</p>` : '';
+  const filter591 = !isAgri ? `<div class="find-bar"><span class="find-bar-label">🔗 找物件:</span><a href="https://sale.591.com.tw/" target="_blank">591</a><a href="https://www.rakuya.com.tw/" target="_blank">樂屋網</a><a href="https://buy.housefun.com.tw/" target="_blank">好房網</a><a href="https://www.sinyi.com.tw/buy/" target="_blank">信義</a><span style="color:var(--muted);font-size:11px;margin-left:auto">→ 用每張卡的「📋 複製條件」貼到網站搜尋框</span></div>` : '';
   document.getElementById('summary').innerHTML = `
     <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
     <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
@@ -805,6 +817,20 @@ function renderResults(list, isAgri){
         return `<span class="r-tag ${cls}">${t}</span>`;
       }).join('');
 
+      const fullTags = d.tags.map((t,idx)=>{
+        const cls = ['','g','y','p','r'][idx%5];
+        return `<span class="r-tag ${cls}">${t}</span>`;
+      }).join('');
+      const p5 = totalEst * Math.pow(1 + (invScore>=85?0.07:invScore>=75?0.04:invScore>=65?0.025:0.012), 5);
+      const p10 = totalEst * Math.pow(1 + (invScore>=85?0.07:invScore>=75?0.04:invScore>=65?0.025:0.012), 10);
+      const copyText = isAgri ? `${d.area} ${locKey(d)} 農地 出售` : (() => {
+        const parts = [d.area, locKey(d), '出售'];
+        if(state.budget && BUDGET_LABEL[state.budget]) parts.push(BUDGET_LABEL[state.budget]);
+        if(state.rooms.length) parts.push(state.rooms.map(r=>ROOM_LABEL[r]).join('/'));
+        if(state.shape.length) parts.push(state.shape.map(s=>SHAPE_LABEL[s]).join('/'));
+        return parts.join(' ');
+      })();
+
       return `
         <div class="r-card ${isTop?'top1':''}">
           <div class="r-rank">#${rank}</div>
@@ -826,8 +852,26 @@ function renderResults(list, isAgri){
           <div class="r-tags-mini">${topTags}</div>
 
           <div class="r-act-row">
-            ${smartLinks.map(l=>`<a class="r-act ${l.cls}" href="${l.url}" target="_blank">${l.ic} ${l.lb}</a>`).join('')}
+            <button class="r-act copy" data-copy="${copyText.replace(/"/g,'&quot;')}" onclick="copyConditions(this)" title="複製到剪貼簿,貼到任何網站搜尋框">📋 複製條件</button>
+            <button class="r-act detail" onclick="toggleDetail(this)">▾ 深入分析</button>
             <button class="r-act add" onclick="quickAddItem('${d.loc}','${d.area}','${isAgri?'地':'房'}')" title="加入比較器">➕</button>
+          </div>
+
+          <div class="r-detail-panel">
+            <div class="r-dim-bars">
+              <div class="r-dim-bar"><div class="l">自住性</div><div class="t"><div class="f" style="width:${d.scores.自住}%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div><div class="v">${d.scores.自住}</div></div>
+              <div class="r-dim-bar"><div class="l">農耕性</div><div class="t"><div class="f" style="width:${d.scores.農耕}%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><div class="v">${d.scores.農耕}</div></div>
+              <div class="r-dim-bar"><div class="l">休閒性</div><div class="t"><div class="f" style="width:${d.scores.休閒}%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div><div class="v">${d.scores.休閒}</div></div>
+              <div class="r-dim-bar"><div class="l">增值力</div><div class="t"><div class="f" style="width:${d.scores.投資}%;background:linear-gradient(90deg,#fb923c,#f59e0b)"></div></div><div class="v">${d.scores.投資}</div></div>
+              <div class="r-dim-bar"><div class="l">退休度</div><div class="t"><div class="f" style="width:${d.scores.退休}%;background:linear-gradient(90deg,#ec4899,#f9a8d4)"></div></div><div class="v">${d.scores.退休}</div></div>
+            </div>
+            <div class="r-proj-mini">
+              📈 <strong>5 年後預估</strong>:${Math.round(p5)}萬（+${Math.round(p5-totalEst)}萬）<br>
+              📈 <strong>10 年後預估</strong>:${Math.round(p10)}萬（+${Math.round(p10-totalEst)}萬）<br>
+              ⚡ <strong>風險明細</strong>:地震${risk.地震}/淹水${risk.淹水}/土液${risk.土液}/空汙${risk.空汙}/颱風${risk.颱風}
+            </div>
+            <div class="r-detail-desc">📊 ${d.desc}</div>
+            <div class="r-detail-tags">${fullTags}</div>
           </div>
         </div>
       `;
@@ -1031,6 +1075,31 @@ function renderItems(){
       </div>
     `;
   }).join('') + '</div>';
+}
+
+// 一鍵複製搜尋條件到剪貼簿
+function copyConditions(btn){
+  const text = btn.dataset.copy;
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ 已複製!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.innerHTML = orig; btn.classList.remove('copied'); }, 1800);
+  }).catch(()=>{
+    // fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); btn.innerHTML='✓ 已複製!'; btn.classList.add('copied'); setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='📋 複製條件';},1800);}
+    catch(e){ alert('複製失敗,請手動選取:\n'+text); }
+    document.body.removeChild(ta);
+  });
+}
+
+// 展開/收合深入分析
+function toggleDetail(btn){
+  const panel = btn.closest('.r-card').querySelector('.r-detail-panel');
+  panel.classList.toggle('show');
+  btn.innerHTML = panel.classList.contains('show') ? '▴ 收合' : '▾ 深入分析';
 }
 
 // 從推薦卡快速加入物件
