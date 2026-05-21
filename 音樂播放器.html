@@ -1826,6 +1826,17 @@ function setTab(tab) {
 }
 
 // ===== YouTube 搜尋 =====
+// Invidious 公開實例清單（輪流嘗試）
+const _YT_HOSTS = [
+  'https://invidious.privacydev.net',
+  'https://inv.tux.pizza',
+  'https://invidious.nerdvpn.de',
+  'https://iv.melmac.space',
+  'https://invidious.perennialte.ch',
+  'https://yt.artemislena.eu',
+  'https://invidious.materialio.us',
+];
+
 function openYtModal() {
   document.getElementById('ytModal').classList.add('open');
   setTimeout(() => document.getElementById('ytInput').focus(), 100);
@@ -1841,70 +1852,107 @@ async function ytSearch() {
   const resultsEl = document.getElementById('ytResults');
   statusEl.textContent = '搜尋中…';
   resultsEl.innerHTML = '';
-  try {
-    const res = await fetch(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(q)}&filter=music_songs`);
-    if (!res.ok) throw new Error('API 回應錯誤');
-    const data = await res.json();
-    const items = (data.items || []).filter(x => x.url && x.url.startsWith('/watch'));
-    if (!items.length) { statusEl.textContent = '找不到結果，請換關鍵字試試'; return; }
-    statusEl.textContent = `找到 ${items.length} 筆結果`;
-    resultsEl.innerHTML = items.slice(0, 15).map(v => {
-      const vid = v.url.replace('/watch?v=', '');
-      const dur = v.duration > 0 ? ' · ' + fmtTime(v.duration) : '';
-      const safeTitle = escHtml(v.title || '');
-      const safeCh = escHtml(v.uploaderName || '');
-      const thumb = v.thumbnail ? `<img class="yt-thumb" src="${escHtml(v.thumbnail)}" alt="" onerror="this.style.display='none'">` : '';
-      return `<div class="yt-result">
-        ${thumb}
-        <div class="yt-info">
-          <div class="yt-result-title" title="${safeTitle}">${safeTitle}</div>
-          <div class="yt-result-ch">${safeCh}${dur}</div>
-        </div>
-        <button class="yt-dl-btn" data-vid="${escHtml(vid)}" data-title="${safeTitle}" onclick="ytDownload(this)">⬇ 下載 MP3</button>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    statusEl.textContent = '搜尋失敗：' + e.message;
+
+  let items = null;
+  for (const host of _YT_HOSTS) {
+    try {
+      const res = await fetch(
+        `${host}/api/v1/search?q=${encodeURIComponent(q)}&type=video&fields=videoId,title,author,lengthSeconds,videoThumbnails`,
+        { signal: AbortSignal.timeout(6000) }
+      );
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) { items = data; break; }
+    } catch { continue; }
   }
+
+  if (!items) {
+    statusEl.textContent = '搜尋失敗，請直接貼上 YouTube 網址：';
+    resultsEl.innerHTML = `
+      <div style="display:flex;gap:8px;padding:4px 0">
+        <input class="yt-input" id="ytDirectUrl" placeholder="https://www.youtube.com/watch?v=..." style="flex:1">
+        <button class="yt-search-btn" style="padding:9px 14px" onclick="ytDownloadUrl()">下載</button>
+      </div>`;
+    return;
+  }
+
+  statusEl.textContent = `找到 ${items.length} 筆結果`;
+  resultsEl.innerHTML = items.slice(0, 15).map(v => {
+    const vid = v.videoId;
+    const dur = v.lengthSeconds > 0 ? ' · ' + fmtTime(v.lengthSeconds) : '';
+    const safeTitle = escHtml(v.title || '');
+    const safeCh = escHtml(v.author || '');
+    const thumb = `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`;
+    return `<div class="yt-result">
+      <img class="yt-thumb" src="${thumb}" alt="" onerror="this.style.display='none'">
+      <div class="yt-info">
+        <div class="yt-result-title" title="${safeTitle}">${safeTitle}</div>
+        <div class="yt-result-ch">${safeCh}${dur}</div>
+      </div>
+      <button class="yt-dl-btn" data-vid="${vid}" data-title="${safeTitle}" onclick="ytDownload(this)">⬇ 下載 MP3</button>
+    </div>`;
+  }).join('');
+}
+
+// 直接貼網址下載
+async function ytDownloadUrl() {
+  const urlInput = document.getElementById('ytDirectUrl');
+  const url = urlInput?.value.trim();
+  if (!url) return;
+  const m = url.match(/[?&]v=([^&]+)/);
+  if (!m) { alert('請貼上正確的 YouTube 網址'); return; }
+  const fakeBtn = document.createElement('button');
+  fakeBtn.dataset.vid = m[1];
+  fakeBtn.dataset.title = m[1];
+  fakeBtn.textContent = '下載中…';
+  urlInput.parentNode.appendChild(fakeBtn);
+  await ytDownload(fakeBtn);
 }
 
 async function ytDownload(btn) {
   const videoId = btn.dataset.vid;
   const title   = btn.dataset.title || videoId;
   btn.disabled = true;
-  btn.textContent = '請求中…';
-  try {
-    const apiRes = await fetch('https://api.cobalt.tools/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ url: `https://www.youtube.com/watch?v=${videoId}`, downloadMode: 'audio', audioFormat: 'mp3' })
-    });
-    const data = await apiRes.json();
-    if (data.status === 'error') throw new Error(data.error?.code || '下載被拒絕');
-    const dlUrl = data.url;
-    if (!dlUrl) throw new Error('無下載連結');
-    btn.textContent = '下載中…';
-    const mp3Res = await fetch(dlUrl);
-    if (!mp3Res.ok) throw new Error('音訊取得失敗');
-    const buf = await mp3Res.arrayBuffer();
-    const blob = new Blob([buf], { type: 'audio/mpeg' });
-    const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
-    // 加入播放清單
-    loadFiles([file]);
-    // 同時存到電腦
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = title + '.mp3';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
-    btn.textContent = '✓ 已加入＋存檔';
-    btn.style.color = '#4ade80';
-    btn.style.borderColor = 'rgba(74,222,128,0.3)';
-  } catch(e) {
-    btn.disabled = false;
-    btn.textContent = '⚠ ' + (e.message.length > 12 ? e.message.slice(0,12) + '…' : e.message);
-    btn.style.color = '#f87171';
+  btn.textContent = '下載中…';
+
+  const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+  // 方案 A：本機 yt-dlp 伺服器（USB 模式，127.0.0.1:8765）
+  if (location.hostname === '127.0.0.1') {
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`);
+      if (res.ok) {
+        const buf = await res.arrayBuffer();
+        const blob = new Blob([buf], { type: 'audio/mpeg' });
+        const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
+        loadFiles([file]);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = title + '.mp3';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+        btn.textContent = '✓ 已加入＋存檔';
+        btn.style.color = '#4ade80';
+        btn.style.borderColor = 'rgba(74,222,128,0.3)';
+        return;
+      }
+      const errText = await res.text();
+      if (res.status === 503) {
+        btn.disabled = false;
+        btn.textContent = '需安裝 yt-dlp';
+        btn.title = errText;
+        btn.style.color = '#fbbf24';
+        return;
+      }
+    } catch { /* fall through */ }
   }
+
+  // 方案 B：開啟 cobalt.tools 讓使用者一鍵下載
+  btn.disabled = false;
+  btn.textContent = '🔗 開啟下載頁';
+  btn.onclick = () => window.open(`https://cobalt.tools/?u=${encodeURIComponent(ytUrl)}`, '_blank');
+  btn.style.color = '#a78bfa';
+  btn.style.borderColor = 'rgba(167,139,250,0.3)';
 }
 
 // ===== 播放 =====
