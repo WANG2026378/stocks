@@ -787,7 +787,7 @@ function renderResults(list, isAgri){
   const cmpHTML = smart.cmps.map(c=>`<div class="r-summary-cmp">${c}</div>`).join('');
   const warnHTML = smart.warnings.map(w=>`<div class="r-summary-warn">⚠️ ${w}</div>`).join('');
 
-  const filter591 = !isAgri ? `<div class="find-bar"><span class="find-bar-label">🔗 找物件:</span><a href="https://sale.591.com.tw/" target="_blank">591</a><a href="https://www.rakuya.com.tw/" target="_blank">樂屋網</a><a href="https://buy.housefun.com.tw/" target="_blank">好房網</a><a href="https://www.sinyi.com.tw/buy/" target="_blank">信義</a><span style="color:var(--muted);font-size:11px;margin-left:auto">→ 用每張卡的「📋 複製條件」貼到網站搜尋框</span></div>` : '';
+  const filter591 = !isAgri ? `<div class="find-bar"><span class="find-bar-label">🔗 直達網站:</span><a href="https://sale.591.com.tw/" target="_blank">591</a><a href="https://www.rakuya.com.tw/" target="_blank">樂屋</a><a href="https://buy.housefun.com.tw/" target="_blank">好房</a><a href="https://www.sinyi.com.tw/buy/" target="_blank">信義</a><a href="https://lvr.land.moi.gov.tw/" target="_blank">實價登錄</a><span style="color:var(--muted);font-size:11px;margin-left:auto">→ 推薦點每張卡的「🔍 對應後搜尋」自動帶條件</span></div>` : '';
   document.getElementById('summary').innerHTML = `
     <h3>🎯 ${purposeLabel} · ${regionLabel} · ${budgetLabel}</h3>
     <p>從全台 ${DATA.length} 個熱門區段智能評分（含災害環境風險）,前 3 名建議優先實地勘查。</p>
@@ -852,7 +852,7 @@ function renderResults(list, isAgri){
           <div class="r-tags-mini">${topTags}</div>
 
           <div class="r-act-row">
-            <button class="r-act copy" data-copy="${copyText.replace(/"/g,'&quot;')}" onclick="copyConditions(this)" title="複製到剪貼簿,貼到任何網站搜尋框">📋 複製條件</button>
+            <button class="r-act copy" data-copy="${copyText.replace(/"/g,'&quot;')}" onclick="copyConditions(this)" title="一鍵:複製條件+開Google全網搜尋+開591主頁">🔍 對應後搜尋</button>
             <button class="r-act detail" onclick="toggleDetail(this)">▾ 深入分析</button>
             <button class="r-act add" onclick="quickAddItem('${d.loc}','${d.area}','${isAgri?'地':'房'}')" title="加入比較器">➕</button>
           </div>
@@ -1077,22 +1077,31 @@ function renderItems(){
   }).join('') + '</div>';
 }
 
-// 一鍵複製搜尋條件到剪貼簿
+// 對應後搜尋:一鍵複製條件 + 開啟 Google 全網搜尋 + 開啟 591 主頁
 function copyConditions(btn){
   const text = btn.dataset.copy;
-  navigator.clipboard.writeText(text).then(()=>{
-    const orig = btn.innerHTML;
-    btn.innerHTML = '✓ 已複製!';
+  // 1. 開啟 Google 全網搜尋（條件已對應好,結果直接是真實物件）
+  const googleQuery = text + ' 出售';
+  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(googleQuery)}+(site%3Asale.591.com.tw+OR+site%3Arakuya.com.tw+OR+site%3Ahousefun.com.tw+OR+site%3Asinyi.com.tw+OR+site%3Ayungching.com.tw)`;
+  const w1 = window.open(googleUrl, '_blank');
+  // 2. 開啟 591 主頁讓使用者貼上條件搜尋
+  setTimeout(()=>window.open('https://sale.591.com.tw/', '_blank'), 100);
+
+  // 3. 複製條件到剪貼簿
+  const updateFeedback = (msg)=>{
+    btn.innerHTML = msg;
     btn.classList.add('copied');
-    setTimeout(()=>{ btn.innerHTML = orig; btn.classList.remove('copied'); }, 1800);
-  }).catch(()=>{
-    // fallback for older browsers
-    const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); btn.innerHTML='✓ 已複製!'; btn.classList.add('copied'); setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='📋 複製條件';},1800);}
-    catch(e){ alert('複製失敗,請手動選取:\n'+text); }
-    document.body.removeChild(ta);
-  });
+    setTimeout(()=>{ btn.innerHTML = '🔍 對應後搜尋'; btn.classList.remove('copied'); }, 2800);
+  };
+  navigator.clipboard.writeText(text)
+    .then(()=>updateFeedback(w1?'✓ Google已開+591已開+條件已複製':'✓ 條件已複製,請允許彈窗'))
+    .catch(()=>{
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); updateFeedback('✓ 已複製+搜尋'); }
+      catch(e){ alert('複製失敗,請手動選取:\n'+text); }
+      document.body.removeChild(ta);
+    });
 }
 
 // 展開/收合深入分析
