@@ -75,45 +75,62 @@
     margin-bottom: 16px;
   }
 
-  /* 上半：封面 + 資訊 + 歌詞按鈕 */
+  /* 上半：封面大圖居中 + 資訊在下 */
   .album-section {
     display: flex;
-    gap: 24px;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
     margin-bottom: 24px;
   }
 
   .album-wrap {
     position: relative;
     flex-shrink: 0;
-    width: 148px;
-    height: 148px;
+    width: 260px;
+    height: 260px;
+    filter: drop-shadow(0 20px 48px rgba(0,0,0,0.6));
   }
   .album-art {
-    width: 148px;
-    height: 148px;
-    border-radius: 16px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
     background: linear-gradient(135deg, #4c1d95, #1e3a8a, #831843);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.5rem;
+    font-size: 5rem;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-    transition: box-shadow 0.6s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transition: box-shadow 0.6s, transform 0.4s;
   }
   .album-art img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 50%;
     display: block;
   }
-  .album-art.glow { animation: glowPulse 3s ease-in-out infinite; }
-  @keyframes glowPulse {
-    0%,100% { box-shadow: 0 16px 40px rgba(120,40,200,0.4); }
-    50% { box-shadow: 0 24px 60px rgba(80,120,240,0.6); }
+  /* 播放中：慢速旋轉（黑膠效果） */
+  @keyframes vinylSpin { to { transform: rotate(360deg); } }
+  .album-art.spinning { animation: vinylSpin 20s linear infinite; }
+  .album-art.spinning.paused { animation-play-state: paused; }
+  /* 封面光暈 */
+  .album-art.glow { box-shadow: 0 0 0 4px rgba(167,139,250,0.2), 0 20px 60px rgba(120,40,200,0.5); }
+  /* 圓形中心光點（唱針孔） */
+  .album-wrap::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 30%, rgba(255,255,255,0.3) 100%);
+    box-shadow: 0 0 8px rgba(255,255,255,0.4);
+    pointer-events: none;
+    z-index: 2;
   }
+  .track-info { width: 100%; text-align: center; }
 
   /* 封面 loading 旋轉圈 */
   .cover-loading {
@@ -163,6 +180,7 @@
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 16px;
+    justify-content: center;
   }
   .track-badge {
     display: inline-flex;
@@ -780,8 +798,8 @@
   #fileInput, #folderInput { display: none; }
 
   @media (max-width: 600px) {
-    .album-section { flex-direction: column; align-items: center; text-align: center; }
-    .track-badges { justify-content: center; }
+    .album-wrap { width: 200px; height: 200px; }
+    .album-art { width: 200px; height: 200px; }
     .controls { gap: 8px; }
     .lyrics-search { flex-direction: column; }
     .playlist-header { flex-direction: column; align-items: flex-start; }
@@ -1211,6 +1229,7 @@ function setCover(src, item) {
   bgCover.classList.add('show');
   coverBadge.style.display = 'inline-flex';
   albumArt.classList.add('glow');
+  if (state.isPlaying) albumArt.classList.add('spinning');
 }
 
 function clearCover(item) {
@@ -2220,6 +2239,7 @@ function play(idx) {
   audio.load();
   audio.play().then(() => {
     state.isPlaying = true;
+    albumArt.classList.add('spinning');
     updatePlayBtn();
     updateTrackUI(item);
     renderPlaylist();
@@ -2247,8 +2267,8 @@ function updateTrackUI(item) {
   trackArtist.innerHTML = escHtml([item.artist, item.album].filter(Boolean).join(' — ') || '未知藝人');
   trackFormat.textContent = `${item.format} 格式`;
   albumArt.innerHTML = getAlbumEmoji(item);
-  albumArt.style.background = '';   // 清除錯誤時的紅色背景
-  albumArt.classList.remove('glow');
+  albumArt.style.background = '';
+  albumArt.classList.remove('glow', 'spinning', 'paused');
   bgCover.classList.remove('show');
   coverBadge.style.display = 'none';
   lyricsDot.classList.remove('show');
@@ -2259,7 +2279,7 @@ function resetUI() {
   trackArtist.textContent = '請載入 MP3 檔案開始播放';
   trackFormat.textContent = 'MP3 播放器';
   albumArt.innerHTML = '🎵';
-  albumArt.classList.remove('glow');
+  albumArt.classList.remove('glow', 'spinning', 'paused');
   bgCover.classList.remove('show');
   coverBadge.style.display = 'none';
   lyricsDot.classList.remove('show');
@@ -2282,12 +2302,14 @@ function togglePlay() {
     audio.pause();
     state.isPlaying = false;
     albumArt.classList.remove('glow');
+    albumArt.classList.add('paused');
     cancelAnimationFrame(state.animFrame);
     animateVisualizer();
   } else {
     audio.play();
     state.isPlaying = true;
-    albumArt.classList.add('glow');
+    albumArt.classList.add('glow', 'spinning');
+    albumArt.classList.remove('paused');
     animateVisualizer();
   }
   updatePlayBtn();
@@ -2341,7 +2363,7 @@ audio.addEventListener('ended', () => {
   if (state.loopMode === 1) nextTrack();
   else if (state.loopMode === 0) {
     if (state.currentIndex < state.playlist.length - 1) nextTrack();
-    else { state.isPlaying = false; albumArt.classList.remove('glow'); updatePlayBtn(); }
+    else { state.isPlaying = false; albumArt.classList.remove('glow', 'spinning', 'paused'); updatePlayBtn(); }
   }
 });
 
