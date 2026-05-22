@@ -430,6 +430,53 @@
     animation: spin 0.8s linear infinite;
     flex-shrink: 0;
   }
+  /* ===== 卡拉OK同步歌詞 ===== */
+  .lyrics-body.karaoke-mode {
+    padding: 0;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  .lyrics-body.karaoke-mode::-webkit-scrollbar { display: none; }
+  .lrc-pad { height: 160px; }
+  .lrc-line {
+    text-align: center;
+    padding: 10px 24px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.18);
+    filter: blur(1.5px);
+    transition: font-size 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                color 0.35s ease,
+                filter 0.35s ease,
+                font-weight 0.35s ease;
+    cursor: pointer;
+    line-height: 1.55;
+    user-select: none;
+  }
+  .lrc-line:hover { color: rgba(255,255,255,0.45) !important; }
+  .lrc-line.lrc-active {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #fff;
+    filter: none;
+  }
+  .lrc-line.lrc-near1 {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.55);
+    filter: blur(0.4px);
+  }
+  .lrc-line.lrc-near2 {
+    font-size: 1.0rem;
+    color: rgba(255,255,255,0.32);
+    filter: blur(1px);
+  }
+  .lrc-line.lrc-far {
+    color: rgba(255,255,255,0.14);
+    filter: blur(2px);
+  }
+
   .lyrics-source {
     font-size: 0.72rem;
     color: rgba(255,255,255,0.25);
@@ -1053,6 +1100,9 @@ const state = {
   fetchAbort: null,
   favorites: new Set(JSON.parse(localStorage.getItem('ytPlayerFavs') || '[]')),
   favFilter: false,
+  syncedLyrics: null,     // [{time, text}] parsed LRC
+  currentLyricIdx: -1,
+  lrcUserScrolling: false,
 };
 
 // ===== DOM =====
@@ -1614,6 +1664,79 @@ function showConvertingUI(item) {
   bgCover.classList.remove('show');
 }
 
+// ===== LRC 解析器 =====
+function parseLRC(lrcText) {
+  const lines = [];
+  for (const raw of lrcText.split('\n')) {
+    const tags = [...raw.matchAll(/\[(\d+):(\d+\.?\d*)\]/g)];
+    const text  = raw.replace(/\[\d+:\d+\.?\d*\]/g, '').trim();
+    if (!tags.length || !text) continue;
+    for (const t of tags) {
+      lines.push({ time: parseInt(t[1]) * 60 + parseFloat(t[2]), text });
+    }
+  }
+  return lines.sort((a, b) => a.time - b.time);
+}
+
+// ===== 卡拉OK 顯示 =====
+function showKaraokeLyrics(lrcText, source) {
+  const lines = parseLRC(lrcText);
+  if (lines.length < 3) { showLyrics(lrcText.replace(/\[\d+:\d+\.?\d*\]/g,'').trim(), source); return; }
+  state.syncedLyrics    = lines;
+  state.currentLyricIdx = -1;
+  lyricsBody.className  = 'lyrics-body karaoke-mode';
+  lyricsBody.innerHTML  =
+    `<div class="lrc-pad"></div>` +
+    lines.map((l, i) =>
+      `<div class="lrc-line lrc-far" data-idx="${i}" data-time="${l.time}">${escHtml(l.text)}</div>`
+    ).join('') +
+    `<div class="lrc-pad"></div>` +
+    `<div class="lyrics-source" style="margin:0 24px 16px;text-align:right">` +
+    `歌詞來源：<a href="https://${source}" target="_blank" style="color:rgba(167,139,250,0.5)">${source}</a></div>`;
+
+  lyricsBody.querySelectorAll('.lrc-line').forEach(el => {
+    el.addEventListener('click', () => {
+      const t = parseFloat(el.dataset.time);
+      if (!isNaN(t)) { audio.currentTime = t; if (!state.isPlaying) togglePlay(); }
+    });
+  });
+  let scrollTimer;
+  lyricsBody.addEventListener('scroll', () => {
+    state.lrcUserScrolling = true;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => { state.lrcUserScrolling = false; }, 2000);
+  }, { passive: true });
+
+  lyricsDot.classList.add('show');
+  updateLyricHighlight(findCurrentLyricIdx(audio.currentTime));
+}
+
+function findCurrentLyricIdx(t) {
+  if (!state.syncedLyrics) return -1;
+  let idx = -1;
+  for (let i = 0; i < state.syncedLyrics.length; i++) {
+    if (state.syncedLyrics[i].time <= t) idx = i; else break;
+  }
+  return idx;
+}
+
+function updateLyricHighlight(idx) {
+  if (!state.syncedLyrics) return;
+  state.currentLyricIdx = idx;
+  const els = lyricsBody.querySelectorAll('.lrc-line');
+  els.forEach((el, i) => {
+    const d = i - idx;
+    el.className = 'lrc-line' + (
+      d === 0           ? ' lrc-active' :
+      Math.abs(d) === 1 ? ' lrc-near1'  :
+      Math.abs(d) <= 3  ? ' lrc-near2'  : ' lrc-far'
+    );
+  });
+  if (!state.lrcUserScrolling && idx >= 0 && els[idx]) {
+    els[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
 // ===== 從混合中英文字串拆出英文／中文段 =====
 function extractEng(str) {
   // 含縮寫如 G.E.M. 與一般英文詞組
@@ -1662,9 +1785,13 @@ async function fetchLyrics(artist, title) {
       if (!res.ok) continue;
       const data = await res.json();
       if (data && data.length > 0) {
-        const lrc = data[0].plainLyrics || data[0].syncedLyrics || '';
-        if (lrc.trim()) {
-          const plain = lrc.replace(/\[\d+:\d+\.\d+\]/g, '').trim();
+        const synced = data[0].syncedLyrics || '';
+        const plain  = data[0].plainLyrics  || '';
+        if (synced.trim()) {
+          showKaraokeLyrics(synced, 'lrclib.net');  // 優先同步歌詞
+          return;
+        }
+        if (plain.trim()) {
           showLyrics(plain, 'lrclib.net');
           return;
         }
@@ -1693,7 +1820,10 @@ async function fetchLyrics(artist, title) {
 }
 
 function showLyrics(text, source) {
-  lyricsBody.innerHTML = `${escHtml(text).replace(/\n/g,'<br>')}
+  state.syncedLyrics    = null;
+  state.currentLyricIdx = -1;
+  lyricsBody.className  = 'lyrics-body';
+  lyricsBody.innerHTML  = `${escHtml(text).replace(/\n/g,'<br>')}
     <div class="lyrics-source">歌詞來源：<a href="https://${source}" target="_blank">${source}</a></div>`;
   lyricsDot.classList.add('show');
   if (state.lyricsOpen) lyricsBody.scrollTop = 0;
@@ -2306,6 +2436,9 @@ function updateTrackUI(item) {
   bgCover.classList.remove('show');
   coverBadge.style.display = 'none';
   lyricsDot.classList.remove('show');
+  state.syncedLyrics = null; state.currentLyricIdx = -1;
+  lyricsBody.className = 'lyrics-body';
+  lyricsBody.innerHTML = '<span style="color:rgba(255,255,255,0.25);font-size:0.86rem">播放音樂後將自動抓取歌詞，或在上方輸入手動搜尋</span>';
 }
 
 function resetUI() {
@@ -2382,6 +2515,11 @@ audio.addEventListener('timeupdate', () => {
   if (!audio.duration) return;
   progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
   currentTimeEl.textContent = fmtTime(audio.currentTime);
+  // 卡拉OK 同步
+  if (state.syncedLyrics && state.lyricsOpen) {
+    const idx = findCurrentLyricIdx(audio.currentTime);
+    if (idx !== state.currentLyricIdx) updateLyricHighlight(idx);
+  }
 });
 
 audio.addEventListener('loadedmetadata', () => {
