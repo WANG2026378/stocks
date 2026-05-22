@@ -643,6 +643,17 @@
   .yt-dl-btn:hover:not(:disabled) { background: rgba(124,58,237,0.4); }
   .yt-dl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .yt-status { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-align: center; }
+  @keyframes ytSlideRight { from { opacity:0; transform:translateX(36px) } to { opacity:1; transform:translateX(0) } }
+  @keyframes ytSlideLeft  { from { opacity:0; transform:translateX(-36px)} to { opacity:1; transform:translateX(0) } }
+  .yt-slide-next { animation: ytSlideRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .yt-slide-prev { animation: ytSlideLeft  0.28s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .yt-pager-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; padding: 7px 20px; color: rgba(255,255,255,0.65);
+    cursor: pointer; font-size: 0.82rem; transition: all 0.2s;
+  }
+  .yt-pager-btn:hover:not(:disabled) { background: rgba(255,255,255,0.14); color: #fff; }
+  .yt-pager-btn:disabled { opacity: 0.3; cursor: default; }
   .yt-close-btn {
     background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
     color: rgba(255,255,255,0.4); cursor: pointer; padding: 6px 12px;
@@ -984,14 +995,14 @@
         <input class="yt-input" id="ytInput" placeholder="輸入歌名或藝人…" onkeydown="if(event.key==='Enter')ytSearch()">
         <button class="yt-search-btn" onclick="ytSearch()">搜尋</button>
       </div>
-      <div class="yt-status" id="ytStatus">輸入關鍵字開始搜尋</div>
-      <div class="yt-results" id="ytResults"></div>
-      <!-- 翻頁列（固定底部） -->
-      <div id="ytPager" style="display:none;align-items:center;justify-content:center;gap:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07)">
-        <button id="ytPrevBtn" onclick="ytPrevPage()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px 18px;color:rgba(255,255,255,0.6);cursor:pointer;font-size:0.82rem;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">◀ 上一頁</button>
-        <span id="ytPageLabel" style="font-size:0.82rem;color:rgba(255,255,255,0.35);min-width:50px;text-align:center">第 1 頁</span>
-        <button id="ytNextBtn" onclick="ytNextPage()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px 18px;color:rgba(255,255,255,0.6);cursor:pointer;font-size:0.82rem;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">下一頁 ▶</button>
+      <div id="ytStatus" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-align:center">輸入關鍵字開始搜尋</div>
+      <!-- 翻頁列：搜尋後出現在結果正上方 -->
+      <div id="ytPager" style="display:none;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 8px;border-bottom:1px solid rgba(255,255,255,0.07)">
+        <button id="ytPrevBtn" class="yt-pager-btn" onclick="ytPrevPage()">◀ 上一頁</button>
+        <span id="ytPageLabel" style="font-size:0.85rem;color:rgba(255,255,255,0.6);font-weight:600">第 1 頁</span>
+        <button id="ytNextBtn" class="yt-pager-btn" onclick="ytNextPage()">下一頁 ▶</button>
       </div>
+      <div class="yt-results" id="ytResults"></div>
     </div>
   </div>
 </div>
@@ -1956,13 +1967,17 @@ function closeYtModal() {
   document.getElementById('ytModal').classList.remove('open');
 }
 
-// 搜尋狀態
-let _ytQ = '', _ytPage = 1, _ytHost = null;
+// 搜尋狀態（本地分頁：每頁4首；API每次抓20首供5個本地頁）
+const _YT_PER_PAGE = 4;
+const _YT_LOCAL_PER_API = 5;
+let _ytQ = '', _ytLocalPage = 1, _ytHost = null, _ytApiCache = {};
+
+function _ytApiPageNum(lp) { return Math.floor((lp - 1) / _YT_LOCAL_PER_API) + 1; }
+function _ytOffset(lp)     { return ((lp - 1) % _YT_LOCAL_PER_API) * _YT_PER_PAGE; }
 
 // 查詢 lrclib.net 是否有歌詞
 async function _checkHasLyrics(title) {
   try {
-    // 清理標題：去掉括號說明、MV、Official 等字眼
     const clean = title.replace(/[\[\(（【].*?[\]\)）】]/g, '')
                        .replace(/\b(official|mv|pv|video|hd|lyrics?|4k|remaster)\b/gi, '')
                        .trim();
@@ -1976,26 +1991,49 @@ async function _checkHasLyrics(title) {
   } catch { return false; }
 }
 
+// 取得並快取 API 頁面（每頁20首）
+async function _ytFetchApi(apiPage) {
+  if (_ytApiCache[apiPage]) return _ytApiCache[apiPage];
+  const hosts = _ytHost ? [_ytHost] : _YT_HOSTS;
+  for (const host of hosts) {
+    try {
+      const res = await fetch(
+        `${host}/api/v1/search?q=${encodeURIComponent(_ytQ)}&type=video&page=${apiPage}&fields=videoId,title,author,lengthSeconds`,
+        { signal: AbortSignal.timeout(8000) }
+      );
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) {
+        _ytHost = host;
+        _ytApiCache[apiPage] = data;
+        return data;
+      }
+    } catch { continue; }
+  }
+  return null;
+}
+
 async function ytSearch() {
   _ytQ = document.getElementById('ytInput').value.trim();
   if (!_ytQ) return;
-  _ytPage = 1;
+  _ytLocalPage = 1;
   _ytHost = null;
-  await _ytFetchPage();
+  _ytApiCache = {};
+  await _ytRenderPage('none');
 }
 
 async function ytPrevPage() {
-  if (_ytPage <= 1) return;
-  _ytPage--;
-  await _ytFetchPage();
+  if (_ytLocalPage <= 1) return;
+  _ytLocalPage--;
+  await _ytRenderPage('prev');
 }
 
 async function ytNextPage() {
-  _ytPage++;
-  await _ytFetchPage();
+  _ytLocalPage++;
+  await _ytRenderPage('next');
 }
 
-async function _ytFetchPage() {
+async function _ytRenderPage(dir) {
   const statusEl = document.getElementById('ytStatus');
   const resultsEl = document.getElementById('ytResults');
   const pager     = document.getElementById('ytPager');
@@ -2003,26 +2041,16 @@ async function _ytFetchPage() {
   const nextBtn   = document.getElementById('ytNextBtn');
   const pageLabel = document.getElementById('ytPageLabel');
 
-  resultsEl.innerHTML = '';
   pager.style.display = 'none';
-  statusEl.textContent = `搜尋第 ${_ytPage} 頁…`;
+  statusEl.textContent = '搜尋中…';
 
-  const hosts = _ytHost ? [_ytHost] : _YT_HOSTS;
-  let items = null;
-  for (const host of hosts) {
-    try {
-      const res = await fetch(
-        `${host}/api/v1/search?q=${encodeURIComponent(_ytQ)}&type=video&page=${_ytPage}&fields=videoId,title,author,lengthSeconds`,
-        { signal: AbortSignal.timeout(8000) }
-      );
-      if (!res.ok) continue;
-      const data = await res.json();
-      if (Array.isArray(data) && data.length) { items = data; _ytHost = host; break; }
-    } catch { continue; }
-  }
+  const apiPage = _ytApiPageNum(_ytLocalPage);
+  const offset  = _ytOffset(_ytLocalPage);
 
-  if (!items) {
-    if (_ytPage === 1) {
+  const allItems = await _ytFetchApi(apiPage);
+
+  if (!allItems) {
+    if (_ytLocalPage === 1) {
       statusEl.textContent = '搜尋失敗，請直接貼上 YouTube 網址：';
       resultsEl.innerHTML = `
         <div style="display:flex;gap:8px;padding:4px 0">
@@ -2030,38 +2058,47 @@ async function _ytFetchPage() {
           <button class="yt-search-btn" style="padding:9px 14px" onclick="ytDownloadUrl()">下載</button>
         </div>`;
     } else {
-      statusEl.textContent = '已無更多結果，回上一頁';
-      _ytPage--;
-      // 更新翻頁列
-      pageLabel.textContent = `第 ${_ytPage} 頁`;
-      prevBtn.disabled = _ytPage <= 1;
+      // 無更多資料，退回
+      _ytLocalPage--;
+      statusEl.textContent = '已無更多結果';
+      pageLabel.textContent = `第 ${_ytLocalPage} 頁`;
+      prevBtn.disabled = _ytLocalPage <= 1;
+      nextBtn.disabled = true;
       pager.style.display = 'flex';
     }
     return;
   }
 
-  statusEl.textContent = `第 ${_ytPage} 頁・共 ${items.length} 筆`;
+  const slice = allItems.slice(offset, offset + _YT_PER_PAGE);
+  if (!slice.length) {
+    // 本 API 頁沒有這段了，退回
+    _ytLocalPage--;
+    statusEl.textContent = '已無更多結果';
+    pageLabel.textContent = `第 ${_ytLocalPage} 頁`;
+    prevBtn.disabled = _ytLocalPage <= 1;
+    nextBtn.disabled = true;
+    pager.style.display = 'flex';
+    return;
+  }
 
-  // 同時查詢哪些有歌詞（lrclib.net），有的往前排
+  // 查詢歌詞（只查這4首）
   statusEl.textContent = '確認歌詞中…';
-  const lyricsFlags = await Promise.allSettled(
-    items.map(v => _checkHasLyrics(v.title))
-  );
-  const hasLyrics = lyricsFlags.map(r => r.status === 'fulfilled' && r.value);
+  const lyricsFlags = await Promise.allSettled(slice.map(v => _checkHasLyrics(v.title)));
+  const hasLyrics   = lyricsFlags.map(r => r.status === 'fulfilled' && r.value);
 
-  // 有歌詞的排前面，其餘維持原順序
-  const indexed = items.map((v, i) => ({ v, lyr: hasLyrics[i] }));
+  // 有歌詞的排前面
+  const indexed = slice.map((v, i) => ({ v, lyr: hasLyrics[i] }));
   indexed.sort((a, b) => b.lyr - a.lyr);
 
   const lyricCount = hasLyrics.filter(Boolean).length;
-  statusEl.textContent = `第 ${_ytPage} 頁・${items.length} 筆・其中 ${lyricCount} 首有歌詞`;
+  statusEl.textContent = `第 ${_ytLocalPage} 頁・${lyricCount} 首有歌詞`;
 
   const html = indexed.map(({ v, lyr }) => {
     const vid = v.videoId;
     const dur = v.lengthSeconds > 0 ? ' · ' + fmtTime(v.lengthSeconds) : '';
     const safeTitle = escHtml(v.title || '');
-    const safeCh = escHtml(v.author || '');
-    const thumb = `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`;
+    const safeCh    = escHtml(v.author || '');
+    const thumb     = `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`;
     const lyricBadge = lyr ? `<span style="font-size:0.68rem;background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:#34d399;border-radius:4px;padding:1px 5px;margin-left:4px;flex-shrink:0">🎤 有歌詞</span>` : '';
     return `<div class="yt-result" style="${lyr ? 'border-color:rgba(52,211,153,0.2);' : ''}">
       <img class="yt-thumb" src="${thumb}" alt="" onerror="this.style.display='none'">
@@ -2075,13 +2112,20 @@ async function _ytFetchPage() {
     </div>`;
   }).join('');
 
+  // 蘋果風格滑動動畫
+  const animClass = dir === 'next' ? 'yt-slide-next' : dir === 'prev' ? 'yt-slide-prev' : '';
   resultsEl.innerHTML = html;
+  if (animClass) {
+    resultsEl.classList.remove('yt-slide-next', 'yt-slide-prev');
+    void resultsEl.offsetWidth; // reflow
+    resultsEl.classList.add(animClass);
+  }
   resultsEl.scrollTop = 0;
 
   // 更新翻頁列
-  pageLabel.textContent = `第 ${_ytPage} 頁`;
-  prevBtn.disabled = _ytPage <= 1;
-  prevBtn.style.opacity = _ytPage <= 1 ? '0.35' : '1';
+  pageLabel.textContent = `第 ${_ytLocalPage} 頁`;
+  prevBtn.disabled = _ytLocalPage <= 1;
+  prevBtn.style.opacity = _ytLocalPage <= 1 ? '0.35' : '1';
   nextBtn.disabled = false;
   nextBtn.style.opacity = '1';
   pager.style.display = 'flex';
