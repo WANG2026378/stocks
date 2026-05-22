@@ -986,6 +986,12 @@
       </div>
       <div class="yt-status" id="ytStatus">輸入關鍵字開始搜尋</div>
       <div class="yt-results" id="ytResults"></div>
+      <!-- 翻頁列（固定底部） -->
+      <div id="ytPager" style="display:none;align-items:center;justify-content:center;gap:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.07)">
+        <button id="ytPrevBtn" onclick="ytPrevPage()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px 18px;color:rgba(255,255,255,0.6);cursor:pointer;font-size:0.82rem;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">◀ 上一頁</button>
+        <span id="ytPageLabel" style="font-size:0.82rem;color:rgba(255,255,255,0.35);min-width:50px;text-align:center">第 1 頁</span>
+        <button id="ytNextBtn" onclick="ytNextPage()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:7px 18px;color:rgba(255,255,255,0.6);cursor:pointer;font-size:0.82rem;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">下一頁 ▶</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1975,26 +1981,32 @@ async function ytSearch() {
   if (!_ytQ) return;
   _ytPage = 1;
   _ytHost = null;
-  document.getElementById('ytResults').innerHTML = '';
-  await _ytFetchPage(true);
+  await _ytFetchPage();
 }
 
-async function ytLoadMore() {
+async function ytPrevPage() {
+  if (_ytPage <= 1) return;
+  _ytPage--;
+  await _ytFetchPage();
+}
+
+async function ytNextPage() {
   _ytPage++;
-  await _ytFetchPage(false);
+  await _ytFetchPage();
 }
 
-async function _ytFetchPage(isFirst) {
+async function _ytFetchPage() {
   const statusEl = document.getElementById('ytStatus');
   const resultsEl = document.getElementById('ytResults');
+  const pager     = document.getElementById('ytPager');
+  const prevBtn   = document.getElementById('ytPrevBtn');
+  const nextBtn   = document.getElementById('ytNextBtn');
+  const pageLabel = document.getElementById('ytPageLabel');
 
-  // 移除舊的「載入更多」按鈕
-  const oldMore = document.getElementById('ytMoreBtn');
-  if (oldMore) oldMore.remove();
+  resultsEl.innerHTML = '';
+  pager.style.display = 'none';
+  statusEl.textContent = `搜尋第 ${_ytPage} 頁…`;
 
-  statusEl.textContent = isFirst ? '搜尋中…' : `載入第 ${_ytPage} 頁…`;
-
-  // 選用哪個 host
   const hosts = _ytHost ? [_ytHost] : _YT_HOSTS;
   let items = null;
   for (const host of hosts) {
@@ -2010,7 +2022,7 @@ async function _ytFetchPage(isFirst) {
   }
 
   if (!items) {
-    if (isFirst) {
+    if (_ytPage === 1) {
       statusEl.textContent = '搜尋失敗，請直接貼上 YouTube 網址：';
       resultsEl.innerHTML = `
         <div style="display:flex;gap:8px;padding:4px 0">
@@ -2018,8 +2030,12 @@ async function _ytFetchPage(isFirst) {
           <button class="yt-search-btn" style="padding:9px 14px" onclick="ytDownloadUrl()">下載</button>
         </div>`;
     } else {
-      statusEl.textContent = '已無更多結果';
+      statusEl.textContent = '已無更多結果，回上一頁';
       _ytPage--;
+      // 更新翻頁列
+      pageLabel.textContent = `第 ${_ytPage} 頁`;
+      prevBtn.disabled = _ytPage <= 1;
+      pager.style.display = 'flex';
     }
     return;
   }
@@ -2059,17 +2075,16 @@ async function _ytFetchPage(isFirst) {
     </div>`;
   }).join('');
 
-  resultsEl.insertAdjacentHTML('beforeend', html);
+  resultsEl.innerHTML = html;
+  resultsEl.scrollTop = 0;
 
-  // 加「載入更多」按鈕
-  const moreBtn = document.createElement('button');
-  moreBtn.id = 'ytMoreBtn';
-  moreBtn.textContent = '載入更多結果 ▼';
-  moreBtn.style.cssText = 'width:100%;margin-top:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;color:rgba(255,255,255,0.5);cursor:pointer;font-size:0.82rem;transition:all 0.2s';
-  moreBtn.onmouseover = () => moreBtn.style.background = 'rgba(255,255,255,0.08)';
-  moreBtn.onmouseout  = () => moreBtn.style.background = 'rgba(255,255,255,0.04)';
-  moreBtn.onclick = () => { moreBtn.textContent = '載入中…'; moreBtn.disabled = true; ytLoadMore(); };
-  resultsEl.appendChild(moreBtn);
+  // 更新翻頁列
+  pageLabel.textContent = `第 ${_ytPage} 頁`;
+  prevBtn.disabled = _ytPage <= 1;
+  prevBtn.style.opacity = _ytPage <= 1 ? '0.35' : '1';
+  nextBtn.disabled = false;
+  nextBtn.style.opacity = '1';
+  pager.style.display = 'flex';
 }
 
 // 直接貼網址下載
