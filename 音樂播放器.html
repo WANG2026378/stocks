@@ -1917,16 +1917,33 @@ async function ytDownload(btn) {
 
   const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-  // 方案 A：本機 yt-dlp 伺服器（有跑 啟動播放器.command 就能用，不限來源頁面）
+  // 先偵測本機伺服器是否在線（2 秒 timeout）
+  btn.textContent = '偵測中…';
+  let serverOnline = false;
   try {
-    fetch('http://127.0.0.1:8765/open-downloads').catch(() => {});
-    const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`,
-      { signal: AbortSignal.timeout(300000) });
+    const ping = await fetch('http://127.0.0.1:8765/open-downloads',
+      { signal: AbortSignal.timeout(2000) });
+    serverOnline = ping.status === 204;
+  } catch { /* 未啟動 */ }
+
+  if (!serverOnline) {
+    // 伺服器沒跑 → 提示先啟動
+    btn.disabled = false;
+    btn.textContent = '⚠ 請先雙擊啟動播放器.command';
+    btn.style.color = '#fbbf24';
+    btn.style.borderColor = 'rgba(251,191,36,0.3)';
+    btn.title = '啟動後本機伺服器會在背景跑，再按一次即可下載';
+    return;
+  }
+
+  // 伺服器在線 → 正式下載
+  btn.textContent = '下載中…';
+  try {
+    const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`);
     if (res.ok) {
       const buf = await res.arrayBuffer();
       const blob = new Blob([buf], { type: 'audio/mpeg' });
-      const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
-      loadFiles([file]);
+      loadFiles([new File([blob], title + '.mp3', { type: 'audio/mpeg' })]);
       btn.textContent = '✓ 已加入清單 · 已存到下載資料夾';
       btn.style.color = '#4ade80';
       btn.style.borderColor = 'rgba(74,222,128,0.3)';
@@ -1934,27 +1951,16 @@ async function ytDownload(btn) {
     }
     if (res.status === 503) {
       btn.disabled = false;
-      btn.textContent = '需安裝 yt-dlp';
-      btn.title = await res.text();
+      btn.textContent = '⚠ 需安裝 yt-dlp：pip3 install yt-dlp';
       btn.style.color = '#fbbf24';
       return;
     }
-  } catch { /* 伺服器未啟動，fall through */ }
-
-  // 方案 B：複製 yt-dlp 指令（cobalt.tools 已停用 YouTube 下載）
-  const cmd = `yt-dlp -x --audio-format mp3 "${ytUrl}"`;
-  btn.disabled = false;
-  btn.textContent = '📋 複製下載指令';
-  btn.style.color = '#fbbf24';
-  btn.style.borderColor = 'rgba(251,191,36,0.3)';
-  btn.onclick = () => {
-    navigator.clipboard.writeText(cmd).then(() => {
-      btn.textContent = '✓ 已複製！貼到終端機執行';
-      btn.style.color = '#4ade80';
-    }).catch(() => {
-      prompt('複製此指令後在終端機執行：', cmd);
-    });
-  };
+    throw new Error(`HTTP ${res.status}`);
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '⚠ 下載失敗：' + e.message;
+    btn.style.color = '#f87171';
+  }
 }
 
 // ===== 播放 =====
