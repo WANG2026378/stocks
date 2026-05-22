@@ -1614,47 +1614,48 @@ function showConvertingUI(item) {
   bgCover.classList.remove('show');
 }
 
-// ===== 清理 YouTube 標題雜訊 =====
-function cleanForLyrics(str) {
+// ===== 從混合中英文字串拆出英文／中文段 =====
+function extractEng(str) {
+  // 含縮寫如 G.E.M. 與一般英文詞組
+  const segs = str.match(/(?:[A-Z]\.){2,}|[A-Za-z][A-Za-z'\s]{2,}/g) || [];
+  return segs.join(' ').replace(/\s{2,}/g, ' ').trim();
+}
+function extractChi(str) {
+  const segs = str.match(/[一-鿿]+/g) || [];
+  return segs.join('').trim();
+}
+function stripYTNoise(str) {
   return str
-    .replace(/《|》|〈|〉|【|】|「|」/g, ' ')          // 書名號／括號
-    .replace(/[\[\(（].*?[\]\)）]/g, ' ')               // (括號內容)
-    .replace(/\b(official|mv|pv|video|hd|4k|remaster|完整版|完整|MV|官方|主題曲|片頭曲|片尾曲|插曲|電影版|中文版|國語版|粵語版|cover|翻唱|live|版本)\b/gi, ' ')
-    .replace(/[-–—|·•·]+/g, ' ')                       // 分隔符
-    .replace(/\s{2,}/g, ' ')
-    .trim();
+    .replace(/《([^》]*)》|〈([^〉]*)〉/g, (_, a, b) => ' ' + (a || b) + ' ')
+    .replace(/[\[\(（][^\]\)）]{0,30}[\]\)）]/g, ' ')
+    .replace(/[-–—|·]\s*(電影|電視劇|動畫|主題曲|片頭|片尾|插曲|OST).*/i, '')
+    .replace(/完整版|完整|官方|主題曲|片頭曲|片尾曲|插曲|電影版|中文版|國語版|粵語版|翻唱|版本/g, ' ')  // 中文雜訊
+    .replace(/\b(official|mv|pv|video|hd|4k|remaster|cover|HD)\b/gi, ' ')  // 英文雜訊
+    .replace(/[-–—|]{2,}/g, ' ')
+    .replace(/\s{2,}/g, ' ').trim();
 }
 
-// ===== 抓歌詞（lyrics.ovh + lrclib 雙重） =====
+// ===== 抓歌詞（lrclib 多策略 + lyrics.ovh） =====
 async function fetchLyrics(artist, title) {
   lyricsBody.innerHTML = `<div class="lyrics-loading"><div class="lyrics-spinner"></div>正在搜尋歌詞…</div>`;
   lyricsDot.classList.remove('show');
 
-  const cleanArtist = cleanForLyrics(artist);
-  const cleanTitle  = cleanForLyrics(title);
+  const ct       = stripYTNoise(title);
+  const engA     = extractEng(artist);
+  const chiA     = extractChi(artist);
+  const engT     = extractEng(ct);
+  const chiT     = extractChi(ct);
 
-  // 方案1：lyrics.ovh（用清理過的藝人+歌名）
-  try {
-    const a = encodeURIComponent(cleanArtist);
-    const t = encodeURIComponent(cleanTitle);
-    const res = await fetch(`https://api.lyrics.ovh/v1/${a}/${t}`,
-      { signal: AbortSignal.timeout(6000) });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.lyrics && data.lyrics.trim()) {
-        showLyrics(data.lyrics, 'lyrics.ovh');
-        return;
-      }
-    }
-  } catch(e) {}
+  // 查詢順序：命中率由高到低
+  const queries = [
+    engA && chiT  ? `${engA} ${chiT}`  : '',   // Jay Chou 稻香 / G.E.M. 喜歡你
+    engA && engT  ? `${engA} ${engT}`  : '',   // Cyndi Wang If it's not mine
+    chiA && chiT  ? `${chiA} ${chiT}`  : '',   // 周杰倫 稻香
+    chiT || '',                                 // 只中文歌名
+    engT || '',                                 // 只英文歌名（最後，避免誤配）
+  ].filter(q => q.trim().length > 1);
 
-  // 方案2：lrclib.net（多組查詢策略）
-  const queries = [];
-  if (cleanArtist && cleanTitle) queries.push(`${cleanArtist} ${cleanTitle}`);
-  if (cleanTitle)                queries.push(cleanTitle);
-  if (cleanArtist && title !== cleanTitle) queries.push(`${cleanArtist} ${title}`);
-
-  for (const q of queries) {
+  for (const q of [...new Set(queries)]) {
     try {
       const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(q)}`,
         { signal: AbortSignal.timeout(6000) });
@@ -1671,8 +1672,21 @@ async function fetchLyrics(artist, title) {
     } catch(e) {}
   }
 
+  // lyrics.ovh 備援
+  if (engA && engT) {
+    try {
+      const res = await fetch(
+        `https://api.lyrics.ovh/v1/${encodeURIComponent(engA)}/${encodeURIComponent(engT)}`,
+        { signal: AbortSignal.timeout(6000) });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.lyrics && data.lyrics.trim()) { showLyrics(data.lyrics, 'lyrics.ovh'); return; }
+      }
+    } catch(e) {}
+  }
+
   lyricsBody.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.86rem;line-height:2">
-    找不到「${escHtml(cleanTitle || title)}」的歌詞<br>
+    找不到「${escHtml(chiT || engT || title)}」的歌詞<br>
     <span style="font-size:0.78rem">可在上方欄位手動輸入藝人和歌名重新搜尋</span>
   </div>`;
   lyricsDot.classList.remove('show');
