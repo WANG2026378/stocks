@@ -2239,16 +2239,16 @@ function play(idx) {
   audio.load();
   audio.play().then(() => {
     state.isPlaying = true;
-    albumArt.classList.add('spinning');
     updatePlayBtn();
-    updateTrackUI(item);
+    updateTrackUI(item);       // 先重置 UI（會清掉 spinning）
+    albumArt.classList.add('spinning');  // 再加旋轉
     renderPlaylist();
     setupAudioContext();
     if (state.audioCtx?.state === 'suspended') state.audioCtx.resume();
     cancelAnimationFrame(state.animFrame);
     animateVisualizer();
     scrollToActive();
-    // 抓封面
+    // 抓封面（setCover 內已確保 isPlaying 時加 spinning）
     applyAlbumArt(item);
     // 若歌詞面板開著就自動抓
     if (state.lyricsOpen) {
