@@ -1614,16 +1614,31 @@ function showConvertingUI(item) {
   bgCover.classList.remove('show');
 }
 
+// ===== 清理 YouTube 標題雜訊 =====
+function cleanForLyrics(str) {
+  return str
+    .replace(/《|》|〈|〉|【|】|「|」/g, ' ')          // 書名號／括號
+    .replace(/[\[\(（].*?[\]\)）]/g, ' ')               // (括號內容)
+    .replace(/\b(official|mv|pv|video|hd|4k|remaster|完整版|完整|MV|官方|主題曲|片頭曲|片尾曲|插曲|電影版|中文版|國語版|粵語版|cover|翻唱|live|版本)\b/gi, ' ')
+    .replace(/[-–—|·•·]+/g, ' ')                       // 分隔符
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 // ===== 抓歌詞（lyrics.ovh + lrclib 雙重） =====
 async function fetchLyrics(artist, title) {
   lyricsBody.innerHTML = `<div class="lyrics-loading"><div class="lyrics-spinner"></div>正在搜尋歌詞…</div>`;
   lyricsDot.classList.remove('show');
 
-  // 方案1：lyrics.ovh
+  const cleanArtist = cleanForLyrics(artist);
+  const cleanTitle  = cleanForLyrics(title);
+
+  // 方案1：lyrics.ovh（用清理過的藝人+歌名）
   try {
-    const a = encodeURIComponent(artist);
-    const t = encodeURIComponent(title);
-    const res = await fetch(`https://api.lyrics.ovh/v1/${a}/${t}`);
+    const a = encodeURIComponent(cleanArtist);
+    const t = encodeURIComponent(cleanTitle);
+    const res = await fetch(`https://api.lyrics.ovh/v1/${a}/${t}`,
+      { signal: AbortSignal.timeout(6000) });
     if (res.ok) {
       const data = await res.json();
       if (data.lyrics && data.lyrics.trim()) {
@@ -1633,26 +1648,31 @@ async function fetchLyrics(artist, title) {
     }
   } catch(e) {}
 
-  // 方案2：lrclib.net
-  try {
-    const q = encodeURIComponent(`${artist} ${title}`);
-    const res = await fetch(`https://lrclib.net/api/search?q=${q}`);
-    if (res.ok) {
+  // 方案2：lrclib.net（多組查詢策略）
+  const queries = [];
+  if (cleanArtist && cleanTitle) queries.push(`${cleanArtist} ${cleanTitle}`);
+  if (cleanTitle)                queries.push(cleanTitle);
+  if (cleanArtist && title !== cleanTitle) queries.push(`${cleanArtist} ${title}`);
+
+  for (const q of queries) {
+    try {
+      const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(q)}`,
+        { signal: AbortSignal.timeout(6000) });
+      if (!res.ok) continue;
       const data = await res.json();
       if (data && data.length > 0) {
         const lrc = data[0].plainLyrics || data[0].syncedLyrics || '';
         if (lrc.trim()) {
-          // 去除 lrc 時間標籤
           const plain = lrc.replace(/\[\d+:\d+\.\d+\]/g, '').trim();
           showLyrics(plain, 'lrclib.net');
           return;
         }
       }
-    }
-  } catch(e) {}
+    } catch(e) {}
+  }
 
   lyricsBody.innerHTML = `<div style="color:rgba(255,255,255,0.3);font-size:0.86rem;line-height:2">
-    找不到「${escHtml(title)}」的歌詞<br>
+    找不到「${escHtml(cleanTitle || title)}」的歌詞<br>
     <span style="font-size:0.78rem">可在上方欄位手動輸入藝人和歌名重新搜尋</span>
   </div>`;
   lyricsDot.classList.remove('show');
