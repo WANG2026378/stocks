@@ -1920,6 +1920,8 @@ async function ytDownload(btn) {
   // 方案 A：本機 yt-dlp 伺服器（USB 模式，127.0.0.1:8765）
   if (location.hostname === '127.0.0.1') {
     try {
+      // 立即開啟 Finder Downloads，讓使用者看到進度
+      fetch('http://127.0.0.1:8765/open-downloads').catch(() => {});
       const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`);
       if (res.ok) {
         const buf = await res.arrayBuffer();
