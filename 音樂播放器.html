@@ -1917,33 +1917,29 @@ async function ytDownload(btn) {
 
   const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-  // 方案 A：本機 yt-dlp 伺服器（USB 模式，127.0.0.1:8765）
-  if (location.hostname === '127.0.0.1') {
-    try {
-      // 立即開啟 Finder Downloads，讓使用者看到進度
-      fetch('http://127.0.0.1:8765/open-downloads').catch(() => {});
-      const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`);
-      if (res.ok) {
-        const buf = await res.arrayBuffer();
-        const blob = new Blob([buf], { type: 'audio/mpeg' });
-        const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
-        loadFiles([file]);
-        // 檔案已由伺服器存到 ~/Downloads 並在 Finder 顯示
-        btn.textContent = '✓ 已加入清單 · 已存到下載資料夾';
-        btn.style.color = '#4ade80';
-        btn.style.borderColor = 'rgba(74,222,128,0.3)';
-        return;
-      }
-      const errText = await res.text();
-      if (res.status === 503) {
-        btn.disabled = false;
-        btn.textContent = '需安裝 yt-dlp';
-        btn.title = errText;
-        btn.style.color = '#fbbf24';
-        return;
-      }
-    } catch { /* fall through */ }
-  }
+  // 方案 A：本機 yt-dlp 伺服器（有跑 啟動播放器.command 就能用，不限來源頁面）
+  try {
+    fetch('http://127.0.0.1:8765/open-downloads').catch(() => {});
+    const res = await fetch(`http://127.0.0.1:8765/ytdl?url=${encodeURIComponent(ytUrl)}`,
+      { signal: AbortSignal.timeout(300000) });
+    if (res.ok) {
+      const buf = await res.arrayBuffer();
+      const blob = new Blob([buf], { type: 'audio/mpeg' });
+      const file = new File([blob], title + '.mp3', { type: 'audio/mpeg' });
+      loadFiles([file]);
+      btn.textContent = '✓ 已加入清單 · 已存到下載資料夾';
+      btn.style.color = '#4ade80';
+      btn.style.borderColor = 'rgba(74,222,128,0.3)';
+      return;
+    }
+    if (res.status === 503) {
+      btn.disabled = false;
+      btn.textContent = '需安裝 yt-dlp';
+      btn.title = await res.text();
+      btn.style.color = '#fbbf24';
+      return;
+    }
+  } catch { /* 伺服器未啟動，fall through */ }
 
   // 方案 B：複製 yt-dlp 指令（cobalt.tools 已停用 YouTube 下載）
   const cmd = `yt-dlp -x --audio-format mp3 "${ytUrl}"`;
