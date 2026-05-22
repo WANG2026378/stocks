@@ -1947,12 +1947,20 @@ async function ytDownload(btn) {
     } catch { /* fall through */ }
   }
 
-  // 方案 B：開啟 cobalt.tools 讓使用者一鍵下載
+  // 方案 B：複製 yt-dlp 指令（cobalt.tools 已停用 YouTube 下載）
+  const cmd = `yt-dlp -x --audio-format mp3 "${ytUrl}"`;
   btn.disabled = false;
-  btn.textContent = '🔗 開啟下載頁';
-  btn.onclick = () => window.open(`https://cobalt.tools/?u=${encodeURIComponent(ytUrl)}`, '_blank');
-  btn.style.color = '#a78bfa';
-  btn.style.borderColor = 'rgba(167,139,250,0.3)';
+  btn.textContent = '📋 複製下載指令';
+  btn.style.color = '#fbbf24';
+  btn.style.borderColor = 'rgba(251,191,36,0.3)';
+  btn.onclick = () => {
+    navigator.clipboard.writeText(cmd).then(() => {
+      btn.textContent = '✓ 已複製！貼到終端機執行';
+      btn.style.color = '#4ade80';
+    }).catch(() => {
+      prompt('複製此指令後在終端機執行：', cmd);
+    });
+  };
 }
 
 // ===== 播放 =====
