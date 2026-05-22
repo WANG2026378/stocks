@@ -955,16 +955,23 @@
 <!-- YouTube 搜尋 modal -->
 <div class="yt-modal" id="ytModal">
   <div class="yt-box">
-    <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <div class="yt-title">🎬 YouTube 搜尋</div>
       <button class="yt-close-btn" onclick="closeYtModal()">✕ 關閉</button>
     </div>
-    <div class="yt-search-row">
-      <input class="yt-input" id="ytInput" placeholder="輸入歌名或藝人…" onkeydown="if(event.key==='Enter')ytSearch()">
-      <button class="yt-search-btn" onclick="ytSearch()">搜尋</button>
+
+    <!-- 伺服器狀態橫幅 -->
+    <div id="ytServerBanner" style="display:none;border-radius:12px;padding:14px 16px;font-size:0.82rem;line-height:1.8"></div>
+
+    <!-- 搜尋區（伺服器在線才顯示）-->
+    <div id="ytSearchArea">
+      <div class="yt-search-row">
+        <input class="yt-input" id="ytInput" placeholder="輸入歌名或藝人…" onkeydown="if(event.key==='Enter')ytSearch()">
+        <button class="yt-search-btn" onclick="ytSearch()">搜尋</button>
+      </div>
+      <div class="yt-status" id="ytStatus">輸入關鍵字開始搜尋</div>
+      <div class="yt-results" id="ytResults"></div>
     </div>
-    <div class="yt-status" id="ytStatus">輸入關鍵字開始搜尋</div>
-    <div class="yt-results" id="ytResults"></div>
   </div>
 </div>
 
@@ -1837,10 +1844,60 @@ const _YT_HOSTS = [
   'https://invidious.materialio.us',
 ];
 
-function openYtModal() {
+async function openYtModal() {
   document.getElementById('ytModal').classList.add('open');
-  setTimeout(() => document.getElementById('ytInput').focus(), 100);
+  const banner     = document.getElementById('ytServerBanner');
+  const searchArea = document.getElementById('ytSearchArea');
+
+  // 偵測本機伺服器
+  banner.style.display = 'block';
+  banner.style.background = 'rgba(255,255,255,0.04)';
+  banner.style.border = '1px solid rgba(255,255,255,0.08)';
+  banner.style.color = 'rgba(255,255,255,0.4)';
+  banner.innerHTML = '⏳ 偵測本機伺服器中…';
+  searchArea.style.display = 'none';
+
+  let online = false;
+  try {
+    const r = await fetch('http://127.0.0.1:8765/open-downloads',
+      { signal: AbortSignal.timeout(2000) });
+    online = r.status === 204;
+  } catch {}
+
+  if (online) {
+    banner.style.background = 'rgba(74,222,128,0.08)';
+    banner.style.border = '1px solid rgba(74,222,128,0.2)';
+    banner.style.color = '#4ade80';
+    banner.innerHTML = '✅ 本機伺服器已啟動，可以直接下載 MP3';
+    searchArea.style.display = 'block';
+    setTimeout(() => document.getElementById('ytInput').focus(), 100);
+  } else {
+    banner.style.background = 'rgba(251,191,36,0.08)';
+    banner.style.border = '1px solid rgba(251,191,36,0.25)';
+    banner.style.color = 'rgba(255,255,255,0.75)';
+    banner.innerHTML = `
+      <div style="font-size:0.9rem;font-weight:600;color:#fbbf24;margin-bottom:8px">⚠️ 下載前請先啟動本機伺服器</div>
+      <div style="color:rgba(255,255,255,0.55);margin-bottom:12px">YouTube 下載需要在你的電腦背景執行一個小程式</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(251,191,36,0.2);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;color:#fbbf24">1</div>
+          <div>打開隨身碟，找到 <strong style="color:#fff">啟動播放器.command</strong></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(251,191,36,0.2);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;color:#fbbf24">2</div>
+          <div>雙擊它，讓終端機視窗保持開著</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="background:rgba(251,191,36,0.2);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;color:#fbbf24">3</div>
+          <div>回到這裡，按下方按鈕重新偵測</div>
+        </div>
+      </div>
+      <button onclick="openYtModal()" style="margin-top:14px;width:100%;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px;color:#fbbf24;cursor:pointer;font-size:0.85rem;font-weight:600">🔄 重新偵測</button>
+    `;
+    searchArea.style.display = 'none';
+  }
 }
+
 function closeYtModal() {
   document.getElementById('ytModal').classList.remove('open');
 }
