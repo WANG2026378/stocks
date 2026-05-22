@@ -1953,6 +1953,23 @@ function closeYtModal() {
 // 搜尋狀態
 let _ytQ = '', _ytPage = 1, _ytHost = null;
 
+// 查詢 lrclib.net 是否有歌詞
+async function _checkHasLyrics(title) {
+  try {
+    // 清理標題：去掉括號說明、MV、Official 等字眼
+    const clean = title.replace(/[\[\(（【].*?[\]\)）】]/g, '')
+                       .replace(/\b(official|mv|pv|video|hd|lyrics?|4k|remaster)\b/gi, '')
+                       .trim();
+    const res = await fetch(
+      `https://lrclib.net/api/search?q=${encodeURIComponent(clean)}`,
+      { signal: AbortSignal.timeout(4000) }
+    );
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Array.isArray(data) && data.length > 0;
+  } catch { return false; }
+}
+
 async function ytSearch() {
   _ytQ = document.getElementById('ytInput').value.trim();
   if (!_ytQ) return;
@@ -2009,16 +2026,33 @@ async function _ytFetchPage(isFirst) {
 
   statusEl.textContent = `第 ${_ytPage} 頁・共 ${items.length} 筆`;
 
-  const html = items.map(v => {
+  // 同時查詢哪些有歌詞（lrclib.net），有的往前排
+  statusEl.textContent = '確認歌詞中…';
+  const lyricsFlags = await Promise.allSettled(
+    items.map(v => _checkHasLyrics(v.title))
+  );
+  const hasLyrics = lyricsFlags.map(r => r.status === 'fulfilled' && r.value);
+
+  // 有歌詞的排前面，其餘維持原順序
+  const indexed = items.map((v, i) => ({ v, lyr: hasLyrics[i] }));
+  indexed.sort((a, b) => b.lyr - a.lyr);
+
+  const lyricCount = hasLyrics.filter(Boolean).length;
+  statusEl.textContent = `第 ${_ytPage} 頁・${items.length} 筆・其中 ${lyricCount} 首有歌詞`;
+
+  const html = indexed.map(({ v, lyr }) => {
     const vid = v.videoId;
     const dur = v.lengthSeconds > 0 ? ' · ' + fmtTime(v.lengthSeconds) : '';
     const safeTitle = escHtml(v.title || '');
     const safeCh = escHtml(v.author || '');
     const thumb = `https://i.ytimg.com/vi/${vid}/mqdefault.jpg`;
-    return `<div class="yt-result">
+    const lyricBadge = lyr ? `<span style="font-size:0.68rem;background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:#34d399;border-radius:4px;padding:1px 5px;margin-left:4px;flex-shrink:0">🎤 有歌詞</span>` : '';
+    return `<div class="yt-result" style="${lyr ? 'border-color:rgba(52,211,153,0.2);' : ''}">
       <img class="yt-thumb" src="${thumb}" alt="" onerror="this.style.display='none'">
       <div class="yt-info">
-        <div class="yt-result-title" title="${safeTitle}">${safeTitle}</div>
+        <div class="yt-result-title" style="display:flex;align-items:center;gap:4px">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${safeTitle}">${safeTitle}</span>${lyricBadge}
+        </div>
         <div class="yt-result-ch">${safeCh}${dur}</div>
       </div>
       <button class="yt-dl-btn" data-vid="${vid}" data-title="${safeTitle}" onclick="ytDownload(this)">⬇ 下載 MP3</button>
