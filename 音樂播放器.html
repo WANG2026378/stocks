@@ -555,6 +555,21 @@
   .item-del:hover { color: #f87171; background: rgba(248,113,113,0.1); }
   .item-del svg { width: 13px; height: 13px; fill: currentColor; }
 
+  /* 封面快拍 / 歌詞 按鈕 */
+  .item-snap, .item-lyric {
+    opacity: 0;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; border-radius: 4px;
+    transition: all 0.2s; flex-shrink: 0;
+    font-size: 14px; line-height: 1;
+  }
+  .playlist-item:hover .item-snap,
+  .playlist-item:hover .item-lyric { opacity: 1; }
+  .item-snap  { color: rgba(96,165,250,0.6); }
+  .item-snap:hover  { color: #60a5fa; background: rgba(96,165,250,0.1); }
+  .item-lyric { color: rgba(52,211,153,0.6); }
+  .item-lyric:hover { color: #34d399; background: rgba(52,211,153,0.1); }
+
   /* 最愛按鈕 */
   .item-fav {
     opacity: 0;
@@ -1790,6 +1805,8 @@ function renderPlaylist() {
             ? `<span style="color:#f87171;font-size:0.7rem">失敗</span>`
             : item.duration ? fmtTime(item.duration) : '--:--'
       }</div>
+      <button class="item-snap"  onclick="event.stopPropagation();snapAlbumArt(${i})"   title="查看封面">🖼</button>
+      <button class="item-lyric" onclick="event.stopPropagation();showItemLyrics(${i})"  title="找歌詞">🎤</button>
       <button class="item-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${i})" title="最愛">${isFav ? '♥' : '♡'}</button>
       <button class="item-del" onclick="event.stopPropagation();removeItem(${i})" title="移除">
         <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -1811,6 +1828,37 @@ function removeItem(idx) {
     state.currentIndex--;
   }
   renderPlaylist();
+}
+
+// ===== 封面快拍 =====
+function snapAlbumArt(idx) {
+  const item = state.playlist[idx];
+  const src = item.embeddedCover || item.coverUrl;
+  if (!src) {
+    // 嘗試先抓封面
+    applyAlbumArt(item);
+    setTimeout(() => {
+      const src2 = item.embeddedCover || item.coverUrl;
+      if (src2) window.open(src2, '_blank');
+      else alert('此歌曲尚無封面，請先播放一次讓系統自動搜尋');
+    }, 2000);
+    return;
+  }
+  window.open(src, '_blank');
+}
+
+// ===== 歌詞（單首） =====
+function showItemLyrics(idx) {
+  const item = state.playlist[idx];
+  if (!state.lyricsOpen) {
+    state.lyricsOpen = true;
+    lyricsCard.classList.add('open');
+    btnLyrics.classList.add('active');
+  }
+  lyricsArtistInput.value = item.artist || '';
+  lyricsTitleInput.value  = item.title  || '';
+  fetchLyrics(item.artist || '', item.title || '');
+  setTimeout(() => lyricsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 200);
 }
 
 // ===== 最愛 =====
