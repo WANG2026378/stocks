@@ -815,7 +815,13 @@ init();
     var ix = parts.indexOf(rootKeys[k]);
     if (ix >= 0) { rootIdx = ix; break; }
   }
-  var depth = rootIdx >= 0 ? Math.max(0, parts.length - 1 - rootIdx) : 0;
+  // 區分 path 結尾是檔案還是目錄；目錄會以 "/" 結尾
+  var endsWithSlash = path.charAt(path.length - 1) === '/';
+  // 站根後的 segment 數 = parts.length - rootIdx - 1（扣掉 root segment 本身）
+  // 檔案路徑：最後一段是檔名，不算 depth；目錄：所有段都算 depth
+  var depth = rootIdx >= 0
+    ? Math.max(0, parts.length - rootIdx - (endsWithSlash ? 1 : 2))
+    : 0;
   var base = depth > 0 ? new Array(depth+1).join('../') : '';
   // 偵測目前頁
   var here = parts[parts.length-1] || '';
