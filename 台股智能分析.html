@@ -144,7 +144,193 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI'
 @media(max-width:768px){.overview-grid{grid-template-columns:repeat(2,1fr)}.score-grid,.tech-grid{grid-template-columns:1fr}.holder-grid{grid-template-columns:1fr}.det-tabs{flex-wrap:wrap}.header-right{gap:6px}}
 </style>
 </head>
-<body>
+<body data-market="tw">
+<!-- TICKER-BAR-START（VIP 頂部行情通知列，自動讀 localStorage twStocks/usStocks） -->
+<div id="vipTickerBar" class="vtb-bar" role="banner" aria-label="即時行情通知列">
+  <div class="vtb-left">
+    <span class="vtb-search" aria-hidden="true">🔍</span>
+    <div id="vtbCurrent" class="vtb-stock"><span class="vtb-code">--</span><span class="vtb-pct flat">載入中…</span></div>
+  </div>
+  <button id="vtbToggle" class="vtb-toggle" aria-label="展開/收起持倉清單">▼</button>
+</div>
+<div id="vipTickerPanel" class="vtb-panel" role="region" aria-label="持倉與更新通知">
+  <div class="vtb-section vtb-notify-section">
+    <div class="vtb-section-head"><span class="vtb-dot vtb-dot-live"></span><strong>系統通知</strong><span class="vtb-spacer"></span><span class="vtb-ver">v2026.05.27</span></div>
+    <div id="vtbNotifyMsg" class="vtb-notify-msg">資料更新中…</div>
+  </div>
+  <div class="vtb-section">
+    <div class="vtb-section-head"><strong>💼 持倉即時行情</strong><span class="vtb-spacer"></span><span id="vtbCount" class="vtb-ver"></span></div>
+    <div id="vtbHoldingsList" class="vtb-list"></div>
+  </div>
+</div>
+<style>
+:root{
+  --vtb-h:38px;--vtb-bg:#000;--vtb-fg:#fff;--vtb-mute:#888;
+  --vtb-up:#ff4d4f;--vtb-down:#22c55e;
+}
+body{padding-top:var(--vtb-h)!important;}
+.vtb-bar{position:fixed;top:0;left:0;right:0;height:var(--vtb-h);background:var(--vtb-bg);color:var(--vtb-fg);display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:99998;font:14px/1 -apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08);user-select:none;}
+.vtb-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;overflow:hidden;cursor:pointer;}
+.vtb-search{color:var(--vtb-mute);font-size:13px;flex-shrink:0;}
+.vtb-stock{display:flex;align-items:center;gap:8px;transition:opacity .25s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vtb-stock.fading{opacity:0;}
+.vtb-code{font-weight:700;letter-spacing:.3px;}
+.vtb-price{color:#eaeaea;font-variant-numeric:tabular-nums;}
+.vtb-pct{font-weight:600;font-variant-numeric:tabular-nums;}
+.vtb-pct.up{color:var(--vtb-up);} .vtb-pct.down{color:var(--vtb-down);} .vtb-pct.flat{color:var(--vtb-mute);}
+.vtb-tag{border:1px solid #555;padding:1px 6px;border-radius:3px;font-size:11px;color:var(--vtb-mute);line-height:1.4;}
+.vtb-mkt{font-size:11px;color:var(--vtb-mute);}
+.vtb-toggle{background:transparent;border:0;color:#aaa;font-size:12px;cursor:pointer;padding:6px 10px;transition:transform .25s;flex-shrink:0;}
+.vtb-toggle.open{transform:rotate(180deg);color:#fff;}
+.vtb-panel{position:fixed;top:var(--vtb-h);left:0;right:0;background:rgba(10,10,10,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--vtb-fg);z-index:99997;max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);border-top:1px solid #222;font:14px/1 -apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;}
+.vtb-panel.open{max-height:80vh;overflow-y:auto;box-shadow:0 6px 24px rgba(0,0,0,.6);}
+.vtb-section{padding:12px 16px;border-bottom:1px solid #1a1a1a;}
+.vtb-section:last-child{border-bottom:0;}
+.vtb-section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px;color:#fff;}
+.vtb-spacer{flex:1;}
+.vtb-ver{color:var(--vtb-mute);font-size:11px;font-variant-numeric:tabular-nums;}
+.vtb-dot{width:8px;height:8px;border-radius:50%;background:var(--vtb-mute);}
+.vtb-dot-live{background:#22c55e;box-shadow:0 0 8px #22c55e;animation:vtbPulse 2s infinite;}
+@keyframes vtbPulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.vtb-notify-msg{color:#aaa;font-size:12px;padding-left:16px;line-height:1.6;}
+.vtb-notify-section{background:linear-gradient(180deg,rgba(34,197,94,.06),transparent);}
+.vtb-list{display:flex;flex-direction:column;gap:1px;}
+.vtb-row{display:flex;align-items:center;justify-content:space-between;padding:9px 6px;border-radius:6px;cursor:pointer;transition:background .15s;}
+.vtb-row:hover{background:#1f1f1f;}
+.vtb-row-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1;}
+.vtb-row-code{font-weight:700;min-width:74px;font-size:13px;}
+.vtb-row-name{color:#888;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vtb-row-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.vtb-row-price{color:#e8e8e8;min-width:70px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;}
+.vtb-row-pct{font-weight:600;min-width:68px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;}
+.vtb-row-pct.up{color:var(--vtb-up);} .vtb-row-pct.down{color:var(--vtb-down);} .vtb-row-pct.flat{color:var(--vtb-mute);}
+.vtb-loading,.vtb-empty{color:#777;padding:20px;text-align:center;font-size:13px;}
+@media (max-width:480px){.vtb-row-name{display:none;}.vtb-row-code{min-width:auto;}.vtb-row-right{gap:8px;}}
+</style>
+<script>
+(function(){
+  if(window.__VIP_TICKER_BOOTED)return;window.__VIP_TICKER_BOOTED=true;
+  const PROXIES=[u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,u=>u];
+  const DEFAULT_TW=[
+    {code:'0050',name:'元大台灣50'},{code:'2049',name:'上銀'},{code:'2301',name:'光寶科'},
+    {code:'2308',name:'台達電'},{code:'2312',name:'金寶'},{code:'2330',name:'台積電'},
+    {code:'3711',name:'日月光投控'},{code:'4585',name:'達明'},{code:'4908',name:'前鼎'},
+    {code:'6285',name:'啟碁'},{code:'6829',name:'千附精密'},{code:'8033',name:'雷虎科技'},
+  ];
+  const DEFAULT_US=[
+    {code:'TSM',name:'台積電ADR'},{code:'TSLA',name:'Tesla'},{code:'IONQ',name:'IonQ'},
+    {code:'AVGO',name:'Broadcom'},{code:'GOOGL',name:'Alphabet'},{code:'QBTS',name:'D-Wave Quantum'},
+    {code:'NVDA',name:'NVIDIA'},{code:'AMD',name:'AMD'},{code:'AAPL',name:'Apple'},
+    {code:'IBM',name:'IBM'},{code:'LITE',name:'Lumentum'},{code:'SMR',name:'NuScale Power'},
+    {code:'UUU',name:'American Shared'},{code:'QQQ',name:'Nasdaq 100 ETF'},
+    {code:'BTC-USD',name:'Bitcoin'},{code:'MU',name:'Micron'},
+  ];
+
+  function getMarket(){
+    if(document.body.dataset.market)return document.body.dataset.market;
+    const fn=decodeURIComponent(location.pathname.split('/').pop()||'').toLowerCase();
+    if(fn.includes('台股')||fn.includes('twstock')||fn.includes('tw_stock')||fn.includes('twstocks'))return 'tw';
+    if(fn.includes('美股')||fn.includes('usstock')||fn.includes('us_stock')||fn.includes('usstocks'))return 'us';
+    return 'both';
+  }
+  function readLS(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch{return null;}}
+  function loadHoldings(){
+    const m=getMarket();
+    const tw=readLS('twStocks')||DEFAULT_TW;
+    const us=readLS('usStocks')||DEFAULT_US;
+    let out=[];
+    if(m==='tw'||m==='both')out=out.concat(tw.map(s=>({code:s.code,name:s.name||s.code,mkt:'tw'})));
+    if(m==='us'||m==='both')out=out.concat(us.map(s=>({code:s.code,name:s.name||s.code,mkt:'us'})));
+    return out;
+  }
+  function candidates(s){return s.mkt==='tw'?[`${s.code}.TW`,`${s.code}.TWO`]:[s.code];}
+  async function _fetch(sym){
+    const url=`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`;
+    for(const p of PROXIES){
+      try{
+        const r=await fetch(p(url),{signal:AbortSignal.timeout(7000)});
+        if(!r.ok)continue;
+        const j=await r.json();
+        const m=j?.chart?.result?.[0]?.meta;if(!m)continue;
+        const price=m.regularMarketPrice;const prev=m.chartPreviousClose??m.previousClose;const post=m.postMarketPrice;
+        if(price==null||prev==null)continue;
+        const usePost=post!=null&&Math.abs(post-price)>0.001;const cur=usePost?post:price;
+        return {price:cur,pct:((cur-prev)/prev)*100,isPost:usePost};
+      }catch{}
+    }
+    return null;
+  }
+  async function fetchPrice(s){for(const sym of candidates(s)){const d=await _fetch(sym);if(d)return d;}return null;}
+  async function fetchAll(list){
+    const out=[];const N=4;
+    for(let i=0;i<list.length;i+=N){
+      const part=list.slice(i,i+N);
+      const got=await Promise.all(part.map(async s=>({stock:s,data:await fetchPrice(s)})));
+      out.push(...got);
+    }
+    return out;
+  }
+  function fmtPrice(p,mkt){if(p==null)return '—';if(mkt==='us')return p.toFixed(p<1?4:2);return p.toFixed(2);}
+  function pctClass(p){if(p==null)return 'flat';if(p>0.005)return 'up';if(p<-0.005)return 'down';return 'flat';}
+  function pctText(p){if(p==null)return '—';return (p>=0?'+':'')+p.toFixed(2)+'%';}
+
+  let DATA=[],cursor=0,rotateTimer=null,panelOpen=false;
+  const $=id=>document.getElementById(id);
+  function els(){return{cur:$('vtbCurrent'),toggle:$('vtbToggle'),panel:$('vipTickerPanel'),list:$('vtbHoldingsList'),notify:$('vtbNotifyMsg'),count:$('vtbCount'),left:document.querySelector('#vipTickerBar .vtb-left')};}
+
+  function renderBar(){
+    const E=els();const valid=DATA.filter(x=>x.data);
+    if(!valid.length){E.cur.innerHTML=`<span class="vtb-code">--</span><span class="vtb-pct flat">尚未連線</span>`;return;}
+    const {stock,data}=valid[cursor%valid.length];
+    E.cur.classList.add('fading');
+    setTimeout(()=>{
+      const flag=stock.mkt==='tw'?'🇹🇼':'🇺🇸';
+      E.cur.innerHTML=`<span class="vtb-mkt">${flag}</span><span class="vtb-code">${stock.code}</span><span class="vtb-price">${fmtPrice(data.price,stock.mkt)}</span><span class="vtb-pct ${pctClass(data.pct)}">${pctText(data.pct)}</span>${data.isPost?'<span class="vtb-tag">盤後</span>':''}`;
+      E.cur.classList.remove('fading');
+    },180);
+  }
+  function renderPanel(){
+    const E=els();
+    if(!DATA.length){E.list.innerHTML=`<div class="vtb-empty">未偵測到持倉資料</div>`;E.count.textContent='';return;}
+    E.count.textContent=`共 ${DATA.length} 檔`;
+    E.list.innerHTML=DATA.map(({stock,data})=>{
+      const price=data?fmtPrice(data.price,stock.mkt):'—';
+      const pct=data?pctText(data.pct):'—';
+      const cls=data?pctClass(data.pct):'flat';
+      const flag=stock.mkt==='tw'?'🇹🇼':'🇺🇸';
+      const href=stock.mkt==='tw'?`https://tw.stock.yahoo.com/quote/${stock.code}`:`https://finance.yahoo.com/quote/${encodeURIComponent(stock.code)}`;
+      return `<a class="vtb-row" href="${href}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><div class="vtb-row-left"><span class="vtb-row-code">${flag} ${stock.code}</span><span class="vtb-row-name">${stock.name||''}</span></div><div class="vtb-row-right"><span class="vtb-row-price">${price}</span><span class="vtb-row-pct ${cls}">${pct}</span>${data?.isPost?'<span class="vtb-tag">盤後</span>':''}</div></a>`;
+    }).join('');
+  }
+  function setNotify(t,ok=true){els().notify.innerHTML=`<span style="color:${ok?'#22c55e':'#ff4d4f'}">●</span> ${t}`;}
+  function startRotate(){clearInterval(rotateTimer);rotateTimer=setInterval(()=>{if(panelOpen)return;cursor++;renderBar();},4000);}
+  function togglePanel(open){const E=els();panelOpen=open??!panelOpen;E.panel.classList.toggle('open',panelOpen);E.toggle.classList.toggle('open',panelOpen);}
+
+  function bind(){
+    const E=els();
+    E.toggle.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
+    E.left.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen)togglePanel(false);});
+    document.addEventListener('click',e=>{if(panelOpen&&!e.target.closest('#vipTickerBar')&&!e.target.closest('#vipTickerPanel'))togglePanel(false);});
+  }
+
+  async function refresh(){
+    const h=loadHoldings();
+    if(!h.length){setNotify('未偵測到持倉',false);renderPanel();return;}
+    setNotify('抓取即時行情中…');
+    DATA=await fetchAll(h);
+    const okN=DATA.filter(x=>x.data).length;
+    const d=new Date();const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    setNotify(`資料更新於 ${t}　成功 ${okN}/${DATA.length} 檔　✓ 已最新版本`);
+    cursor=0;renderBar();renderPanel();
+  }
+
+  function boot(){bind();refresh().then(startRotate);setInterval(refresh,60000);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+<!-- TICKER-BAR-END -->
+
 
 <!-- Add Stock Modal -->
 <div class="modal-bg" id="modalBg">
