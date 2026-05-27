@@ -236,6 +236,11 @@ body {
   </div>
   <button id="vtbToggle" class="vtb-toggle" aria-label="展開/收起持倉清單">▼</button>
 </div>
+<button id="vipTickerCorner" class="vtb-corner" aria-label="行情快捷下拉" type="button">
+  <span class="vtb-corner-icon" aria-hidden="true">🔍</span>
+  <div id="vtbCornerStock" class="vtb-corner-stock"><span class="vtb-code">--</span></div>
+  <span class="vtb-corner-arrow" aria-hidden="true">▼</span>
+</button>
 <div id="vipTickerPanel" class="vtb-panel" role="region" aria-label="持倉與更新通知">
   <div class="vtb-section vtb-notify-section">
     <div class="vtb-section-head"><span class="vtb-dot vtb-dot-live"></span><strong>系統通知</strong><span class="vtb-spacer"></span><span class="vtb-ver">v2026.05.27</span></div>
@@ -288,7 +293,21 @@ body{padding-top:var(--vtb-h)!important;}
 .vtb-row-pct{font-weight:600;min-width:68px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;}
 .vtb-row-pct.up{color:var(--vtb-up);} .vtb-row-pct.down{color:var(--vtb-down);} .vtb-row-pct.flat{color:var(--vtb-mute);}
 .vtb-loading,.vtb-empty{color:#777;padding:20px;text-align:center;font-size:13px;}
-@media (max-width:480px){.vtb-row-name{display:none;}.vtb-row-code{min-width:auto;}.vtb-row-right{gap:8px;}}
+/* 右上角浮動 pill */
+.vtb-corner{position:fixed;top:calc(var(--vtb-h) + 10px);right:16px;z-index:99996;display:flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;border:1px solid #2a2a2a;border-radius:999px;padding:7px 14px 7px 12px;font:13px/1 -apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);transition:transform .15s,box-shadow .15s,border-color .15s;}
+.vtb-corner:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.45);border-color:#444;}
+.vtb-corner.open{border-color:#666;background:#1a1a1a;}
+.vtb-corner-icon{color:var(--vtb-mute);font-size:12px;}
+.vtb-corner-stock{display:flex;align-items:center;gap:6px;transition:opacity .25s;white-space:nowrap;}
+.vtb-corner-stock.fading{opacity:0;}
+.vtb-corner-stock .vtb-mkt{font-size:11px;}
+.vtb-corner-stock .vtb-code{font-weight:700;font-size:13px;}
+.vtb-corner-stock .vtb-price{color:#eaeaea;font-variant-numeric:tabular-nums;font-size:13px;}
+.vtb-corner-stock .vtb-pct{font-weight:600;font-variant-numeric:tabular-nums;font-size:12px;}
+.vtb-corner-stock .vtb-pct.up{color:var(--vtb-up);} .vtb-corner-stock .vtb-pct.down{color:var(--vtb-down);} .vtb-corner-stock .vtb-pct.flat{color:var(--vtb-mute);}
+.vtb-corner-arrow{color:#888;font-size:9px;transition:transform .25s,color .15s;margin-left:2px;}
+.vtb-corner.open .vtb-corner-arrow{transform:rotate(180deg);color:#fff;}
+@media (max-width:480px){.vtb-row-name{display:none;}.vtb-row-code{min-width:auto;}.vtb-row-right{gap:8px;}.vtb-corner{right:8px;padding:6px 10px 6px 10px;}.vtb-corner-icon{display:none;}}
 </style>
 <script>
 (function(){
@@ -359,17 +378,21 @@ body{padding-top:var(--vtb-h)!important;}
 
   let DATA=[],cursor=0,rotateTimer=null,panelOpen=false;
   const $=id=>document.getElementById(id);
-  function els(){return{cur:$('vtbCurrent'),toggle:$('vtbToggle'),panel:$('vipTickerPanel'),list:$('vtbHoldingsList'),notify:$('vtbNotifyMsg'),count:$('vtbCount'),left:document.querySelector('#vipTickerBar .vtb-left')};}
+  function els(){return{cur:$('vtbCurrent'),toggle:$('vtbToggle'),panel:$('vipTickerPanel'),list:$('vtbHoldingsList'),notify:$('vtbNotifyMsg'),count:$('vtbCount'),left:document.querySelector('#vipTickerBar .vtb-left'),corner:$('vipTickerCorner'),cornerStock:$('vtbCornerStock')};}
 
   function renderBar(){
     const E=els();const valid=DATA.filter(x=>x.data);
-    if(!valid.length){E.cur.innerHTML=`<span class="vtb-code">--</span><span class="vtb-pct flat">尚未連線</span>`;return;}
+    if(!valid.length){
+      const html=`<span class="vtb-code">--</span><span class="vtb-pct flat">尚未連線</span>`;
+      E.cur.innerHTML=html;if(E.cornerStock)E.cornerStock.innerHTML=html;return;
+    }
     const {stock,data}=valid[cursor%valid.length];
-    E.cur.classList.add('fading');
+    E.cur.classList.add('fading');if(E.cornerStock)E.cornerStock.classList.add('fading');
     setTimeout(()=>{
       const flag=stock.mkt==='tw'?'🇹🇼':'🇺🇸';
-      E.cur.innerHTML=`<span class="vtb-mkt">${flag}</span><span class="vtb-code">${stock.code}</span><span class="vtb-price">${fmtPrice(data.price,stock.mkt)}</span><span class="vtb-pct ${pctClass(data.pct)}">${pctText(data.pct)}</span>${data.isPost?'<span class="vtb-tag">盤後</span>':''}`;
-      E.cur.classList.remove('fading');
+      const html=`<span class="vtb-mkt">${flag}</span><span class="vtb-code">${stock.code}</span><span class="vtb-price">${fmtPrice(data.price,stock.mkt)}</span><span class="vtb-pct ${pctClass(data.pct)}">${pctText(data.pct)}</span>${data.isPost?'<span class="vtb-tag">盤後</span>':''}`;
+      E.cur.innerHTML=html;E.cur.classList.remove('fading');
+      if(E.cornerStock){E.cornerStock.innerHTML=html;E.cornerStock.classList.remove('fading');}
     },180);
   }
   function renderPanel(){
@@ -387,14 +410,20 @@ body{padding-top:var(--vtb-h)!important;}
   }
   function setNotify(t,ok=true){els().notify.innerHTML=`<span style="color:${ok?'#22c55e':'#ff4d4f'}">●</span> ${t}`;}
   function startRotate(){clearInterval(rotateTimer);rotateTimer=setInterval(()=>{if(panelOpen)return;cursor++;renderBar();},4000);}
-  function togglePanel(open){const E=els();panelOpen=open??!panelOpen;E.panel.classList.toggle('open',panelOpen);E.toggle.classList.toggle('open',panelOpen);}
+  function togglePanel(open){
+    const E=els();panelOpen=open??!panelOpen;
+    E.panel.classList.toggle('open',panelOpen);
+    E.toggle.classList.toggle('open',panelOpen);
+    if(E.corner)E.corner.classList.toggle('open',panelOpen);
+  }
 
   function bind(){
     const E=els();
     E.toggle.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
     E.left.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
+    if(E.corner)E.corner.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen)togglePanel(false);});
-    document.addEventListener('click',e=>{if(panelOpen&&!e.target.closest('#vipTickerBar')&&!e.target.closest('#vipTickerPanel'))togglePanel(false);});
+    document.addEventListener('click',e=>{if(panelOpen&&!e.target.closest('#vipTickerBar')&&!e.target.closest('#vipTickerPanel')&&!e.target.closest('#vipTickerCorner'))togglePanel(false);});
   }
 
   async function refresh(){
@@ -413,7 +442,6 @@ body{padding-top:var(--vtb-h)!important;}
 })();
 </script>
 <!-- TICKER-BAR-END -->
-
 
 <!-- Header -->
 <div class="header">
