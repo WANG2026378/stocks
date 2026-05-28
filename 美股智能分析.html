@@ -238,8 +238,8 @@ body{padding-top:var(--vtb-h)!important;}
     {code:'AVGO',name:'Broadcom'},{code:'GOOGL',name:'Alphabet'},{code:'QBTS',name:'D-Wave Quantum'},
     {code:'NVDA',name:'NVIDIA'},{code:'AMD',name:'AMD'},{code:'AAPL',name:'Apple'},
     {code:'IBM',name:'IBM'},{code:'LITE',name:'Lumentum'},{code:'SMR',name:'NuScale Power'},
-    {code:'UUU',name:'American Shared'},{code:'QQQ',name:'Nasdaq 100 ETF'},
-    {code:'BTC-USD',name:'Bitcoin'},{code:'MU',name:'Micron'},
+    {code:'UUU',name:'American Shared'},{code:'QQQ',name:'Nasdaq 100 ETF'},{code:'BTC-USD',name:'Bitcoin'},
+    {code:'MU',name:'Micron'},
   ];
 
   function getMarket(){
@@ -1030,7 +1030,7 @@ function renderTech(price,det,stock){
     {url:`https://finance.yahoo.com/quote/${stock.code}`,lbl:`📊 Yahoo Finance — ${stock.code}`},
     {url:`https://seekingalpha.com/symbol/${stock.code}`,lbl:`📰 Seeking Alpha — ${stock.name}`},
     {url:`https://news.google.com/search?q=${t}+stock&hl=en`,lbl:`🌐 Google News — ${stock.code}`},
-    {url:`https://www.reuters.com/search/news?blob=${t}`,lbl:`📡 Reuters — ${stock.code}`},
+    {url:`https://www.cnbc.com/quotes/${stock.code}`,lbl:`📡 CNBC — ${stock.code}`},
     {url:`https://finviz.com/quote.ashx?t=${stock.code}`,lbl:`📈 Finviz — 技術圖表`},
   ].map(x=>`<a href="${x.url}" target="_blank" class="news-link">${x.lbl}</a>`).join('');
   document.getElementById('tagsEl').innerHTML=`<div class="tags">${stock.theme.map(t=>{const hot=['AI','量子','HBM','GPU','半導體','電動車','太空'].some(h=>t.includes(h));return`<span class="tag${hot?' hot':''}">${t}</span>`;}).join('')}</div>`;
