@@ -157,6 +157,8 @@ td:first-child{text-align:left;}
         <span id="fxAutoTag" style="font-size:10px;opacity:.7;">更新時自動抓取</span>
       </div>
       <button class="btn green" onclick="fetchPrices()" id="syncBtn">⟳ 更新股價</button>
+      <button class="btn" onclick="pullCentral()" title="從中央 holdings.json 同步持股清單（每日 14:00 / 06:00 排程更新）">☁️↓ 中央</button>
+      <button class="btn" onclick="pushCentral()" title="把當前 localStorage 持股下載成 .stocks_holdings.json，手動覆蓋本機">☁️↑ 匯出</button>
       <button class="btn" onclick="exportCSV()">↓ 匯出</button>
       <button class="btn prim" onclick="openAdd()">＋ 新增</button>
     </div>
@@ -847,6 +849,91 @@ function saveStock(){
   const entry={code,name,shares,price,avg,be:isNaN(be)?avg:be,cost:isNaN(cost)?0:cost,sector:g('fsec'),note:g('fnote').trim()};
   if(editIdx>=0)stocks[editIdx]=entry;else stocks.push(entry);
   saveMarket();render();closeModal();
+}
+
+// ════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────
+// 中央持倉同步（雙向）
+// ────────────────────────────────────────────────────────────────
+// 從 GH Pages 上的 holdings.json 拉清單到 localStorage
+async function pullCentral(){
+  try{
+    const r = await fetch('./holdings.json?cb=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const twNew = d.tw || [], usNew = d.us || [];
+    const ts = d.updated_at ? new Date(d.updated_at).toLocaleString('zh-TW') : '未知';
+    const ok = confirm(
+      `從中央載入持股清單？\n\n` +
+      `🇹🇼 台股：${twNew.length} 檔（${twNew.map(s=>s.code).join(', ')}）\n` +
+      `🇺🇸 美股：${usNew.length} 檔\n\n` +
+      `更新時間：${ts}\n` +
+      `來源：${d.update_source || '手動'}\n\n` +
+      `會合併到本機：保留你的股數/成本/均價，只更新清單組成與名稱。`
+    );
+    if(!ok) return;
+    mergeCentral('TW', twNew, d.prices||{});
+    mergeCentral('US', usNew, d.prices||{});
+    alert(`✅ 已同步\n台股 ${twNew.length} 檔、美股 ${usNew.length} 檔`);
+    location.reload();
+  }catch(e){
+    alert('❌ 同步失敗：' + e.message + '\n\nholdings.json 是否已部署？跑 python3 ~/StockHoldingsDaily/update_daily.py');
+  }
+}
+
+// 合併：保留 localStorage 內 shares/price/avg/cost/be，只覆寫名稱與清單組成
+function mergeCentral(mkt, list, prices){
+  const k = mkt === 'TW' ? 'twStocks' : 'usStocks';
+  const defaults = mkt === 'TW' ? TW_DEFAULTS : US_DEFAULTS;
+  let cur = [];
+  try{ cur = JSON.parse(localStorage.getItem(k)) || []; }catch{}
+  const byCode = Object.fromEntries(cur.map(s => [s.code, s]));
+  const defByCode = Object.fromEntries(defaults.map(s => [s.code, s]));
+  const merged = list.map(s => {
+    const exist = byCode[s.code];
+    if(exist) return {...exist, name: s.name};
+    // 新檔：用 hardcoded 預設帶 shares/cost，沒有就空殼
+    const def = defByCode[s.code];
+    if(def) return {...def, name: s.name};
+    const p = prices[s.code] || {};
+    return {code: s.code, name: s.name, shares: 0, price: p.price || 0, avg: 0, cost: 0, be: 0, sector: '其他'};
+  });
+  localStorage.setItem(k, JSON.stringify(merged));
+}
+
+// 把當前 localStorage 持股清單下載成 .stocks_holdings.json
+async function pushCentral(){
+  // 先讀線上中央檔當 base（保留 _comment / refreshSec / window* 等 metadata）
+  let base = {};
+  try{
+    const r = await fetch('./holdings.json?cb=' + Date.now(), {cache:'no-store'});
+    if(r.ok) base = await r.json();
+  }catch{}
+  let tw=[], us=[];
+  try{ tw = JSON.parse(localStorage.getItem('twStocks')) || []; }catch{}
+  try{ us = JSON.parse(localStorage.getItem('usStocks')) || []; }catch{}
+  const out = {
+    _comment: base._comment || '中央持倉清單 — 從損益追蹤器匯出',
+    tw: tw.map(s => ({code: s.code, name: s.name})),
+    us: us.map(s => ({code: s.code, name: s.name})),
+    refreshSec: base.refreshSec ?? 30,
+    windowWidth: base.windowWidth ?? 1147,
+    windowHeight: base.windowHeight ?? 642,
+    exported_from: 'index.html (損益追蹤器)',
+    exported_at: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(out, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'stocks_holdings.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  alert(
+    `✅ 已下載 stocks_holdings.json（${tw.length} 台股 + ${us.length} 美股）\n\n` +
+    `手動覆蓋到本機（macOS 終端機跑）：\n\n` +
+    `mv ~/Downloads/stocks_holdings.json ~/.stocks_holdings.json\n\n` +
+    `然後線上版會在下次排程（14:00 / 06:00）自動同步。`
+  );
 }
 
 // ════════════════════════════════════════════════════════════════
