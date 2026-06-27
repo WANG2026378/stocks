@@ -405,12 +405,10 @@ function trendBadge(el, cur, ma_mid, ma_long){
 let CAGR0050 = null;
 
 async function load0050(){
-  // 一次抓全歷史月線（報酬/位置/圖/回測共用）+ 日線2年（均線趨勢）
-  const [mo, day] = await Promise.all([
-    fetchChart('0050.TW','10y','1mo'),
-    fetchChart('0050.TW','2y','1d'),
-  ]);
+  // 先抓月線並完成主要畫面，再抓日線；避免同一代理的大型回應互相塞車
+  const mo = await fetchChart('0050.TW','10y','1mo');
   if(!mo){ $('btStatus').textContent='⚠️ 0050 歷史資料抓不到，回測暫時無法執行，請稍後重新整理。'; return false; }
+  const day = await fetchChart('0050.TW','2y','1d');
   const adjFull = clean(mo.ts, mo.adj);
   const clFull  = clean(mo.ts, mo.close);
   // 全歷史含息序列 → 餵給回測（不用再抓一次）
@@ -594,14 +592,13 @@ function runBacktest(){
 $('btPeriod').addEventListener('change', runBacktest);
 recalc();
 
-(function(){
+(async function(){
   $('status').textContent = '報價與歷史資料載入中…';
-  Promise.allSettled([loadCompareLive(), loadTWII(), load2330(), load0050()]).then(rs=>{
-    const ok = rs[3].status==='fulfilled' && rs[3].value;
-    $('status').textContent = ok
-      ? '✓ 資料已更新 · 報價可能延遲，僅供參考'
-      : '⚠️ 即時／歷史報價抓不到（可能是 Yahoo 或 proxy 暫時受限）。對照表、試算器與回測的靜態部分仍可使用，可稍後重新整理。';
-  });
+  const ok = await load0050().catch(()=>false);
+  await Promise.allSettled([loadCompareLive(), loadTWII(), load2330()]);
+  $('status').textContent = ok
+    ? '✓ 資料已更新 · 報價可能延遲，僅供參考'
+    : '⚠️ 即時／歷史報價抓不到（可能是 Yahoo 或 proxy 暫時受限）。對照表、試算器與回測的靜態部分仍可使用，可稍後重新整理。';
 })();
 </script>
 </body>
