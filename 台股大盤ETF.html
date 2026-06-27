@@ -311,6 +311,7 @@ const $ = id => document.getElementById(id);
 const fmtNT = n => 'NT$' + Math.round(n).toLocaleString('en-US');
 const fmtPx = n => (n>=100? n.toFixed(1): n.toFixed(2));
 const pct = n => (n>=0?'+':'') + (n*100).toFixed(1) + '%';
+const pc = n => n==null || !Number.isFinite(n) ? '—' : pct(n);
 const setChg = (el, p) => { el.className = 'q-chg ' + (p>0?'up':p<0?'down':'flat'); el.textContent = (p>0?'▲ ':p<0?'▼ ':'') + (p>=0?'+':'') + (p*100).toFixed(2) + '%（今日）'; };
 
 // ───────── Yahoo + 多 proxy（與「聰明錢」子頁同一套）─────────
@@ -347,7 +348,7 @@ async function fetchChart(sym, range, interval){
     const close = r.indicators?.quote?.[0]?.close || [];
     const adj = r.indicators?.adjclose?.[0]?.adjclose || close;
     return {meta:r.meta, ts:r.timestamp||[], close, adj};
-  }catch{ return null; }
+  }catch(error){ console.warn('fetchChart failed',sym,range,interval,error); return null; }
 }
 // 去掉 null 並對齊
 function clean(ts, arr){
@@ -594,7 +595,7 @@ recalc();
 
 (async function(){
   $('status').textContent = '報價與歷史資料載入中…';
-  const ok = await load0050().catch(()=>false);
+  const ok = await load0050().catch(error=>{ console.error('load0050 failed',error); return false; });
   await Promise.allSettled([loadCompareLive(), loadTWII(), load2330()]);
   $('status').textContent = ok
     ? '✓ 資料已更新 · 報價可能延遲，僅供參考'
