@@ -322,7 +322,7 @@ const PROXIES = [
 async function fetchWithProxy(url, idx=0){
   if(idx>=PROXIES.length) return null;
   const controller = new AbortController();
-  const timer = setTimeout(()=>controller.abort(),15000);
+  const timer = setTimeout(()=>controller.abort(),30000);
   try{
     const res = await fetch(PROXIES[idx](url), {signal:controller.signal});
     if(!res.ok) throw new Error('HTTP '+res.status);
@@ -331,7 +331,8 @@ async function fetchWithProxy(url, idx=0){
   finally{ clearTimeout(timer); }
 }
 async function fetchChart(sym, range, interval){
-  const end = Math.floor(Date.now()/1000) + 86400;
+  const now = new Date();
+  const end = Math.floor(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1)/1000);
   const years = /^(\d+)y$/.exec(range);
   const windowQuery = years
     ? "period1="+Math.floor(end-Number(years[1])*365.25*86400)+"&period2="+end
