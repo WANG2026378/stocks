@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>台股情報 2026-07-05</title>
+<style>
+:root{--up:#e94545;--down:#22a96b;--bg:#0f1419;--card:#1a2028;--border:#2a3441;--text:#e6edf3;--muted:#8b96a3;--accent:#ffb800;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.65;padding:20px;max-width:1200px;margin:auto}
+header{padding:20px 0 30px;border-bottom:2px solid var(--accent);margin-bottom:30px}
+h1{font-size:28px;color:var(--accent)}
+.subtitle{color:var(--muted);margin-top:8px;font-size:14px}
+h2.section{font-size:22px;margin:40px 0 18px;color:var(--accent);border-left:5px solid var(--accent);padding-left:14px}
+h3.stock{font-size:18px;margin:24px 0 12px;color:#ffd969}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:6px;vertical-align:middle}
+.tag-holding{background:#e94545;color:#fff}
+.tag-watch{background:#3a4452;color:#fff}
+.tag-breaking{background:#ff4400;color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.news{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px}
+.news-title-zh{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.news-title-en{font-size:13px;color:var(--muted);margin-bottom:10px;font-style:italic}
+.news-summary{font-size:14px;color:#c8d3df;margin-bottom:10px}
+.news-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.news-meta a{color:#5ab8ff;text-decoration:none}
+.news-meta a:hover{text-decoration:underline}
+.copy-btn{background:#3a4452;color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:12px;cursor:pointer;margin-left:auto}
+.copy-btn:hover{background:#4a5462}
+.analysis{background:linear-gradient(135deg,#1f2a3a,#1a2028);border-left:4px solid var(--accent);padding:14px 18px;margin:12px 0 24px;border-radius:0 8px 8px 0;font-size:14.5px;color:#dde6f0;white-space:pre-wrap}
+.analysis-label{font-size:11px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;font-weight:600}
+.taiwan-impact{background:linear-gradient(135deg,#3a1f1f,#2a1818);border:2px solid var(--up);padding:20px;border-radius:10px;margin:30px 0}
+.taiwan-impact h2{color:var(--up);margin-bottom:12px}
+.taiwan-impact-body{white-space:pre-wrap;font-size:15px;color:#f0e0e0}
+.breaking-banner{background:linear-gradient(90deg,#ff4400,#ff7700);padding:14px 20px;border-radius:8px;margin-bottom:20px;color:#fff;font-weight:600}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 20px;margin-bottom:24px}
+.toc-title{color:var(--accent);font-weight:600;margin-bottom:8px}
+.toc a{color:#5ab8ff;text-decoration:none;margin-right:14px;display:inline-block;margin-bottom:4px}
+footer{margin-top:40px;padding:20px 0;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center}
+.empty{color:var(--muted);font-style:italic;padding:10px}
+.signal{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-left:10px;vertical-align:middle}
+.signal-score{background:rgba(0,0,0,0.3);padding:2px 8px;border-radius:10px;font-family:monospace;font-size:12px}
+.sentiment-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;margin-left:6px;font-weight:600}
+.sent-pos{background:#e94545;color:#fff}
+.sent-neg{background:#22a96b;color:#fff}
+.sent-neu{background:#3a4452;color:#aab5c2}
+.social-block{background:#161b22;border:1px dashed #3a4452;border-radius:8px;padding:14px;margin:10px 0 20px}
+.social-label{font-size:11px;color:#ffb800;letter-spacing:2px;margin-bottom:10px;font-weight:600}
+.social-item{padding:8px 0;border-bottom:1px solid #2a3441;font-size:13.5px}
+.social-item:last-child{border:none}
+.social-meta{font-size:11px;color:#8b96a3;margin-top:4px}
+.social-meta a{color:#5ab8ff;text-decoration:none;margin-right:10px}
+.top10{background:linear-gradient(135deg,#1a2e1f,#1f2a3a);border:2px solid var(--accent);border-radius:14px;padding:24px 28px;margin-bottom:28px;box-shadow:0 4px 24px rgba(255,184,0,0.15)}
+.top10-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,184,0,0.3)}
+.top10-icon{font-size:28px}
+.top10-title{font-size:22px;color:var(--accent);font-weight:700}
+.top10-sub{color:#a8b3c2;font-size:13px;margin-left:auto}
+.top10-list{counter-reset:item;padding:0;margin:0;list-style:none}
+.top10-list li{counter-increment:item;position:relative;padding:11px 0 11px 40px;border-bottom:1px dashed rgba(255,255,255,0.06);font-size:15.5px;line-height:1.65;color:#eaeef5}
+.top10-list li:last-child{border-bottom:none}
+.top10-list li::before{content:counter(item);position:absolute;left:0;top:11px;width:28px;height:28px;background:var(--accent);color:#0f1419;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.top10-list li:nth-child(1)::before{background:#ff4400;color:#fff}
+.top10-list li:nth-child(2)::before{background:#ff7a4d;color:#fff}
+.top10-list li:nth-child(3)::before{background:#ffa033;color:#0f1419}
+.social5{background:linear-gradient(135deg,#2a1f3a,#1f2a3a);border:2px solid #a855f7;border-radius:14px;padding:24px 28px;margin-bottom:28px;box-shadow:0 4px 24px rgba(168,85,247,0.12)}
+.social5-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(168,85,247,0.3)}
+.social5-icon{font-size:26px}
+.social5-title{font-size:21px;color:#c084fc;font-weight:700}
+.social5-sub{color:#a8b3c2;font-size:13px;margin-left:auto}
+.social5-item{padding:12px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
+.social5-item:last-child{border-bottom:none}
+.social5-title-line{font-size:15px;color:#eaeef5;line-height:1.55;margin-bottom:6px}
+.social5-meta{font-size:12px;color:#a8b3c2;margin-bottom:6px}
+.social5-meta a{color:#c084fc;text-decoration:none;margin-left:8px}
+.social5-insight{background:rgba(168,85,247,0.08);border-left:3px solid #c084fc;padding:8px 12px;font-size:13.5px;color:#dde6f0;line-height:1.6;border-radius:0 6px 6px 0}
+.social5-insight::before{content:'🎯 投顧視角';color:#c084fc;font-weight:600;font-size:11px;letter-spacing:1px;display:block;margin-bottom:3px}
+</style>
+</head>
+<body>
+<header>
+  <h1>📰 台股情報 — 2026年07月05日</h1>
+  <div class="subtitle">川普投顧 VIP 每日台股盤前情報 + Gemma 4 操作策略｜共 102 則內容｜新聞：Google News 中文 / 鉅亨網 / Yahoo 股市｜社群：PTT Stock / Threads（脆）</div>
+</header>
+
+<div class="breaking-banner">🚨 重大新聞警報（6 則）<div>• 【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ - CMoney投資網誌</div><div>• 【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 - CMoney投資網誌</div><div>• 【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ - CMoney</div><div>• 金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 - 今周刊</div><div>• 達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 - 今周刊</div></div>
+
+
+<section id="top10">
+  <div class="top10">
+    <div class="top10-head">
+      <span class="top10-icon">📌</span>
+      <span class="top10-title">3 分鐘看懂今日重點</span>
+      <span class="top10-sub">共 102 則內容濃縮 · Gemma 4 主編精選</span>
+    </div>
+    <ol class="top10-list">
+  <li>🤖 AI/光通訊題材持續爆發，資金高度集中於先進製程與高階資料中心相關供應鏈（如前鼎(4908)、千附精密(6829)）。</li>
+  <li>💰 法人資金持續進駐核心權值股，外資及投信皆買超台積電(2330)，顯示機構看好電子科技景氣。</li>
+  <li>🚀 金寶(2312) 受惠輝達題材爆量漲停，量子電腦概念股的熱絡資金輪動值得持續關注。</li>
+  <li>🤖 人形機器人與AI周邊成新焦點，達明(4585)等機器人相關個股因商業化進展受捧。</li>
+  <li>🚀 低軌衛星題材仍具爆發力，啟碁(6285)持續受到關注，應留意其LEO衛星的實際訂單能見度。</li>
+  <li>📊 台積電(2330)員工分紅入帳後，權值股動能強勁，但需注意成長放緩帶來的估值壓力點。</li>
+  <li>🇺🇸 美股科技巨頭領漲力道持續支撐台股電子權值股，資金流向仍偏向AI相關主題。</li>
+  <li>💡 光寶科(2301)深化新能源與AI資料中心布局，外資積極買盤，是具備多重題材的潛在加碼標的。</li>
+  <li>🤖 關注光通訊組件升級，前鼎(4908)等受惠CPO需求加速的個股，適合逢低分批佈局。</li>
+  <li>⚠️ 市場資金雖熱絡，但建議鎖定具備明確結構性成長題材（如AI、先進封裝）的權值股，避免追高過熱標的。</li>
+    </ol>
+  </div>
+</section>
+
+
+
+<nav class="toc">
+  <div class="toc-title">🧭 目錄</div>
+  <a href="#top10">📌 3 分鐘看懂</a>
+  <a href="#social5">💬 社群 5 焦點</a>
+  <a href="#taiwan">🎯 今日操作策略</a>
+  <a href="#stocks">📊 個股新聞</a>
+  <a href="#themes">🎯 主題情報</a>
+</nav>
+
+<section id="taiwan">
+  <div class="taiwan-impact">
+    <h2>🎯 今日台股操作策略</h2>
+    <div class="taiwan-impact-body">**【川普投顧 VIP 會員盤中操作策略】**
+
+今日市場情緒受美股科技巨頭帶動的熱絡氣氛影響，雖有分化，但整體趨勢仍偏向強勁，建議維持積極觀察並佈局核心攻能板塊。
+
+**一、美股盤後評估：** 費半與輝達（Nvidia）持續展現領漲力道，帶動科技權值股上揚，這對台股的電子科技類股仍是強勁支撐。市場資金流向高度集中於AI相關主題，預期短期內此熱潮延續性高。
+
+**二、三大族群觀察重點：**
+1. **AI 半導體/伺服器（核心）：** 台積電受惠先進製程需求穩健，具備領漲動能；光通訊組件（如前鼎、千附等）因CPO與高階資料中心佈局加速，是本輪資金的第二熱點。
+2. **低軌衛星/AI周邊：** 啟碁受惠LEO衛星概念持續發酵，具備題材爆發力；光寶科在新能源及AI資料中心產品組合上深化布局，亦值得關注。
+
+**三、法人預期動向：** 法人買超訊號強勁（外資/投信皆集中於台積電等權值股），顯示機構資金持續進場佈局核心電子權值股。
+
+**四、具體操作建議：** **逢高加碼，鎖定結構性成長標的。**
+*   **主攻方向：** 緊盯AI相關供應鏈（先進製程、光通訊組件）。
+*   **操作策略：** 盤中若權值股回檔至重要支撐帶，應逢低加碼；對於具備明確題材催化劑且技術性強的個股（如前鼎），可分批佈局。觀望電子權值股過熱時，轉向觀察次輪概念板塊。
+
+**五、風險警示：** 留意地緣政治不確定性仍為潛在黑天鵝。此外，部分題材股雖有爆發力，但漲幅過大後易出現技術性修正，切勿追高；若權值股連續創波段高點，需注意獲利了結的風險。</div>
+  </div>
+</section>
+
+<section id="stocks">
+  <h2 class="section">📊 個股新聞</h2>
+  <h3 class="stock">2330 — 台積電 <span style="color:#8b96a3;font-size:13px">（AI半導體）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【台積電 (2330) 操作策略】**
+
+**短線判斷：偏多方，但需注意獲利了結壓力。** 外資及投信法人持續買超動能強勁，顯示機構資金對先進製程需求仍有高度信心。然而，員工分紅入帳後，短期內可能出現部分獲利了結賣壓，建議觀察隔日開盤的進出場點位支撐力道。
+
+**中線關注事件：晶圓代工景氣結構性復甦與AI高階運算需求持續帶動。** 核心邏輯仍圍繞在先進製程的領先地位及產業趨勢不可逆轉的成長軌跡。
+
+**具體建議：持續持有，逢低分批加碼。** 操作邏輯是利用機構資金的穩定買盤作為底層支撐，等待短期回檔修正時介入累積部位。
+
+**風險提示：** 留意整體市場情緒過熱導致的突發性賣壓，若股價快速拉升後出現高檔缺口，應謹慎分批建倉，避免一次性追高。</div>
+<div class="news">
+  <div class="news-title-zh">2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 19:21:32</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9raW1vSmQ3UGxZSFM4MEFtckFzaXJfSDhuTnh5b0E5cWpCaHVtYUFPdWZmS0RQeF9NdmJFQ1R1SzYyalY1dXNkTTBPbVcxZXNPdDB2VDQxci0?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 - CMoney
+原文標題：2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 - CMoney
+摘要：2330 台積電 - 受惠台積先進製程需求半導體特化族群下半年熱- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE9raW1vSmQ3UGxZSFM4MEFtckFzaXJfSDhuTnh5b0E5cWpCaHVtYUFPdWZmS0RQeF9NdmJFQ1R1SzYyalY1dXNkTTBPbVcxZXNPdDB2VDQxci0?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 - sinotrade.com.tw<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 - sinotrade.com.tw</div>
+  <div class="news-summary">三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 sinotrade.com.tw</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 16:28:53</span>
+    <a href="https://news.google.com/rss/articles/CBMi2wRBVV95cUxOQUZfek1XdURIQ0pMN0twc1JFRUJfWUdHdUlBbWJkYjNPbTJTUmpESzEybXhwbG1KZFRUMEdRdWJUUktvWGhsTERSaS1xdE1Dck5Qci1rYVBiaWo5WjFDUXRaOW1LWlFOSDhvUV9NdlVNdnB6RkdzSUM3bGpLYzRWV29XdFNNYUFWNGxzczZ4bzc5MlFXTlljMFlLOW9na3IydEVHTnhqWDRSZE5yWFJ3OThESGNmNVBCNDZ5c2prMmE3NE9qQ1l6ZzhvNGIwZVNlSC1RQUwyM1EzamQwOUFKMld6S0FncGFpRHYzZlJySEV4WENiRkUzZkhXS2dJbXhrTGVCZ2xMQzRWZ0ZOMkRQaEo1RE15VHRSSGNkTUtQMlNxVE5zbjRsZExFM1JiVkNjUWhjc28zY3JqQmdzSXR0V0pPN0ZDYjk5a2xUTV9mbGQ5cHVVX0xrWnNSeUYxa0UxenhSTUZ1c2YtSEpDVnV5WGpMNkdvZ2tWSm5OY2RheVZvWXg4dnhzdkRuZDZZOWRtcWFKQWVGVDdNSTdUMDloN1ZXWGYtUWdxUjlhMktILVZmdzlEQ28tOGxMMzJjc3B2LWZnd1gwRDhva0FUS2otdG1va2FXTjZobFlRVnZ6ZmxFU0pVekJQWjdiTVJnbHo2bmlneGRfN3Y4d3lrU3M2MFUybjlWNjV2ZFdXM3ZpcUJDMHNqaUJKTWIyVDJ1Y25SNTlzU0FJLTVNOGluUW5HTVhYeFFTamdtODhycDRhSUJPX0NWSDhMT3R2M1c3WmdiLXFaM180ZFpoVjQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 - sinotrade.com.tw
+原文標題：三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 - sinotrade.com.tw
+摘要：三大法人買賣超 – 外資買超(2330)台積電、(2327)國巨*，投信買超(2330)台積電、(3702)大聯大，法人合計買超529.36億元 sinotrade.com.tw
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi2wRBVV95cUxOQUZfek1XdURIQ0pMN0twc1JFRUJfWUdHdUlBbWJkYjNPbTJTUmpESzEybXhwbG1KZFRUMEdRdWJUUktvWGhsTERSaS1xdE1Dck5Qci1rYVBiaWo5WjFDUXRaOW1LWlFOSDhvUV9NdlVNdnB6RkdzSUM3bGpLYzRWV29XdFNNYUFWNGxzczZ4bzc5MlFXTlljMFlLOW9na3IydEVHTnhqWDRSZE5yWFJ3OThESGNmNVBCNDZ5c2prMmE3NE9qQ1l6ZzhvNGIwZVNlSC1RQUwyM1EzamQwOUFKMld6S0FncGFpRHYzZlJySEV4WENiRkUzZkhXS2dJbXhrTGVCZ2xMQzRWZ0ZOMkRQaEo1RE15VHRSSGNkTUtQMlNxVE5zbjRsZExFM1JiVkNjUWhjc28zY3JqQmdzSXR0V0pPN0ZDYjk5a2xUTV9mbGQ5cHVVX0xrWnNSeUYxa0UxenhSTUZ1c2YtSEpDVnV5WGpMNkdvZ2tWSm5OY2RheVZvWXg4dnhzdkRuZDZZOWRtcWFKQWVGVDdNSTdUMDloN1ZXWGYtUWdxUjlhMktILVZmdzlEQ28tOGxMMzJjc3B2LWZnd1gwRDhva0FUS2otdG1va2FXTjZobFlRVnZ6ZmxFU0pVekJQWjdiTVJnbHo2bmlneGRfN3Y4d3lrU3M2MFUybjlWNjV2ZFdXM3ZpcUJDMHNqaUJKTWIyVDJ1Y25SNTlzU0FJLTVNOGluUW5HTVhYeFFTamdtODhycDRhSUJPX0NWSDhMT3R2M1c3WmdiLXFaM180ZFpoVjQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市</div>
+  <div class="news-summary">台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 03:12:30</span>
+    <a href="https://news.google.com/rss/articles/CBMihgNBVV95cUxQbjVOS2p5bkxEcDNZNTl1b2R1WkRvYWZRTVhFdWtxM3V1RFBHNjhDeUVDcV9rLTJ0anVIXzRZdG9aM1Y5eVQ4VUdfNjNjZ0pnRFpfOW40X2VPM2hLREt1eEtIbkhpRGY5eUtMNUJwRW5oLUxkRTlrY0UxMjRtSnJzNll3d04wMmdQOXZTYk95VXJURnFsc0tMVDlMRkNUZ1JYWkNocDRxQXVQTjNYUmRZc3N4QzREUFZhRWx4TnVrb2t3VXNXNkprcmFnVE1tVEdtSmRqbU5vOEdpXzZsWGlDOE9JTERsX29qMFhMcDY2am91N3NwWnRKaTBnalJrV2lvRWhWczRfXzdYejR3SExTUUN6LUtZT0hUSHMtbnV2TXo0OUJZdUdPbVhOMDRzS2NCUU1aTG5iSlFaZ2Z6VjU2NW1uVWcxU0lkMkt2SC1VTmh1a1gwQ1lVWlVEREpraWJjaTdiU0RSYVdYRFoyTVNjVmhuWlBYYmtSYVdfaFQ1Y0N0ODFTVWc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市
+原文標題：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市
+摘要：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMihgNBVV95cUxQbjVOS2p5bkxEcDNZNTl1b2R1WkRvYWZRTVhFdWtxM3V1RFBHNjhDeUVDcV9rLTJ0anVIXzRZdG9aM1Y5eVQ4VUdfNjNjZ0pnRFpfOW40X2VPM2hLREt1eEtIbkhpRGY5eUtMNUJwRW5oLUxkRTlrY0UxMjRtSnJzNll3d04wMmdQOXZTYk95VXJURnFsc0tMVDlMRkNUZ1JYWkNocDRxQXVQTjNYUmRZc3N4QzREUFZhRWx4TnVrb2t3VXNXNkprcmFnVE1tVEdtSmRqbU5vOEdpXzZsWGlDOE9JTERsX29qMFhMcDY2am91N3NwWnRKaTBnalJrV2lvRWhWczRfXzdYejR3SExTUUN6LUtZT0hUSHMtbnV2TXo0OUJZdUdPbVhOMDRzS2NCUU1aTG5iSlFaZ2Z6VjU2NW1uVWcxU0lkMkt2SC1VTmh1a1gwQ1lVWlVEREpraWJjaTdiU0RSYVdYRFoyTVNjVmhuWlBYYmtSYVdfaFQ1Y0N0ODFTVWc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">6285 — 啟碁 <span style="color:#8b96a3;font-size:13px">（低軌衛星）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+10</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【川普投顧 VIP 會員專屬】啟碁 (6285) 個股操作策略分析**
+
+**總體判斷：** 短線受消息面推升帶動，中長期仍具產業結構性成長潛力，建議逢低佈局。
+
+**短線（1-3 天）：** **偏多方觀望。** 依據近期新聞集中討論「LEO衛星」與「車用電子」雙引擎加速成形，短期買盤動能強勁，但股價已反應大量消息面，建議觀察隔日開盤量能及技術位支撐確認進場點。
+
+**中線（1-2 週）：** **關注產業趨勢與法說會後續動態。** 核心看點為低軌衛星市場的實際訂單爆發力，以及公司在車用電子領域的具體合作進展，若能有實質營收亮點出貨，將是下一波催化劑。
+
+**操作建議：** **逢回檔加碼。** 鎖定技術支撐區（如關鍵均線或前低點）進行分批佈局，利用消息面帶動的超買反彈做為入場時機。
+**操作邏輯：** 產業趨勢確立後，短期波動屬於獲利了結與消息消化過程，適合逢低加碼累積籌碼。
+
+**風險提示：** 短期股價過熱，若市場情緒轉冷或衛星/車用需求不及預期，可能出現快速修正，務必設定停損點位。</div>
+<div class="news">
+  <div class="news-title-zh">啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw</div>
+  <div class="news-summary">啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 sinotrade.com.tw</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 07 May 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMizwVBVV95cUxNNmsyZkoweUJoRkliRm1jQlV3UFQ1endrV01nZXdNSFJCS2xsOGtBNElDelhBMl9pRml0aGxoeVhYekRCWG9fcktFZ213eVl0ajl4bk10WjBZMldkd3gxQi1kQ19UUlBfX2NqWWMwTEo2aWVvSDhkRUlkNkdVR1RQMXZid1dzcTl2cV9MSm0wVWRQNnZ5RXR5cDFsZURTdXliblB3VVo0UWNSWjZFc0JnajBZMFhfM1pYTklLamt3aThzTzlUV3U1RUdsd3paWHF5ZGdqNG1fR3JiRC1xbTVUZHhfV3oxeVM3Y3EzZ0ZBcGppTS1pb3AxY2ctM04yUkduM3plTE5QRVdHY1Y3ckNPUVdmaGtybWNRX01tUHA1aFp0SGRuckNBNHU1NU5OcWRpdGxGUUNWem5USmJDNUFMYWdqSEZ1bjd3UlpacWlxWG5IeEJTbEZ3dEwxUGtEWTVOelFuSV9obmJVYklWRXBTbG1vM1FlQnhCSU92YU9idE9FY24tZ2FrSjZhN19HeVNGeEJWcTRycElzQnVsbGw2R2xmb2xmT0ZLRFhxeW5ZWnRkUm1oYlFmWWZrbUhELUlRTE1qMnA3WlFIdEl1UFROOVhjNGstbGFKSEVVRFJBVVNLdHV5aHU3WFlyVzk5Q21ZQk5lUWZpc25vVE5XV2MteHlCckVmWGVDLW9lMjl0VVh1Mml4aXR1MVExZHJSa21ucFdKZ2F1b19fbkdQeFhBZzY4MEFBa3Y3UGR5VXlSS2sycWRKV2R2WVhjZGxXS3lCR05GcWRXbzhhSzRQVDRpbHZadVplVWhma0w4M0pERlhHVHBMQ3VRMU1iYVBlbnBRdmE5NlFnNWNXNUNkZHZ1eWVVMVJkNmhRcGpnajBIM1NKU3hpZF9iWWNPV0kyb3M0QWI0bTVqdlpuaUNCb1A4WHF0NTFUaXBaLXdDVzhmWQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw
+原文標題：啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw
+摘要：啟碁(6285) 做什麼、法說會重點有哪些？第一季EPS達2.36元創近期新高，三大市場齊頭並進、LEO衛星與車用雙引擎加速成形｜股市話題｜豐雲學堂2026 年 07 月 sinotrade.com.tw
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMizwVBVV95cUxNNmsyZkoweUJoRkliRm1jQlV3UFQ1endrV01nZXdNSFJCS2xsOGtBNElDelhBMl9pRml0aGxoeVhYekRCWG9fcktFZ213eVl0ajl4bk10WjBZMldkd3gxQi1kQ19UUlBfX2NqWWMwTEo2aWVvSDhkRUlkNkdVR1RQMXZid1dzcTl2cV9MSm0wVWRQNnZ5RXR5cDFsZURTdXliblB3VVo0UWNSWjZFc0JnajBZMFhfM1pYTklLamt3aThzTzlUV3U1RUdsd3paWHF5ZGdqNG1fR3JiRC1xbTVUZHhfV3oxeVM3Y3EzZ0ZBcGppTS1pb3AxY2ctM04yUkduM3plTE5QRVdHY1Y3ckNPUVdmaGtybWNRX01tUHA1aFp0SGRuckNBNHU1NU5OcWRpdGxGUUNWem5USmJDNUFMYWdqSEZ1bjd3UlpacWlxWG5IeEJTbEZ3dEwxUGtEWTVOelFuSV9obmJVYklWRXBTbG1vM1FlQnhCSU92YU9idE9FY24tZ2FrSjZhN19HeVNGeEJWcTRycElzQnVsbGw2R2xmb2xmT0ZLRFhxeW5ZWnRkUm1oYlFmWWZrbUhELUlRTE1qMnA3WlFIdEl1UFROOVhjNGstbGFKSEVVRFJBVVNLdHV5aHU3WFlyVzk5Q21ZQk5lUWZpc25vVE5XV2MteHlCckVmWGVDLW9lMjl0VVh1Mml4aXR1MVExZHJSa21ucFdKZ2F1b19fbkdQeFhBZzY4MEFBa3Y3UGR5VXlSS2sycWRKV2R2WVhjZGxXS3lCR05GcWRXbzhhSzRQVDRpbHZadVplVWhma0w4M0pERlhHVHBMQ3VRMU1iYVBlbnBRdmE5NlFnNWNXNUNkZHZ1eWVVMVJkNmhRcGpnajBIM1NKU3hpZF9iWWNPV0kyb3M0QWI0bTVqdlpuaUNCb1A4WHF0NTFUaXBaLXdDVzhmWQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 22:38:33</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9abXExMW1fMThxWXdJLVVscl9ELXNWdmpXR21tdllaZllpNHFjN2RXTnBvX2NqQTFwa3NEZW1PaEU1amlvbS1VOVQwTUZqZ1RoQk9JWEEtTlI?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 - CMoney
+原文標題：6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 - CMoney
+摘要：6285 啟碁- 啟碁潛力股：低軌衛星熱潮受惠？ - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE9abXExMW1fMThxWXdJLVVscl9ELXNWdmpXR21tdllaZllpNHFjN2RXTnBvX2NqQTFwa3NEZW1PaEU1amlvbS1VOVQwTUZqZ1RoQk9JWEEtTlI?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ - CMoney投資網誌</div>
+  <div class="news-summary">【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 03:42:17</span>
+    <a href="https://news.google.com/rss/articles/CBMikAFBVV95cUxNdHpEMTNTdlFtS2xuT1lYWTZQeDF3bnYzWGJ5QTlFSjYzUDRMUG41WGhTZ3RHQm5OdjRjSnB6YnRIeDdodm85Wl9ZSkVDWmxESzJINnAydlAwWGw0RTZiOWliMGFxUXhjUFFNWFJNcU5TbkttcEJrMndXWEROSXJEam5GOWJEZzN1QkNEUXhlMDA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ - CMoney投資網誌
+原文標題：【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ - CMoney投資網誌
+摘要：【即時新聞】啟碁(6285)除息前大漲逼漲停，這「3檔概念股」買盤同步爆發！ CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikAFBVV95cUxNdHpEMTNTdlFtS2xuT1lYWTZQeDF3bnYzWGJ5QTlFSjYzUDRMUG41WGhTZ3RHQm5OdjRjSnB6YnRIeDdodm85Wl9ZSkVDWmxESzJINnAydlAwWGw0RTZiOWliMGFxUXhjUFFNWFJNcU5TbkttcEJrMndXWEROSXJEam5GOWJEZzN1QkNEUXhlMDA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2301 — 光寶科 <span style="color:#8b96a3;font-size:13px">（電源零組件）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+10</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【光寶科 (2301) 個股操作策略】**
+
+**短線判斷：極度看漲（Buy）**
+*   **依據：** 近期新聞焦點高度集中於「高壓直流」、「新能源」及「AI資料中心」三大成長軸，市場情緒正處於極盛期。外資持續買超動能強勁，短期技術面支撐穩固。
+*   **中線關注事件：** 需密切關注其宣布的美國子公司擴廠進度、新訂單簽約公告，以及國際能源/AI產業鏈的具體景氣指標。這些實質營運消息將是推升股價的核心動力。
+*   **操作建議：持續加碼 (Accumulate)**
+    *   **邏輯：** 產業結構性轉型（綠能、AI）帶動業績重估，短期資金追捧情緒與基本面利多共振，適合逢低分批佈局。
+*   **風險提示：** 短期漲幅過快後，須注意獲利了結賣壓；若市場整體科技類股出現修正訊號，應先降低部位以防回檔。</div>
+<div class="news">
+  <div class="news-title-zh">光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 - Yahoo股市<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 - Yahoo股市</div>
+  <div class="news-summary">光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 24 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMi0wNBVV95cUxQTkVqaHc4R1BPcW5jeTQ2VWtmVUIzMk9ZeEpYT3dndUtPMW1hZmpjaWtNNFRMbU9nVkRDY0NFTnhvNVdCZFAxMDkxX2hhYzhWN3JRVTFzS2tQRnpFV2hyLUVwRTFJZzY0U2d1Z243eXJQcUVqbzFhbTVyRUc0cFYwR2ZUT3lpejVYQTNrOHJuN1RXN1g2bG9wcVRxckhsdVBsbElFQ1QwNWtzYlo5VlVQdzhKandiN002MkZuVHZleHpYSEJJblJSbjBsRGFvM3ZwOUQwd3JsaEZ0b0I1bjBCY2VvOXczRzZGVVR0UTQwcUt0N21vWDRaV0xBVkx5d2hkMHF2UGFKT2tQaGYtNWYzV0hNZ3hldHpJSkhQbjFuSDlGTHFLeXM0WGpUdDZibnA4WUwzaUtEYUZiSnhuekJJY0lERzcwMjJ4RElnZndtNkJQRUVzRGZlSEZ2cjBmUnZzbDNzLWEtdUhTbHVtWEpTRGcwVlJGS1FtS0xBWjNKTl96aXB6V2tPaXFhUkFndEZJbHM1ZUktdHNTb1JjaWxzcTVYcGxqU2VEdmFlNjZvTko2TzVlbzAxNHF0SW8zZ0pYVDk0TXE0bnRDc1FYbTg3TlRUWQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 - Yahoo股市
+原文標題：光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 - Yahoo股市
+摘要：光寶科深化高壓直流與新能源布局 完善AI資料中心產品組合長期展望看俏 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi0wNBVV95cUxQTkVqaHc4R1BPcW5jeTQ2VWtmVUIzMk9ZeEpYT3dndUtPMW1hZmpjaWtNNFRMbU9nVkRDY0NFTnhvNVdCZFAxMDkxX2hhYzhWN3JRVTFzS2tQRnpFV2hyLUVwRTFJZzY0U2d1Z243eXJQcUVqbzFhbTVyRUc0cFYwR2ZUT3lpejVYQTNrOHJuN1RXN1g2bG9wcVRxckhsdVBsbElFQ1QwNWtzYlo5VlVQdzhKandiN002MkZuVHZleHpYSEJJblJSbjBsRGFvM3ZwOUQwd3JsaEZ0b0I1bjBCY2VvOXczRzZGVVR0UTQwcUt0N21vWDRaV0xBVkx5d2hkMHF2UGFKT2tQaGYtNWYzV0hNZ3hldHpJSkhQbjFuSDlGTHFLeXM0WGpUdDZibnA4WUwzaUtEYUZiSnhuekJJY0lERzcwMjJ4RElnZndtNkJQRUVzRGZlSEZ2cjBmUnZzbDNzLWEtdUhTbHVtWEpTRGcwVlJGS1FtS0xBWjNKTl96aXB6V2tPaXFhUkFndEZJbHM1ZUktdHNTb1JjaWxzcTVYcGxqU2VEdmFlNjZvTko2TzVlbzAxNHF0SW8zZ0pYVDk0TXE0bnRDc1FYbTg3TlRUWQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">熱門股》外資連2買 光寶科創新天價 - 自由時報<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 熱門股》外資連2買 光寶科創新天價 - 自由時報</div>
+  <div class="news-summary">熱門股》外資連2買 光寶科創新天價 自由時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 06:20:02</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5XenFPX3RpNGJmczNxbFZaYUQ2MnNkR2E5Q0dfTnBGVldnZkRqWkdjMl9uU2lqV1cyenVaa0NRUHUwcUxTRjI3Y2VnMVdfTi1YWGx5U05RczA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：熱門股》外資連2買 光寶科創新天價 - 自由時報
+原文標題：熱門股》外資連2買 光寶科創新天價 - 自由時報
+摘要：熱門股》外資連2買 光寶科創新天價 自由時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE5XenFPX3RpNGJmczNxbFZaYUQ2MnNkR2E5Q0dfTnBGVldnZkRqWkdjMl9uU2lqV1cyenVaa0NRUHUwcUxTRjI3Y2VnMVdfTi1YWGx5U05RczA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 03:37:27</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9Kb2FUazZLUno3VV9saWt6a0dHUThDcXh2SGJFLUgyY3ROS0lkc1JSQlZXT2h1Y0NxaEx4ZV9hLVdFQ0pQcjBuUFpvUENnZXFnTFVRc3FNNUc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 - CMoney
+原文標題：2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 - CMoney
+摘要：2301 光寶科- 光寶科投資9億美元美國子公司的擴廠！投審會都認證核準了！股價... - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE9Kb2FUazZLUno3VV9saWt6a0dHUThDcXh2SGJFLUgyY3ROS0lkc1JSQlZXT2h1Y0NxaEx4ZV9hLVdFQ0pQcjBuUFpvUENnZXFnTFVRc3FNNUc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">4908 — 前鼎 <span style="color:#8b96a3;font-size:13px">（低軌衛星）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【前鼎 (4908) 個股操作策略】**
+
+**短線判斷：極度看漲。** 今日亮燈漲停，明確受到「AI光通訊」題材回溫的強勁動能帶動，技術性反彈需求爆發，短期買盤極為濃厚。
+**中線關注事件：** 需持續觀察國際科技晶片週期、AI基礎建設（如資料中心擴建）的進展，以及相關光通訊設備訂單的具體成效。
+**操作建議：加碼。** 短期追價動能強勁，可逢回檔測試支撐點時分批加碼，鎖定題材熱度。
+**風險提示：** 漲停板後過熱風險高，應注意隔日是否有獲利了結的賣壓出現，建議設定較嚴格的停損點位。</div>
+<div class="news">
+  <div class="news-title-zh">前鼎(4908) 個股概覽 | 個股 - 股市 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 前鼎(4908) 個股概覽 | 個股 - 股市 - CMoney</div>
+  <div class="news-summary">前鼎(4908) 個股概覽 | 個股 - 股市 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 06:04:24</span>
+    <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE5iVGRDbXZzTmZkYVdzbldlZG90X0FSZ3RiT0M2TDdlNnhVdWFQWUlTcm84NWFPd2ZNWVRKLTdYRG1tSHZta3RZMVU0Q1h2cUlpZHo4?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：前鼎(4908) 個股概覽 | 個股 - 股市 - CMoney
+原文標題：前鼎(4908) 個股概覽 | 個股 - 股市 - CMoney
+摘要：前鼎(4908) 個股概覽 | 個股 - 股市 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiU0FVX3lxTE5iVGRDbXZzTmZkYVdzbldlZG90X0FSZ3RiT0M2TDdlNnhVdWFQWUlTcm84NWFPd2ZNWVRKLTdYRG1tSHZta3RZMVU0Q1h2cUlpZHo4?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 - CMoney投資網誌</div>
+  <div class="news-summary">【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 18 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxONWhOMHlpbmNyLWo0eDRZSFQ2MGhvT0pUd0pCZlJUSmhHQmF4MjVPYzVWLXhBa3NGbWxkeURmS1RweFF4V0JNTm5rMTJtc2pKcktUMWtGU0JZZDZiOUxXelRvci05UVJic2I4RnBGenRidUhZdU5uWVNnZmtLaU10aDBYT0hMYjFRLW1OaU5B?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 - CMoney投資網誌
+原文標題：【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 - CMoney投資網誌
+摘要：【13:05 即時新聞】前鼎(4908)亮燈漲停212元，AI光通訊題材回溫＋短線急跌後技術性強彈吸引低接買盤 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxONWhOMHlpbmNyLWo0eDRZSFQ2MGhvT0pUd0pCZlJUSmhHQmF4MjVPYzVWLXhBa3NGbWxkeURmS1RweFF4V0JNTm5rMTJtc2pKcktUMWtGU0JZZDZiOUxXelRvci05UVJic2I4RnBGenRidUhZdU5uWVNnZmtLaU10aDBYT0hMYjFRLW1OaU5B?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">4908 前鼎- 台灣軍工概念股- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 4908 前鼎- 台灣軍工概念股- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">4908 前鼎- 台灣軍工概念股- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 04:48:43</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE53MVljRGo5R0NPYXhsbXFtc2I3dmRGZlExQjlscWt6OEV1NzhxQWlYN1VaeTNpdXJwWTRyWm16WXFBTF9lTWRDd0hmQTYzU1FqX0xwMmNWOG0?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：4908 前鼎- 台灣軍工概念股- 股市爆料同學會 - CMoney
+原文標題：4908 前鼎- 台灣軍工概念股- 股市爆料同學會 - CMoney
+摘要：4908 前鼎- 台灣軍工概念股- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE53MVljRGo5R0NPYXhsbXFtc2I3dmRGZlExQjlscWt6OEV1NzhxQWlYN1VaeTNpdXJwWTRyWm16WXFBTF9lTWRDd0hmQTYzU1FqX0xwMmNWOG0?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">6829 — 千附精密 <span style="color:#8b96a3;font-size:13px">（CPO光通訊）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【川普投顧 VIP 會員專屬】千附精密 (6829) 個股操作策略**
+
+**結論：持續持有，逢低分批加碼觀察訊號。**
+
+**短線判斷與依據：** 短期波動受市場情緒影響較大，技術面需留意關鍵支撐位是否能守住。目前消息面焦點集中於「高速光通訊」的產業趨勢驗證，短期操作應以權值股帶動指數方向為主，不宜過度追高。
+
+**中線關注事件：** 核心觀察點為公司公布的 H2 營運數據是否能支撐毛利率穩定維持在目標區間（如新聞預期的三字頭），以及其在高階光通訊產品線的實際出貨量與客戶簽約進度，這決定了成長能否「落地」。
+
+**具體操作建議：** **持續持有/逢低加碼。** 操作邏輯是基於產業結構性趨勢（高速光通訊）的長期佈局價值，短期波動為建倉機會。若股價回測重要均線或出現明顯技術性修正，可視為分批加碼點位。
+
+**風險提示：** 請注意，單純依賴新聞帶來的「潛力」進行操作風險極高。投資前務必結合整體市場景氣循環判斷，切勿將所有資金集中於單一產業主題股。</div>
+<div class="news">
+  <div class="news-title-zh">千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 - CMoney投資網誌</div>
+  <div class="news-summary">千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 22:41:08</span>
+    <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxNbGxmbWVJTjdQN1M2SXQtc3UxdTlMaGt6SXJobU9Fb3ZsMHRucWt5VWlnTXBsQWRxM3NzZDZ2UF9KQm0tSjB3UnZOcFVFRzhnVTkyeEtQd3ZleWhRTU5Kc0FWTVRQcnRoVUt6MFdJTExETDI1N3FsVmU0dExWQ0lFRWh3?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 - CMoney投資網誌
+原文標題：千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 - CMoney投資網誌
+摘要：千附精密 6829 真的卡進高速光通訊了嗎？先看技術門檻，再看成長能不能落地-蘇宛真 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiggFBVV95cUxNbGxmbWVJTjdQN1M2SXQtc3UxdTlMaGt6SXJobU9Fb3ZsMHRucWt5VWlnTXBsQWRxM3NzZDZ2UF9KQm0tSjB3UnZOcFVFRzhnVTkyeEtQd3ZleWhRTU5Kc0FWTVRQcnRoVUt6MFdJTExETDI1N3FsVmU0dExWQ0lFRWh3?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">6829 千附精密- 已解套謝謝- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 6829 千附精密- 已解套謝謝- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">6829 千附精密- 已解套謝謝- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 02:52:09</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE5PMmtDNi12d0lxTW1MaFZSa0ljd3VidjRPZXk1elV1NEtrMVZOWE9sbmpzcWJ1T3d0dkJfVVZfckxmVHg1WmlCUmVPczl3OHBLN2pEU1prQTA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：6829 千附精密- 已解套謝謝- 股市爆料同學會 - CMoney
+原文標題：6829 千附精密- 已解套謝謝- 股市爆料同學會 - CMoney
+摘要：6829 千附精密- 已解套謝謝- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE5PMmtDNi12d0lxTW1MaFZSa0ljd3VidjRPZXk1elV1NEtrMVZOWE9sbmpzcWJ1T3d0dkJfVVZfckxmVHg1WmlCUmVPczl3OHBLN2pEU1prQTA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 - MoneyDJ<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 - MoneyDJ</div>
+  <div class="news-summary">千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 MoneyDJ</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 16 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxObnJIdERUcGZlM280S3FxSTRLYll3QXZUNHJDNy01UGVYTkRJTXd6aEtueEVsMkFvdXVZN1BjcTFJMW9CTzZ0RGlmQ1JaX2FvTUxYX3d2b3B0VmlRR2phYVZURzRBOXBfb1A2WGFzRThIVDgzMW5Hejh2Szk2RmFUVVd5WVI2T1RmcmxqNkVyaktodw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 - MoneyDJ
+原文標題：千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 - MoneyDJ
+摘要：千附精密H2營運動能續看俏，毛利率目標3字頭- 新聞 MoneyDJ
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxObnJIdERUcGZlM280S3FxSTRLYll3QXZUNHJDNy01UGVYTkRJTXd6aEtueEVsMkFvdXVZN1BjcTFJMW9CTzZ0RGlmQ1JaX2FvTUxYX3d2b3B0VmlRR2phYVZURzRBOXBfb1A2WGFzRThIVDgzMW5Hejh2Szk2RmFUVVd5WVI2T1RmcmxqNkVyaktodw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2308 — 台達電 <span style="color:#8b96a3;font-size:13px">（AI伺服器）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【台達電 (2308) 個股操作策略】**
+
+**短線判斷：空方佔優勢，極度謹慎觀望。** 消息面過熱與短期賣壓（如「掉單」傳聞）導致股價超跌，技術上可能出現過量拋售訊號，但缺乏明確的實質利空支撐。
+
+**中線關注：產業趨勢確立，等待消化市場情緒。** 核心看點仍是其在 AI 伺服器、模組化機房及液冷領域穩固的訂單能見度（至 2027 年），基本面結構性成長邏輯未變動。
+
+**具體操作建議：觀望，等待回檔確認支撐區。**
+*   **操作邏輯：** 短期股價已受消息面影響過大，不宜追高或逢低進場；待股價在關鍵技術支撐位（如前期整理區）穩定站穩後，再觀察是否有資金重新介入的訊號。
+
+**風險提示：** 留意市場對「訂單能見度」的質疑聲浪，若有實質性客戶或產業鏈的重大變動消息，將直接衝擊估值基礎。切勿基於傳聞進行操作。</div>
+<div class="news">
+  <div class="news-title-zh">台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 - UDN<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 - UDN</div>
+  <div class="news-summary">台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 UDN</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 02:02:04</span>
+    <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBrbGc5N2RBbmNpTVV4WmxFMGhvTDdRSVNaSlFjVGlEZmd4SG5QVXFscHl6amNZT2JYZVVRQVJlOHFvYTVSRGxhUFU1b0RmRWxFTmc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 - UDN
+原文標題：台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 - UDN
+摘要：台達電（2308）狂跌三成該怎辦？陳重銘曝關鍵隱憂：股價比台積電貴合理嗎| 台股雜談| 股市 UDN
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiUkFVX3lxTFBrbGc5N2RBbmNpTVV4WmxFMGhvTDdRSVNaSlFjVGlEZmd4SG5QVXFscHl6amNZT2JYZVVRQVJlOHFvYTVSRGxhUFU1b0RmRWxFTmc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 - 旺得富理財網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 - 旺得富理財網</div>
+  <div class="news-summary">台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 旺得富理財網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 01:34:31</span>
+    <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTE82MmdJMHh3V2xrZVVjTlQ1RW1YUnFycFBKNGtvb0xVNVYxZUt3Zmd5WFMtUU11U2RjWXBVTUxBeG0zeG9TczBqUTY1YmctNkpWdW9IWWpjMkVQMWQ0Z3FmNFcxUi1Ea3NIbFE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 - 旺得富理財網
+原文標題：台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 - 旺得富理財網
+摘要：台達電驚傳「掉單鬼故事」暴跌3成？專家曝關鍵進場點：基本面沒壞- 上市櫃 旺得富理財網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiakFVX3lxTE82MmdJMHh3V2xrZVVjTlQ1RW1YUnFycFBKNGtvb0xVNVYxZUt3Zmd5WFMtUU11U2RjWXBVTUxBeG0zeG9TczBqUTY1YmctNkpWdW9IWWpjMkVQMWQ0Z3FmNFcxUi1Ea3NIbFE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台達電攻模組化機房/液冷，訂單能見度至2027年 - 台視全球資訊網<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 台達電攻模組化機房/液冷，訂單能見度至2027年 - 台視全球資訊網</div>
+  <div class="news-summary">台達電攻模組化機房/液冷，訂單能見度至2027年 台視全球資訊網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 03:51:03</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxPV3V6N1RXRHVSYVk1SElvNGRRU25aVnpZTGJseGNMR2dYdHpGS1FyYTd5WVpXQVlSN2N6NVlUWkYwLWtSV0FfTkt5cGZIejdqaFpQV2pVbldXUjFfZmlwalk4bm9nY3BBQ19Tc0U0TUJiNEZHTW9yT19XSmNrY0ZNUTl5M1RweFkzWi0xN2F4M25kZw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台達電攻模組化機房/液冷，訂單能見度至2027年 - 台視全球資訊網
+原文標題：台達電攻模組化機房/液冷，訂單能見度至2027年 - 台視全球資訊網
+摘要：台達電攻模組化機房/液冷，訂單能見度至2027年 台視全球資訊網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxPV3V6N1RXRHVSYVk1SElvNGRRU25aVnpZTGJseGNMR2dYdHpGS1FyYTd5WVpXQVlSN2N6NVlUWkYwLWtSV0FfTkt5cGZIejdqaFpQV2pVbldXUjFfZmlwalk4bm9nY3BBQ19Tc0U0TUJiNEZHTW9yT19XSmNrY0ZNUTl5M1RweFkzWi0xN2F4M25kZw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2312 — 金寶 <span style="color:#8b96a3;font-size:13px">（零組件）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【金寶 (2312) 個股操作策略】**
+
+**短線判斷：極度看漲，但需警惕過熱風險。** 消息面帶動的爆量上攻已形成短期情緒支撐，資金持續追逐「AI/量子計算」等高概念題材，技術性買盤強勁。
+**中線關注事件：** 密切關注後續是否有更明確的產業催化劑（如客戶訂單確認或具體合作消息），以及市場對美科技巨頭（特別是與AI相關）的整體風險偏好變化。
+
+**操作建議：減碼至觀望，等待回檔確認支撐區。**
+*   **邏輯：** 股價已在題材帶動下快速拉升並達到漲停，短期獲利了結賣壓極大，不宜追高；待股價回測關鍵均線或重要支撐位後再觀察進場點。
+
+**風險提示：** 若市場情緒轉冷或產業消息不及預期，題材股容易出現快速修正，請務必控制單一個股的權重比率。</div>
+<div class="news">
+  <div class="news-title-zh">【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ - CMoney<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ - CMoney</div>
+  <div class="news-summary">【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 20 Jun 2026 04:11:46</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE13NURxT2ZyazRTRHNLbXBnMDVGN3BqNWt5RElVZDRLU3MxZkE2VVl5RXVNQjIyWFRLZ2ZpXy1HNEFWaHhmSnZaQkxCSmg5Q2hGTUp2LTYwaVc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ - CMoney
+原文標題：【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ - CMoney
+摘要：【即時新聞】金寶(2312)搭輝達題材爆量漲停！這「3檔概念股」資金輪動升溫？ CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE13NURxT2ZyazRTRHNLbXBnMDVGN3BqNWt5RElVZDRLU3MxZkE2VVl5RXVNQjIyWFRLZ2ZpXy1HNEFWaHhmSnZaQkxCSmg5Q2hGTUp2LTYwaVc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 - CMoney投資網誌</div>
+  <div class="news-summary">金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 00:33:08</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxQdFJKWC1JelM4aHhVMDI0UzYtZ0lhS1dBZU1QSngzMzc0aHlhQXRzOTc5S1FmRGU4MzRUUDZ2X0s1c3Q2bDFsLWN0UXo2QmN6Q2hoR2RmaVB2bmYxcWdlOUlPMkJ5b1FydFA0ZWlYS1p5M004cXZEd3ZBbU9oMm1jXw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 - CMoney投資網誌
+原文標題：金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 - CMoney投資網誌
+摘要：金寶2312不只看營收，毛利率才是營運體質的照妖鏡？-陳柏宇 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxQdFJKWC1JelM4aHhVMDI0UzYtZ0lhS1dBZU1QSngzMzc0aHlhQXRzOTc5S1FmRGU4MzRUUDZ2X0s1c3Q2bDFsLWN0UXo2QmN6Q2hoR2RmaVB2bmYxcWdlOUlPMkJ5b1FydFA0ZWlYS1p5M004cXZEd3ZBbU9oMm1jXw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 - 今周刊<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 - 今周刊</div>
+  <div class="news-summary">金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 今周刊</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 24 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxQd3hZZG9EbjFWRHdQaEpaWnk3QWJFUzZtWGlDa08tTDFUTEgwY1dPcEZmMVlZNHZWdFRhYVRwUjdEVHhIZGZOTnRpcmZVOFdRdlY3MWJ1emQ1SkV5Q1NHU2RHRGlCMlNMMVRwNGF6VTVxRmtWOU5KMUt5TlQ0OFViRQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 - 今周刊
+原文標題：金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 - 今周刊
+摘要：金寶(2312)可以買嗎？股價漲停爆量11萬張...川普點火量子電腦概念股，泰金寶、千附精密跟著亮燈 今周刊
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxQd3hZZG9EbjFWRHdQaEpaWnk3QWJFUzZtWGlDa08tTDFUTEgwY1dPcEZmMVlZNHZWdFRhYVRwUjdEVHhIZGZOTnRpcmZVOFdRdlY3MWJ1emQ1SkV5Q1NHU2RHRGlCMlNMMVRwNGF6VTVxRmtWOU5KMUt5TlQ0OFViRQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">3711 — 日月光投控 <span style="color:#8b96a3;font-size:13px">（AI封裝）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+10</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【日月光投控 (3711) 個股操作策略】**
+
+**短期判斷：偏多。** 近期市場關注焦點集中於 AI 先進封裝的產業結構性成長，外資目標價持續上修帶動題材熱度；但短期內需觀察成交量是否能配合消息面發酵，避免追高陷阱。
+
+**中期關注事件：** 密切關注公司在先進封裝領域的擴張進度和具體訂單簽約細節（如與盟立等供應商的設備採購動向），這將是支撐中長期估值的核心驅動力。
+
+**操作建議：** **持續持有，逢低分批加碼。** 邏輯為：公司在 AI 生態鏈中的關鍵地位確立，產業趨勢向上，短期波動可視為買入機會。若有技術性回檔至重要支撐區（如前期均線或盤整區間），建議利用資金進行佈局。
+
+**風險提示：** 留意市場情緒過熱導致的短期獲利了結賣壓；若整體電子股大盤因宏觀經濟因素出現系統性修正，個股漲幅可能受限。請務必搭配總體判斷輔助決策。</div>
+<div class="news">
+  <div class="news-title-zh">3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 04:19:57</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9zUldyNkxZSmpsbHVRVHNPeVpUX3U0WUtKNTNGa2hHWDRVN1BDeG1MUnVTdTNaSTJWcTJLbVZrdlpjQzFGU0ozc2FCdG53Tmljd0dQVHZ0SVI?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 - CMoney
+原文標題：3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 - CMoney
+摘要：3711 日月光投控 - 710買入現套、等上800 - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE9zUldyNkxZSmpsbHVRVHNPeVpUX3U0WUtKNTNGa2hHWDRVN1BDeG1MUnVTdTNaSTJWcTJLbVZrdlpjQzFGU0ozc2FCdG53Tmljd0dQVHZ0SVI?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 - CMoney投資網誌</div>
+  <div class="news-summary">日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 15:15:58</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxObkpJSEItYk9Gb2dlN25zZ3FUcVR1WVhsbWR1a1VSRURiRDNLd0hyanprSmlWdkdoMVFnLVRKUTdlUmx4MWdydVpselRGVk9aY1VJbzZqMkNZdy1pNEk0N242dE1UWmJPdHI1RUlkNWZRQXV2RzVWbkRBcHlfUnFBaw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 - CMoney投資網誌
+原文標題：日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 - CMoney投資網誌
+摘要：日月光投控(3711)外資目標價再創新高！AI先進封裝大擴張，產業新變局全解析！-股市股海哥 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxObkpJSEItYk9Gb2dlN25zZ3FUcVR1WVhsbWR1a1VSRURiRDNLd0hyanprSmlWdkdoMVFnLVRKUTdlUmx4MWdydVpselRGVk9aY1VJbzZqMkNZdy1pNEk0N242dE1UWmJPdHI1RUlkNWZRQXV2RzVWbkRBcHlfUnFBaw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 - 台視全球資訊網<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 - 台視全球資訊網</div>
+  <div class="news-summary">日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 台視全球資訊網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 12:35:20</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxNZ29CaENlRmFZYUxTRXpsSktfOXdFSUVlc2oyT2VNaVRfSkZxaGdISktZQVhOQ1J1ZHFtY2J6NGVyRXNPTXBXT0NveGRtdGY5NEZHek51bHl1ZzVzalpsYm9lUVRvTkZHUmhZQ0d4T0gwYzZXVUp0ZEVCTEVMbjduenRzME53MGJ2YV83RUZCeHVhUQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 - 台視全球資訊網
+原文標題：日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 - 台視全球資訊網
+摘要：日月光投控：日月光半導體製造114/11/3~115/6/30向盟立取得設備一批，計約14.6億元 台視全球資訊網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxNZ29CaENlRmFZYUxTRXpsSktfOXdFSUVlc2oyT2VNaVRfSkZxaGdISktZQVhOQ1J1ZHFtY2J6NGVyRXNPTXBXT0NveGRtdGY5NEZHek51bHl1ZzVzalpsYm9lUVRvTkZHUmhZQ0d4T0gwYzZXVUp0ZEVCTEVMbjduenRzME53MGJ2YV83RUZCeHVhUQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">4585 — 達明 <span style="color:#8b96a3;font-size:13px">（機器人）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【達明 (4585) 個股操作策略】**
+
+**短線判斷：極度看漲 (Bullish)**。近期新聞帶動的「德國工廠接單」與「人形機器人概念題材共振」，已形成強勁的短期催化劑，資金動能目前偏多方。
+**中線關注事件：** 需持續觀察其在車電產業鏈（尤其是廣達母公司相關佈局）的實際導入進度及訂單規模擴張訊號，這將是支撐股價中長期走勢的核心。
+
+**具體操作建議：加碼。**
+*   **操作邏輯：** 題材熱度與實質業務亮點結合，短期動能強勁，逢低分批加碼參與產業景氣循環的初期上攻。
+
+**風險提示：** 短期漲幅過快，請注意追高風險；若市場情緒轉冷或有較大機構資金撤離訊號，建議先減持部分獲利部位以控制回檔幅度。</div>
+<div class="news">
+  <div class="news-title-zh">達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 - 經濟日報<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 - 經濟日報</div>
+  <div class="news-summary">達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 16:52:46</span>
+    <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE5XdHk4eDhscUY4RHE1ZEV5QzROTnQ0N3gyZ3NHREpJQmRrdVRpRlBvVkVObENGOUp3T2tHdUdFMU5xSmc1YjVRR3JqWmxXRERWZGY3eWNoNVVBZ9IBX0FVX3lxTE85azRsXzZpazJGNmhqSkJYWk1xelJXcVFzM2VZeHJqek9UcjltckpiamVfMHQ1WEtTdGtNTnB1X0FsN2ZrdUxDZ01yelVzakl3dFh1MXhKcERpa3ZmeUc0?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 - 經濟日報
+原文標題：達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 - 經濟日報
+摘要：達明機器人接單報捷 導入母公司廣達在德國車電製造工廠 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWkFVX3lxTE5XdHk4eDhscUY4RHE1ZEV5QzROTnQ0N3gyZ3NHREpJQmRrdVRpRlBvVkVObENGOUp3T2tHdUdFMU5xSmc1YjVRR3JqWmxXRERWZGY3eWNoNVVBZ9IBX0FVX3lxTE85azRsXzZpazJGNmhqSkJYWk1xelJXcVFzM2VZeHJqek9UcjltckpiamVfMHQ1WEtTdGtNTnB1X0FsN2ZrdUxDZ01yelVzakl3dFh1MXhKcERpa3ZmeUc0?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 - 今周刊<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 - 今周刊</div>
+  <div class="news-summary">達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 今周刊</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 04:14:42</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxOQ2ZEMzRTeFBWcDY0dmNPZk91cU5mVzNURWt5SGR0V09PeUJOWDFHNUp6VlZQdjFCSDNlTnhrQ3o0YTVVdWJMY2pCdzY0ZENUMDR2azBmN1F4cG43NXVoSDhUMzdxanZtTllFa0FjaU5nWkdUMFdEM0ZWWWdubEpPVw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 - 今周刊
+原文標題：達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 - 今周刊
+摘要：達明、所羅門、羅昇…機器人概念股為什麼漲停？人形機器人商業化，這檔鴻海子公司也沾光 今周刊
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxOQ2ZEMzRTeFBWcDY0dmNPZk91cU5mVzNURWt5SGR0V09PeUJOWDFHNUp6VlZQdjFCSDNlTnhrQ3o0YTVVdWJMY2pCdzY0ZENUMDR2azBmN1F4cG43NXVoSDhUMzdxanZtTllFa0FjaU5nWkdUMFdEM0ZWWWdubEpPVw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 10 May 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE8tRElNRm1IOUNFUzhIcmtkTEoxRmNheGlmZGI2a2FkTHRNbzNLcjY4UWM5RFFaNDY5VzlEc1BTUnJaZ1NsSGl6dk1EN2F6R25Ea0IwM2FBMXc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 - CMoney
+原文標題：4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 - CMoney
+摘要：4585 達明 - 這隻認真漲起來會不會很可怕 - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE8tRElNRm1IOUNFUzhIcmtkTEoxRmNheGlmZGI2a2FkTHRNbzNLcjY4UWM5RFFaNDY5VzlEc1BTUnJaZ1NsSGl6dk1EN2F6R25Ea0IwM2FBMXc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">8033 — 雷虎科技 <span style="color:#8b96a3;font-size:13px">（無人機國防）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【雷虎科技 (8033) 個股操作策略】**
+
+**短期判斷：極度看漲。** 近期新聞集中於無人機預算議題發燒、法人持續買盤推升，且今日登上「注意股」顯示市場關注度極高，短線動能強勁，應持續追蹤後續消息帶動的進出場點。
+
+**中期關注：** 密切關注公司擴產及招募人力等實質營運進展，結合政府採購預算（如國防相關）是否有更明確的爆發性利多消息釋出。
+
+**操作建議：持續加碼。** 短期動能與題材熱度仍高，逢回檔測試關鍵支撐位時可分批加碼，鎖定產業景氣帶動的上漲趨勢。
+
+**風險提示：** 股價受新聞和市場情緒影響較大，若短期內無新消息刺激，注意獲利了結的賣壓可能出現，建議嚴格設定停損點。</div>
+<div class="news">
+  <div class="news-title-zh">又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 - Yahoo股市<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 - Yahoo股市</div>
+  <div class="news-summary">又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 23:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMipgNBVV95cUxQb29XREs0Umx5czhHWFZPUDBvZEhQY2xrWktBdDRaVHliczJZUEQ4T1ZtcTBGaklZWG1EMVhjLWFDTXVDRzl0c3hLY0g3UkxQMVZvZzNLTzVtYmJGMWNRa2NjZ2FxcG9wN2hhVU94THYwRzVzbXQ3MTlfR0NqUEx4bVA5TzFqUmpWaTJPUXp5M01qdFUwS09qNHJYSG5UcUxCXzUzWXNLaGRpTHByWk5vTVpIN2ctclRlVGU1eDc1WFJCRlE2YlpiMkJSeV9vTXNuUGM2ck9KVmltSkNLR3ZGNThQTXVFeWo3R09BMkx0anBQMzJxSEhQVXd5NkxkZmJadW4wc0d2SUllZTlJbl9KYWZLc0E4RVFiYXd5elhEalVXR0ZKZGNIcGtqcGFWWkRmSjdNaHgyZXc4UmU3RFdIYUdvSXBZemdUMmpuRzJwX2x1LTZ3NzBvZEVuMDU3b1lyV2g4VVNzZ0ZjX0hJOEU1UlhFVHAtQ1JQNEZ5eEZBRkdkMHhhRTFzdW1Lc21kNDZzSzdyU3hIZUFGSWdVaFREd3ZncEJuZw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 - Yahoo股市
+原文標題：又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 - Yahoo股市
+摘要：又有5檔飆股遭關禁閉！景碩、尖點二度列處置 雷虎首度入列、注意股一次看 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMipgNBVV95cUxQb29XREs0Umx5czhHWFZPUDBvZEhQY2xrWktBdDRaVHliczJZUEQ4T1ZtcTBGaklZWG1EMVhjLWFDTXVDRzl0c3hLY0g3UkxQMVZvZzNLTzVtYmJGMWNRa2NjZ2FxcG9wN2hhVU94THYwRzVzbXQ3MTlfR0NqUEx4bVA5TzFqUmpWaTJPUXp5M01qdFUwS09qNHJYSG5UcUxCXzUzWXNLaGRpTHByWk5vTVpIN2ctclRlVGU1eDc1WFJCRlE2YlpiMkJSeV9vTXNuUGM2ck9KVmltSkNLR3ZGNThQTXVFeWo3R09BMkx0anBQMzJxSEhQVXd5NkxkZmJadW4wc0d2SUllZTlJbl9KYWZLc0E4RVFiYXd5elhEalVXR0ZKZGNIcGtqcGFWWkRmSjdNaHgyZXc4UmU3RFdIYUdvSXBZemdUMmpuRzJwX2x1LTZ3NzBvZEVuMDU3b1lyV2g4VVNzZ0ZjX0hJOEU1UlhFVHAtQ1JQNEZ5eEZBRkdkMHhhRTFzdW1Lc21kNDZzSzdyU3hIZUFGSWdVaFREd3ZncEJuZw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">8033 雷虎- 招人、擴產- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 8033 雷虎- 招人、擴產- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">8033 雷虎- 招人、擴產- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 03:22:43</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTFBocmozd0p6bW1vNXl4b1ZidmtnRzc1NGdNV3FoNGNuSXZzLUpIcnNhNnV5c1N3OEZ6bnpscWZMSXpkM1VjTzRUeE1pYjhWcmJjdU5UazNjMXE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：8033 雷虎- 招人、擴產- 股市爆料同學會 - CMoney
+原文標題：8033 雷虎- 招人、擴產- 股市爆料同學會 - CMoney
+摘要：8033 雷虎- 招人、擴產- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTFBocmozd0p6bW1vNXl4b1ZidmtnRzc1NGdNV3FoNGNuSXZzLUpIcnNhNnV5c1N3OEZ6bnpscWZMSXpkM1VjTzRUeE1pYjhWcmJjdU5UazNjMXE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 - 經濟日報<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 - 經濟日報</div>
+  <div class="news-summary">雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 17:19:50</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9BV01OWm9aX2RvaFZ1enJaZUw4dTNTN21ldDZiRDJpSUE4a0NnR0ZDdHRoMXFONlp4RDZPRFI0SHVIaE5VbjdLNVJGd3dXdXpUVURZOC1QZDRZUHZFeFdV0gFfQVVfeXFMT0FXTU5ab1pfZG9oVnV6clplTDh1M1M3bWV0NmJEMmlJQThrQ2dHRkN0dGgxcU42WnhENk9EUjRIdUhoTlVuN0s1UkZ3d1d1elRVRFk4LVBkNFlQdkV4V1U?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 - 經濟日報
+原文標題：雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 - 經濟日報
+摘要：雷虎受惠無人機預算邁步 議題發燒法人大買 股價創新高 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE9BV01OWm9aX2RvaFZ1enJaZUw4dTNTN21ldDZiRDJpSUE4a0NnR0ZDdHRoMXFONlp4RDZPRFI0SHVIaE5VbjdLNVJGd3dXdXpUVURZOC1QZDRZUHZFeFdV0gFfQVVfeXFMT0FXTU5ab1pfZG9oVnV6clplTDh1M1M3bWV0NmJEMmlJQThrQ2dHRkN0dGgxcU42WnhENk9EUjRIdUhoTlVuN0s1UkZ3d1d1elRVRFk4LVBkNFlQdkV4V1U?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">0050 — 元大台灣50 <span style="color:#8b96a3;font-size:13px">（ETF）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 操作策略</div>**【川普投顧 VIP 會員專屬分析】元大台灣50 (0050) 短中線策略指引**
+
+**短線判斷：觀望偏空。** 鑑於近期報酬率飆升過快，短期獲利了結壓力極大，技術面需觀察關鍵支撐區能否守住動能。
+**中線關注事件：** 核心關注點應轉向「配息政策的穩定性」而非單純追逐高報酬率。請密切留意未來是否有調整權重或發行新產品的訊號。
+**具體操作建議：** **觀望，待回檔至關鍵支撐區（例如近期低點或均線支撐）再分批佈局。** 操作邏輯是利用過熱後的修正機會，而非追高風險。
+**風險提示：** 鑑於配息預期調整幅度大（如新聞所述），單純以「配息」作為核心投資判準的策略應謹慎，建議回歸檢視成分股的實質營運獲利能力。</div>
+<div class="news">
+  <div class="news-title-zh">0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 - UDN<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 - UDN</div>
+  <div class="news-summary">0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 UDN</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 00:01:26</span>
+    <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE0zLTN5eTBkS0FxcUJzRzVkbkprWkVzeEhPZGNWT3gyNlpuNjAtUTAzclhtNUN4YldPZlNKdVhsdFg4dWFhREdSOUpkcUtyaHRFS0ZF?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 - UDN
+原文標題：0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 - UDN
+摘要：0050預計配息0.6元「比上期大減4成」這才是好事！看懂54C與資本利得差異| 存股族愛ETF | 股市 UDN
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiU0FVX3lxTE0zLTN5eTBkS0FxcUJzRzVkbkprWkVzeEhPZGNWT3gyNlpuNjAtUTAzclhtNUN4YldPZlNKdVhsdFg4dWFhREdSOUpkcUtyaHRFS0ZF?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 - 東森新聞<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 - 東森新聞</div>
+  <div class="news-summary">同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 東森新聞</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 11:25:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiV0FVX3lxTE04bXRoWEJKa0JsaEdQTkdpMFJsMEN6TVNuZnVwUEc1UlRQTndMUW9wcS1ZXzRBS0w2VWdrbTN0YjNVeThHUlA0VXRGNXV2N0tjemE3RGV0Yw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 - 東森新聞
+原文標題：同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 - 東森新聞
+摘要：同樣追蹤台灣50指數！ 006208與0050配息差距大 他揭關鍵：這4點更重要 東森新聞
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiV0FVX3lxTE04bXRoWEJKa0JsaEdQTkdpMFJsMEN6TVNuZnVwUEc1UlRQTndMUW9wcS1ZXzRBS0w2VWdrbTN0YjNVeThHUlA0VXRGNXV2N0tjemE3RGV0Yw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 - Yahoo股市<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 - Yahoo股市</div>
+  <div class="news-summary">0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 04:45:54</span>
+    <a href="https://news.google.com/rss/articles/CBMi_gJBVV95cUxNQ25nRTZOVHhUT0hjMkxyQ3lMXzBySDBZYS01TUxwRlZfRzBNNnkySi1tMmlSeHM0OENOWDdMNFFMWXVQbGZmbUJTNFVfajhwTURlZWFWTXRxUU5OckxZTXlFOU5TYWZrSGxENGRGYTZRQ0hsc3FfdEFFZUNBSURHWnczMGwteFVvdFREaDBhZjduLXJHUjM1OF9LSzliT3Q0d2V0SlNlY0NxQTJOVklyYmMzekxVOW5QakNVZVktYlVFbi05TlQ4aTdBdElBOEZGOGlDVXUzMDEwelMwM1ZTa1MwNll1N3kzSU9ZaXlyZlFxTDYwN2tXbHJRR3hqUlU0RHI0bThuLVU4TWdudHpTbmVmMFYxQ0huNWtOcjB4WTVVenpCQ2tQR0ZQN0VCdkZHMTVlNHo4MUlZdTRUTkdhWTZ3NjM4MkJxNFQ3WlQ1WFZuWWZLQm9SeUJJOVJyLU83UGROWFVuMjNsUGxDUDViVFJab0xVOVZNbTBqMWZ3?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 - Yahoo股市
+原文標題：0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 - Yahoo股市
+摘要：0050正2報酬率飆破200%！他想長抱卻擔心「價值耗損」 網掀兩派熱議 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi_gJBVV95cUxNQ25nRTZOVHhUT0hjMkxyQ3lMXzBySDBZYS01TUxwRlZfRzBNNnkySi1tMmlSeHM0OENOWDdMNFFMWXVQbGZmbUJTNFVfajhwTURlZWFWTXRxUU5OckxZTXlFOU5TYWZrSGxENGRGYTZRQ0hsc3FfdEFFZUNBSURHWnczMGwteFVvdFREaDBhZjduLXJHUjM1OF9LSzliT3Q0d2V0SlNlY0NxQTJOVklyYmMzekxVOW5QakNVZVktYlVFbi05TlQ4aTdBdElBOEZGOGlDVXUzMDEwelMwM1ZTa1MwNll1N3kzSU9ZaXlyZlFxTDYwN2tXbHJRR3hqUlU0RHI0bThuLVU4TWdudHpTbmVmMFYxQ0huNWtOcjB4WTVVenpCQ2tQR0ZQN0VCdkZHMTVlNHo4MUlZdTRUTkdhWTZ3NjM4MkJxNFQ3WlQ1WFZuWWZLQm9SeUJJOVJyLU83UGROWFVuMjNsUGxDUDViVFJab0xVOVZNbTBqMWZ3?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2454 — 聯發科 <span style="color:#8b96a3;font-size:13px">（AI晶片）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw</div>
+  <div class="news-summary">AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 sinotrade.com.tw</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 05:47:17</span>
+    <a href="https://news.google.com/rss/articles/CBMingNBVV95cUxNX19YbXVySG1iREUyWU54dG5ZY1lwOHBuckJKRTd5TTRKR2hsa21yczZONkJ5d1UwQ3lDRDVDR0daVXdfeDlxRnF6T1cyNXJvMXpHYWw0bE5wV1dVTXZaQ09BdC1KMlk2NVR2eHhXekY0VDB1ZmQtUHNEekVValk1R1laSjdKM29DSzhpS21fVEtIZVpjWGhqYk1pbjQ5cV9YLU1mdnNGN2xQRjRiYzM2MVpzSXRaNDBTeE1YN2pMMlZFM0ltOVZYTXRCRVVHcXR4d2dzekMzSU1VUU9qVzNhS25mbGFYeUhWcXpfaEdMbTJwSHBCSUdMV1ZSU185SUdGc0xNb2dGa0ZXM0tRWmVFT3AwbzZBdFhEMVM2a1M5aW1sMFltOTFwVDBjS1YwLW5RaGNkOHFFbkthdElONjZMbnNBS2pmOU5uc0FidnYwd3NzdWpJVmZ0alZtRXRQbGpHTnVvVno3YWZoczVnbEVuM2FVZVp1d293QTRIZkFLclVpSjZnNzZQOVhKODc4cDdTdk9lZUxMdTh0UEZ4V0E?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw
+原文標題：AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 - sinotrade.com.tw
+摘要：AI ASIC 業務爆發，聯發科（2454）獲外資上調目標價至1 萬元｜股市話題｜豐雲學堂2026 年 07 月 sinotrade.com.tw
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMingNBVV95cUxNX19YbXVySG1iREUyWU54dG5ZY1lwOHBuckJKRTd5TTRKR2hsa21yczZONkJ5d1UwQ3lDRDVDR0daVXdfeDlxRnF6T1cyNXJvMXpHYWw0bE5wV1dVTXZaQ09BdC1KMlk2NVR2eHhXekY0VDB1ZmQtUHNEekVValk1R1laSjdKM29DSzhpS21fVEtIZVpjWGhqYk1pbjQ5cV9YLU1mdnNGN2xQRjRiYzM2MVpzSXRaNDBTeE1YN2pMMlZFM0ltOVZYTXRCRVVHcXR4d2dzekMzSU1VUU9qVzNhS25mbGFYeUhWcXpfaEdMbTJwSHBCSUdMV1ZSU185SUdGc0xNb2dGa0ZXM0tRWmVFT3AwbzZBdFhEMVM2a1M5aW1sMFltOTFwVDBjS1YwLW5RaGNkOHFFbkthdElONjZMbnNBS2pmOU5uc0FidnYwd3NzdWpJVmZ0alZtRXRQbGpHTnVvVno3YWZoczVnbEVuM2FVZVp1d293QTRIZkFLclVpSjZnNzZQOVhKODc4cDdTdk9lZUxMdTh0UEZ4V0E?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 - CMoney投資網誌</div>
+  <div class="news-summary">聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 08:55:11</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPd0w3Z19FLU1ucHBla19RMHJIMGVaUDUxdl96blE1TmZCWUo0UXNjMmxaMVhGd2dmSGY2S3psQllEYlY2d3BLS1NMOUlPMXNlbUFydFpDeHlFV2NOa3dFakRodi1OVDZVd3B2cGE5UFA3ZVM0YUFDaW51OVVPYkQ1aQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 - CMoney投資網誌
+原文標題：聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 - CMoney投資網誌
+摘要：聯發科(2454)不只看出貨量，AI 會把高階產品占比推到哪裡？-陳柏宇 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxPd0w3Z19FLU1ucHBla19RMHJIMGVaUDUxdl96blE1TmZCWUo0UXNjMmxaMVhGd2dmSGY2S3psQllEYlY2d3BLS1NMOUlPMXNlbUFydFpDeHlFV2NOa3dFakRodi1OVDZVd3B2cGE5UFA3ZVM0YUFDaW51OVVPYkQ1aQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 - UDN<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 - UDN</div>
+  <div class="news-summary">聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 UDN</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 03:36:37</span>
+    <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE0zWE8weFc4eGFQNWtSSWExYkJNdDZlV2NMcURhSVpxVUN0NFlOS2kxNFdya05NaU4xYnFMa2I3ZHYyMmdTTnh6aXBWZzBlQlN1bkE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 - UDN
+原文標題：聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 - UDN
+摘要：聯發科（2454）外資目標價喊到1萬元！估2028年EPS達285.6元…股添樂：貴的只會更貴| 台股雜談| 股市 UDN
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiUkFVX3lxTE0zWE8weFc4eGFQNWtSSWExYkJNdDZlV2NMcURhSVpxVUN0NFlOS2kxNFdya05NaU4xYnFMa2I3ZHYyMmdTTnh6aXBWZzBlQlN1bkE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2317 — 鴻海 <span style="color:#8b96a3;font-size:13px">（AI伺服器）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 - Yahoo股市</div>
+  <div class="news-summary">鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 02:15:46</span>
+    <a href="https://news.google.com/rss/articles/CBMilgNBVV95cUxPb1dYN01FUTJpTWw0ZVEwdy0zU3VjSmpmczZoQVpwM2R1T1lpOUw3cTRYWUNuRXlyWi1qbjNURFRPMFFXeHZjX0gtOTRldU9oNEZpRTlQNWxOV2dOSF9Kd1VJZHgybERIejVrWm4yRzFtaVA2NzRBaURrc1NHTlZLMDhnZldUcmhDcHlpU1lOa1RzUjNqUlFWSk1CRkp3emczX3ZGcFlnVmI3V21nN2dqMElQVWdLelo2Ymk4WFo1aHlIN3NtR1Vwa0w3ZTFWQ2hkOVgzbF9WbW1aT2ZFaHpMUzNHYTM5azB2R094dUlCWTZ4NmFrMUtsSmFKbVBoanFzSGRhdGRRM3VmWjNhdGJtR2NZdEsyTnk1alk4QmR2d2lScnBCaW1vVmstZUotSlduVGN2bjFlenppMEFiZTRjRGZNU2YxaGVsNTlqOGQ4SDFPMFFldktIYXFjTmNmZHJ3alNsNDljMHFpTEVXV2xDVERPcWhTYTBMSllsRkh5MjZfUjl0bDZ2eENHTnlCWkgtVHN5UDF3?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 - Yahoo股市
+原文標題：鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 - Yahoo股市
+摘要：鴻海除息「史上最高」7.2元來了！早盤填息近一成後翻黑震盪 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMilgNBVV95cUxPb1dYN01FUTJpTWw0ZVEwdy0zU3VjSmpmczZoQVpwM2R1T1lpOUw3cTRYWUNuRXlyWi1qbjNURFRPMFFXeHZjX0gtOTRldU9oNEZpRTlQNWxOV2dOSF9Kd1VJZHgybERIejVrWm4yRzFtaVA2NzRBaURrc1NHTlZLMDhnZldUcmhDcHlpU1lOa1RzUjNqUlFWSk1CRkp3emczX3ZGcFlnVmI3V21nN2dqMElQVWdLelo2Ymk4WFo1aHlIN3NtR1Vwa0w3ZTFWQ2hkOVgzbF9WbW1aT2ZFaHpMUzNHYTM5azB2R094dUlCWTZ4NmFrMUtsSmFKbVBoanFzSGRhdGRRM3VmWjNhdGJtR2NZdEsyTnk1alk4QmR2d2lScnBCaW1vVmstZUotSlduVGN2bjFlenppMEFiZTRjRGZNU2YxaGVsNTlqOGQ4SDFPMFFldktIYXFjTmNmZHJ3alNsNDljMHFpTEVXV2xDVERPcWhTYTBMSllsRkh5MjZfUjl0bDZ2eENHTnlCWkgtVHN5UDF3?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 09:19:44</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTFBjQ2tLN0xTSjMySXc5RUtvUFlsWlpOSWJ6VUg2bGphZlVkYnEwLWRXME1CQklrX3A4Vm80VU5iaVJicmxTdVlxMl9FMnZJNVNEWFIteWpScHo?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 - CMoney
+原文標題：2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 - CMoney
+摘要：2317 鴻海 - 鴻海本週股東人數變化及外資籌碼均價分析2026.7.4 - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTFBjQ2tLN0xTSjMySXc5RUtvUFlsWlpOSWJ6VUg2bGphZlVkYnEwLWRXME1CQklrX3A4Vm80VU5iaVJicmxTdVlxMl9FMnZJNVNEWFIteWpScHo?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 - CMoney投資網誌</div>
+  <div class="news-summary">鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 11:37:12</span>
+    <a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxNWUtGLUVsTDRFTjRJSmtBNWQzWTB0U1c0Q01CVXREQkRPSlNKVXNJT1pObEM2Z19MWjRJd1RSbWtpRllldGk2emt4QlpnTlR5VFgwRHhjalQxYkk3WGlBUDVKbkUwSWJ1ZzZKR1pFQVlwdWtsd0p4Zm54ZTRBTzY1X2tJQQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 - CMoney投資網誌
+原文標題：鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 - CMoney投資網誌
+摘要：鴻海(2317)AI伺服器開始驗證，真正要看的是訂單能見度能走多遠-王澤明 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigwFBVV95cUxNWUtGLUVsTDRFTjRJSmtBNWQzWTB0U1c0Q01CVXREQkRPSlNKVXNJT1pObEM2Z19MWjRJd1RSbWtpRllldGk2emt4QlpnTlR5VFgwRHhjalQxYkk3WGlBUDVKbkUwSWJ1ZzZKR1pFQVlwdWtsd0p4Zm54ZTRBTzY1X2tJQQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">3034 — 聯詠 <span style="color:#8b96a3;font-size:13px">（IC設計）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 10:53:17</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTFBQUDZhcmo4TmdRUUk5MFNKS294RnJiOUJQeUNkMmhaMFZ6c2FMbzU2b3QzVTB3dWFMeWJ6amtiMHoxN0JfUGpFVkNuRUg4WGMzMUw1ZC1td2s?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 - CMoney
+原文標題：3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 - CMoney
+摘要：3034 聯詠- 🚨 主力加碼卡位？昨日主動式ETF 加碼這檔！ - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTFBQUDZhcmo4TmdRUUk5MFNKS294RnJiOUJQeUNkMmhaMFZ6c2FMbzU2b3QzVTB3dWFMeWJ6amtiMHoxN0JfUGpFVkNuRUg4WGMzMUw1ZC1td2s?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 - sinotrade.com.tw<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 - sinotrade.com.tw</div>
+  <div class="news-summary">Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 sinotrade.com.tw</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 15 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE5DUlhtX183THlFRDRGOFZ1c1h5a1hNXzlhYk8zckVNMlVWazNpNXZ2QXFLRThWLURMcXZvanJpOGJheU40VlFwdTFQNzhoNVJtNWRIam9mcHNOaXE5NHU3V21NMWV1OTk2QjhYbnpNMktqVm9HU1E?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 - sinotrade.com.tw
+原文標題：Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 - sinotrade.com.tw
+摘要：Factset 最新調查：聯詠(3034-TW)EPS預估下修至29.64元，預估目標價為470元｜新聞快訊｜豐雲學堂 sinotrade.com.tw
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMidkFVX3lxTE5DUlhtX183THlFRDRGOFZ1c1h5a1hNXzlhYk8zckVNMlVWazNpNXZ2QXFLRThWLURMcXZvanJpOGJheU40VlFwdTFQNzhoNVJtNWRIam9mcHNOaXE5NHU3V21NMWV1OTk2QjhYbnpNMktqVm9HU1E?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 - 富果直送<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 - 富果直送</div>
+  <div class="news-summary">【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 富果直送</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 07 May 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTE90RUtIcmNHNkdnMzJ3b01qREExWEdHQ01wTFk0WVFzVkFweDc5MmVlOEV0RmRHazgyQTIxRzFoblRHb0pCakZUNTVjWXpHeGt6eXVNMERSdmc1RnJiOVJwdVNwQlFlOFU?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 - 富果直送
+原文標題：【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 - 富果直送
+摘要：【聯詠法說會重點內容備忘錄】未來展望趨勢 20260507 富果直送
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiZ0FVX3lxTE90RUtIcmNHNkdnMzJ3b01qREExWEdHQ01wTFk0WVFzVkFweDc5MmVlOEV0RmRHazgyQTIxRzFoblRHb0pCakZUNTVjWXpHeGt6eXVNMERSdmc1RnJiOVJwdVNwQlFlOFU?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2382 — 廣達 <span style="color:#8b96a3;font-size:13px">（AI伺服器）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 - Yahoo股市<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 - Yahoo股市</div>
+  <div class="news-summary">最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 25 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMi6AJBVV95cUxQRHFSdkotRkNNZzVsdDdZSFA2Ukc5WF9GNHMxc3ZhMGZUOUREdlFBdHctY3g2c0hkMEpRTkV0Rm85MUstYi0xSlNndkdaR1JNM2JxVUc2cWFZWTRDclZCdGJNLVpPLUNmMHY3SGtaWi1hcWwxcTQ2U2ZuYzlLX1pBMVVySzl2SExFQVpZVWJnWHJYeFRIVG1XVWUwLUtIV3VIVUFtc1dnUUduZWdhWnJvUGQ3ZEZYbXhybDhIMVFRaGlBVVRxNHF3d21aUDN5S3hMT1p1ei12b0F3eEVqWHFSMEd0UXJOdzRvTGI2aWx6WGU1a3hQTkxobVdUYWdzUDQ0b044MFlQODVlR2hGc056dmhSSXdWeVRmM0tNQnlEaElNb3Q3TWJZTEtvRGpSWkd1ZVFsdDFtSktfYTdDVWdCdXl1VkMzQldmRWZldFZqbHZCNnU0YWFSd1Vpd1hlZkdiMU0tMmluWjY?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 - Yahoo股市
+原文標題：最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 - Yahoo股市
+摘要：最抗跌老AI股？廣達一度逆風翻紅漲逾1% 分析師揭關鍵 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi6AJBVV95cUxQRHFSdkotRkNNZzVsdDdZSFA2Ukc5WF9GNHMxc3ZhMGZUOUREdlFBdHctY3g2c0hkMEpRTkV0Rm85MUstYi0xSlNndkdaR1JNM2JxVUc2cWFZWTRDclZCdGJNLVpPLUNmMHY3SGtaWi1hcWwxcTQ2U2ZuYzlLX1pBMVVySzl2SExFQVpZVWJnWHJYeFRIVG1XVWUwLUtIV3VIVUFtc1dnUUduZWdhWnJvUGQ3ZEZYbXhybDhIMVFRaGlBVVRxNHF3d21aUDN5S3hMT1p1ei12b0F3eEVqWHFSMEd0UXJOdzRvTGI2aWx6WGU1a3hQTkxobVdUYWdzUDQ0b044MFlQODVlR2hGc056dmhSSXdWeVRmM0tNQnlEaElNb3Q3TWJZTEtvRGpSWkd1ZVFsdDFtSktfYTdDVWdCdXl1VkMzQldmRWZldFZqbHZCNnU0YWFSd1Vpd1hlZkdiMU0tMmluWjY?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 - 今周刊<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 - 今周刊</div>
+  <div class="news-summary">鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 今周刊</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 18 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPRTRmMWZjbDNnTG1rTUFQdmNNVUFrX01GdFZyVzJtVFFUanFVS2ZvalF1X0Y4U2lNN3lWTnY3cDExUW56dE5mbW9ELW1FbmJXUF9VSGZKY09lSkp4T2JzalBsYTRLTzk1TmZjMFl3MHlTMC1HUk9WMnVFRDVsckRfcg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 - 今周刊
+原文標題：鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 - 今周刊
+摘要：鴻海(2317)、廣達(2382)、緯創(3231)...跟著老AI衝下一波？台股創新高卻暗藏2大隱憂：9檔避風好股出列 今周刊
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxPRTRmMWZjbDNnTG1rTUFQdmNNVUFrX01GdFZyVzJtVFFUanFVS2ZvalF1X0Y4U2lNN3lWTnY3cDExUW56dE5mbW9ELW1FbmJXUF9VSGZKY09lSkp4T2JzalBsYTRLTzk1TmZjMFl3MHlTMC1HUk9WMnVFRDVsckRfcg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 06:23:19</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE0xRkxFS0hHZVVVLUk1ZUVGdW9MQS1VaTlqS05ySW9nS1l1MUoxR0pHcDZVS0ZJNEU0X1F0bl92V2tVLTJPMExNc3NsQk1TR3ZkWTItTW04blY?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 - CMoney
+原文標題：2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 - CMoney
+摘要：2382 廣達 - 請問 廣達除息日？何匯至戶頭？ - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE0xRkxFS0hHZVVVLUk1ZUVGdW9MQS1VaTlqS05ySW9nS1l1MUoxR0pHcDZVS0ZJNEU0X1F0bl92V2tVLTJPMExNc3NsQk1TR3ZkWTItTW04blY?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2376 — 技嘉 <span style="color:#8b96a3;font-size:13px">（AI伺服器）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">技嘉(2376) 個股概覽 | 個股 - 股市 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 技嘉(2376) 個股概覽 | 個股 - 股市 - CMoney</div>
+  <div class="news-summary">技嘉(2376) 個股概覽 | 個股 - 股市 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 03:43:11</span>
+    <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE43X3lrd24yekJHNkFKNGNQTTRkSDR4Y0pHaUVKYmhEVmZMTHdMeE9xelVoUWdfZy05Z3k1UDNNYWNmakpnV0lDNjlmYTdNdHZvcExB?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：技嘉(2376) 個股概覽 | 個股 - 股市 - CMoney
+原文標題：技嘉(2376) 個股概覽 | 個股 - 股市 - CMoney
+摘要：技嘉(2376) 個股概覽 | 個股 - 股市 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiU0FVX3lxTE43X3lrd24yekJHNkFKNGNQTTRkSDR4Y0pHaUVKYmhEVmZMTHdMeE9xelVoUWdfZy05Z3k1UDNNYWNmakpnV0lDNjlmYTdNdHZvcExB?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">技嘉股東會》董座葉培城為股價抱屈：本益比被低估 - Yahoo股市<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 技嘉股東會》董座葉培城為股價抱屈：本益比被低估 - Yahoo股市</div>
+  <div class="news-summary">技嘉股東會》董座葉培城為股價抱屈：本益比被低估 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 08 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMi7wJBVV95cUxOcWpBS01Vc293ZFExalNQODZ6cnBiRnJXdldwdVNOc0xMTkhLeGV2LTdzTXdJRkgycWx0VjlpUjJqQ2hHQnN3aFBoYTg2VnFKRERaZzlBbmh2YWFVY2QtMTFwTGxVTGwyMDRRdmdDa21SdEtuUzkxQk9zODdLZmdpVlNCX3BScG1sNnVHbWRxS0RNZUdXNThYalVCUWZKbUh6OHBxTk5MRUJQbDFzTUNHSTRuQmoxTm8wMVJkNVFOcHN6RHBDSjU4ajJ4WktMaXNPZldUZm5PR3JwZm9kdlZpMklxR3ZwSWxRRnBBSHFKYXFFVklHTkVFZXlPLVZsbi1jZDhaWlRTRmhSa0RsbXgwdnRmU0JsYnlsZTRza21FRWlKOGM0YzU3bklPczVORHdMXzkzaDd2dVRlczVoNkl0bHZ1VXZCUkVqQS1DSzFiRy1sM3NfZ3NyMmc0dVUybGVteU1LNnJySEhpeHBNUVFN?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：技嘉股東會》董座葉培城為股價抱屈：本益比被低估 - Yahoo股市
+原文標題：技嘉股東會》董座葉培城為股價抱屈：本益比被低估 - Yahoo股市
+摘要：技嘉股東會》董座葉培城為股價抱屈：本益比被低估 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi7wJBVV95cUxOcWpBS01Vc293ZFExalNQODZ6cnBiRnJXdldwdVNOc0xMTkhLeGV2LTdzTXdJRkgycWx0VjlpUjJqQ2hHQnN3aFBoYTg2VnFKRERaZzlBbmh2YWFVY2QtMTFwTGxVTGwyMDRRdmdDa21SdEtuUzkxQk9zODdLZmdpVlNCX3BScG1sNnVHbWRxS0RNZUdXNThYalVCUWZKbUh6OHBxTk5MRUJQbDFzTUNHSTRuQmoxTm8wMVJkNVFOcHN6RHBDSjU4ajJ4WktMaXNPZldUZm5PR3JwZm9kdlZpMklxR3ZwSWxRRnBBSHFKYXFFVklHTkVFZXlPLVZsbi1jZDhaWlRTRmhSa0RsbXgwdnRmU0JsYnlsZTRza21FRWlKOGM0YzU3bklPczVORHdMXzkzaDd2dVRlczVoNkl0bHZ1VXZCUkVqQS1DSzFiRy1sM3NfZ3NyMmc0dVUybGVteU1LNnJySEhpeHBNUVFN?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 - 自由財經<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 - 自由財經</div>
+  <div class="news-summary">技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 自由財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 12:18:16</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFA3RTQwRkVSdHR1YWkyWkctWVhjWEFFNFV0SGF2amRCTV84by1UOFpROElRXzRSbmpZV3hZR19IblB2VnhaNlpJV3dwV0FSd3htSk1WcG9PUVkwN1lWNUE40gFkQVVfeXFMUEJGc2ViNkNsb01xT1lha0I5RGZfdHZhUTJlOHY4dEZMcFZQYmItVlo1Sl9tRlJmOXY5bkZrVDRfbjJ4R3MyZ19LVXB5NFBkWmtJRUktYU9GNlp6ZHIyYzZJZlZBWA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 - 自由財經
+原文標題：技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 - 自由財經
+摘要：技嘉打入量子HPC供應鏈 助攻日本超級電腦啟用 自由財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTFA3RTQwRkVSdHR1YWkyWkctWVhjWEFFNFV0SGF2amRCTV84by1UOFpROElRXzRSbmpZV3hZR19IblB2VnhaNlpJV3dwV0FSd3htSk1WcG9PUVkwN1lWNUE40gFkQVVfeXFMUEJGc2ViNkNsb01xT1lha0I5RGZfdHZhUTJlOHY4dEZMcFZQYmItVlo1Sl9tRlJmOXY5bkZrVDRfbjJ4R3MyZ19LVXB5NFBkWmtJRUktYU9GNlp6ZHIyYzZJZlZBWA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">3231 — 緯創 <span style="color:#8b96a3;font-size:13px">（AI伺服器）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">3231 緯創- 被借券賣到變注意股- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 3231 緯創- 被借券賣到變注意股- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">3231 緯創- 被借券賣到變注意股- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 10:41:03</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTFBlYzcyTDItMjZpRDAyY0Q5M1hwc0o0YTBMOEgzeDhoZnFQV1diTkF3cmNWU0pqR29XQU5RQXZwbnlJVzcxVkFCYnAweW5fWkJ2eFROUzRrTkE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：3231 緯創- 被借券賣到變注意股- 股市爆料同學會 - CMoney
+原文標題：3231 緯創- 被借券賣到變注意股- 股市爆料同學會 - CMoney
+摘要：3231 緯創- 被借券賣到變注意股- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTFBlYzcyTDItMjZpRDAyY0Q5M1hwc0o0YTBMOEgzeDhoZnFQV1diTkF3cmNWU0pqR29XQU5RQXZwbnlJVzcxVkFCYnAweW5fWkJ2eFROUzRrTkE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 - CMoney投資網誌</div>
+  <div class="news-summary">緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 09:02:33</span>
+    <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTE1idGN3dU16MHE3TUtOR3BSNXBkZXh1VURZb1hTQXFmSHVUcWg2NnJUblY2eVNBQ2ZyaVJ1Zy14UTU2Uzg2S1VRenE5Q05iSlZFWl9QcUNJRm5oVklTYWJ5N3d1YTNxTUtfR0ZEQXN0b094ODMxRHViLWE4VXM?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 - CMoney投資網誌
+原文標題：緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 - CMoney投資網誌
+摘要：緯創(3231) Q2獲利創歷史新高，GB300、Vera Rubin接力放量！-小資女艾蜜莉 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMifEFVX3lxTE1idGN3dU16MHE3TUtOR3BSNXBkZXh1VURZb1hTQXFmSHVUcWg2NnJUblY2eVNBQ2ZyaVJ1Zy14UTU2Uzg2S1VRenE5Q05iSlZFWl9QcUNJRm5oVklTYWJ5N3d1YTNxTUtfR0ZEQXN0b094ODMxRHViLWE4VXM?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 - Yahoo股市<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 - Yahoo股市</div>
+  <div class="news-summary">電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 22 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiigNBVV95cUxNTjZCYnZlenhVUW1TcXFCVW9rN0liSEdUREpvSUJNM0l3TG4xLWtvN0NDeWgyNDZYSlUwc2Z5MHhHT19TTWxqdGctQVd1bm1JMFlDeTRpakh2MWpvTFktZE11YXoyTS1yRHpMaDgwd1pydElLVmhHSnZDTHdwMmRaal8ydS1SRzg5RWVSU29LdmtRZFJZTmQtNFVKeGlTVGk4QWx4MDJySFQ5TDhqazJzRk01ZVhienpRX1ZaYXA2ZGFMako0UUtsTjQ4YjN2UElSeGRDaWNXdXZMTmx6bXlxTTg0dVladEtsV2JWVjY5M1gxdWszX0pVbU1GM3VEZXpUSWNCYU52QzVQRE1iUnRJWWs3M19IZmpEZEw4TVhPMFhKcnZzc2pZNDdpUWptb2J0T2Mzai1fdVZtcEltWkhPT1lHenJTb2FzUlJUekM2MldTZERFWWxqNUtZdW16djJ6NXE4clBpcjdhcnlkSDJOVi1yZUl4dXhkQ2xaRTZxVS1lZ1VSUzRYdDdn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 - Yahoo股市
+原文標題：電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 - Yahoo股市
+摘要：電子五哥齊翻黑！廣達緯創英業達跌逾2% 分析師揭轉強條件 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiigNBVV95cUxNTjZCYnZlenhVUW1TcXFCVW9rN0liSEdUREpvSUJNM0l3TG4xLWtvN0NDeWgyNDZYSlUwc2Z5MHhHT19TTWxqdGctQVd1bm1JMFlDeTRpakh2MWpvTFktZE11YXoyTS1yRHpMaDgwd1pydElLVmhHSnZDTHdwMmRaal8ydS1SRzg5RWVSU29LdmtRZFJZTmQtNFVKeGlTVGk4QWx4MDJySFQ5TDhqazJzRk01ZVhienpRX1ZaYXA2ZGFMako0UUtsTjQ4YjN2UElSeGRDaWNXdXZMTmx6bXlxTTg0dVladEtsV2JWVjY5M1gxdWszX0pVbU1GM3VEZXpUSWNCYU52QzVQRE1iUnRJWWs3M19IZmpEZEw4TVhPMFhKcnZzc2pZNDdpUWptb2J0T2Mzai1fdVZtcEltWkhPT1lHenJTb2FzUlJUekM2MldTZERFWWxqNUtZdW16djJ6NXE4clBpcjdhcnlkSDJOVi1yZUl4dXhkQ2xaRTZxVS1lZ1VSUzRYdDdn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">3661 — 世芯-KY <span style="color:#8b96a3;font-size:13px">（ASIC）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 - CMoney<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 - CMoney</div>
+  <div class="news-summary">【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 10:50:03</span>
+    <a href="https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBwQktocF9pbDRSNklnemxNaEJSR3laeFJyakl5SVJ3M0NXNk9rYzZOaHhtTEVlOEFMcXptYXpBLTJnZDkwWjN3XzJfdk5pTEdSUHBOVlNPdmRKQzdSV3JEM2hyU0NqTFk?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 - CMoney
+原文標題：【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 - CMoney
+摘要：【07/03券商評等報告彙整】世芯-KY(3661) 今日僅1家券商發布績效評等報告，評價為看多，目標價為6,110元。 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBwQktocF9pbDRSNklnemxNaEJSR3laeFJyakl5SVJ3M0NXNk9rYzZOaHhtTEVlOEFMcXptYXpBLTJnZDkwWjN3XzJfdk5pTEdSUHBOVlNPdmRKQzdSV3JEM2hyU0NqTFk?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">世芯案未完又爆榮成？金管會要求國泰投信全面清查 - 經濟日報<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 世芯案未完又爆榮成？金管會要求國泰投信全面清查 - 經濟日報</div>
+  <div class="news-summary">世芯案未完又爆榮成？金管會要求國泰投信全面清查 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 09:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9KbWdxeVJlcDNDektpVW5IM2M1anpvc09PMWFwQWZXU1h2aXBINUF4a0l4QUl4NEVncmlMVHV3V3FmSEM3SDViTGd4MXJ2eGlLQ240emtEV2Vzd9IBX0FVX3lxTE5Edl9HOHVJajdLR1k3Y01LQ3l6Q2NJTEdpV25fQjBVMElrRUZZT0t0VHY4RTlRUDJWTmpwd3dIUjVqQjBBdGRWbDNiNXVaejdCZ2lWSDdIZFp5NEJRcjZj?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：世芯案未完又爆榮成？金管會要求國泰投信全面清查 - 經濟日報
+原文標題：世芯案未完又爆榮成？金管會要求國泰投信全面清查 - 經濟日報
+摘要：世芯案未完又爆榮成？金管會要求國泰投信全面清查 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWkFVX3lxTE9KbWdxeVJlcDNDektpVW5IM2M1anpvc09PMWFwQWZXU1h2aXBINUF4a0l4QUl4NEVncmlMVHV3V3FmSEM3SDViTGd4MXJ2eGlLQ240emtEV2Vzd9IBX0FVX3lxTE5Edl9HOHVJajdLR1k3Y01LQ3l6Q2NJTEdpV25fQjBVMElrRUZZT0t0VHY4RTlRUDJWTmpwd3dIUjVqQjBBdGRWbDNiNXVaejdCZ2lWSDdIZFp5NEJRcjZj?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 - CMoney投資網誌</div>
+  <div class="news-summary">【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 04:52:45</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxPMjVvYlVoQk9wMGc0UVlLWU1NUThYbUt4RGZLTEM0cDNPYXdHTmZORWY0R3d3SGJ6STBvMXB4ZFlXTHZiWlNkM1g3b2NTc0JuU3JtSFhWRVh6dWExdHQwSUtMWVo1ZEFSc244ZmJzdnJFaGhhM0lPZWNOWDFKaHJoZXZmcnNfdnpFQ2ZvWk5n?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 - CMoney投資網誌
+原文標題：【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 - CMoney投資網誌
+摘要：【12:52 即時新聞】世芯-KY(3661)股價上攻至4810、漲幅逾8%，AI/HPC與網通NRE題材吸金推升，外資買盤延續配合高檔強勢結構 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxPMjVvYlVoQk9wMGc0UVlLWU1NUThYbUt4RGZLTEM0cDNPYXdHTmZORWY0R3d3SGJ6STBvMXB4ZFlXTHZiWlNkM1g3b2NTc0JuU3JtSFhWRVh6dWExdHQwSUtMWVo1ZEFSc244ZmJzdnJFaGhhM0lPZWNOWDFKaHJoZXZmcnNfdnpFQ2ZvWk5n?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">2049 — 上銀 <span style="color:#8b96a3;font-size:13px">（機器人）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3>
+<div class="news">
+  <div class="news-title-zh">2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 20:02:19</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE40cXJ4T3c5cERXR3dQY3RyZURpb0ZWbDZjTkFUTHI5R0tlNE5tWDhmT1ZtY3VLalVWd3VMZ3d2S1pwS1ZST0NQamcwUTFLNkNIYnNiZ2Y1Wkg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 - CMoney
+原文標題：2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 - CMoney
+摘要：2049 上銀- 🚨 主力在調節？昨日主動式ETF 減碼這檔！ - 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE40cXJ4T3c5cERXR3dQY3RyZURpb0ZWbDZjTkFUTHI5R0tlNE5tWDhmT1ZtY3VLalVWd3VMZ3d2S1pwS1ZST0NQamcwUTFLNkNIYnNiZ2Y1Wkg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 - CMoney投資網誌<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 - CMoney投資網誌</div>
+  <div class="news-summary">【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 05:07:44</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxQbG5JNllIR0JEQ2tpUXBNaGQ1SHNJMGhOQnlnSzlwVVR3RXJ0LVN6czVIV2dhNzVrYWNRa1JXVmg4a0h2NGxnQUdlbnptRG5sQTd2clNUUnpqT1BKUFJpcFhhOGpDQVFzNFVhel9Yc25VbXRGeDJFd0xPcWxNamwxckRqOGY5SXp1LUJRbjRn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 - CMoney投資網誌
+原文標題：【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 - CMoney投資網誌
+摘要：【13:07 即時新聞】上銀(2049)股價勁揚至348.5元、漲幅7.23%，受AI機器人與PLP智慧裝置題材加持，短線法人買盤回補推升技術面轉強 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxQbG5JNllIR0JEQ2tpUXBNaGQ1SHNJMGhOQnlnSzlwVVR3RXJ0LVN6czVIV2dhNzVrYWNRa1JXVmg4a0h2NGxnQUdlbnptRG5sQTd2clNUUnpqT1BKUFJpcFhhOGpDQVFzNFVhel9Yc25VbXRGeDJFd0xPcWxNamwxckRqOGY5SXp1LUJRbjRn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">上銀訂單能見度高- 日報 - 工商時報<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 上銀訂單能見度高- 日報 - 工商時報</div>
+  <div class="news-summary">上銀訂單能見度高- 日報 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5JLUJsTHkwNGk2OGUxWXlLVklVZW92N25iNjhNVmQzNzQ3bDZQS3dnUGJLbE1UOVpwcG5tYVloMmtoMXVkOVVRNUlsMkl3bm1DbTUxZE5tU0FqdVhobklV?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：上銀訂單能見度高- 日報 - 工商時報
+原文標題：上銀訂單能見度高- 日報 - 工商時報
+摘要：上銀訂單能見度高- 日報 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE5JLUJsTHkwNGk2OGUxWXlLVklVZW92N25iNjhNVmQzNzQ3bDZQS3dnUGJLbE1UOVpwcG5tYVloMmtoMXVkOVVRNUlsMkl3bm1DbTUxZE5tU0FqdVhobklV?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+</section>
+
+<section id="themes">
+  <h2 class="section">🎯 主題情報</h2>
+  <h3 class="stock">🎯 AI半導體</h3>
+<div class="news">
+  <div class="news-title-zh">台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市</div>
+  <div class="news-summary">台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 03:12:30</span>
+    <a href="https://news.google.com/rss/articles/CBMihgNBVV95cUxQbjVOS2p5bkxEcDNZNTl1b2R1WkRvYWZRTVhFdWtxM3V1RFBHNjhDeUVDcV9rLTJ0anVIXzRZdG9aM1Y5eVQ4VUdfNjNjZ0pnRFpfOW40X2VPM2hLREt1eEtIbkhpRGY5eUtMNUJwRW5oLUxkRTlrY0UxMjRtSnJzNll3d04wMmdQOXZTYk95VXJURnFsc0tMVDlMRkNUZ1JYWkNocDRxQXVQTjNYUmRZc3N4QzREUFZhRWx4TnVrb2t3VXNXNkprcmFnVE1tVEdtSmRqbU5vOEdpXzZsWGlDOE9JTERsX29qMFhMcDY2am91N3NwWnRKaTBnalJrV2lvRWhWczRfXzdYejR3SExTUUN6LUtZT0hUSHMtbnV2TXo0OUJZdUdPbVhOMDRzS2NCUU1aTG5iSlFaZ2Z6VjU2NW1uVWcxU0lkMkt2SC1VTmh1a1gwQ1lVWlVEREpraWJjaTdiU0RSYVdYRFoyTVNjVmhuWlBYYmtSYVdfaFQ1Y0N0ODFTVWc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市
+原文標題：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 - Yahoo股市
+摘要：台積電近1031億元員工分紅今入帳！人均153萬元 增速驚見放緩 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMihgNBVV95cUxQbjVOS2p5bkxEcDNZNTl1b2R1WkRvYWZRTVhFdWtxM3V1RFBHNjhDeUVDcV9rLTJ0anVIXzRZdG9aM1Y5eVQ4VUdfNjNjZ0pnRFpfOW40X2VPM2hLREt1eEtIbkhpRGY5eUtMNUJwRW5oLUxkRTlrY0UxMjRtSnJzNll3d04wMmdQOXZTYk95VXJURnFsc0tMVDlMRkNUZ1JYWkNocDRxQXVQTjNYUmRZc3N4QzREUFZhRWx4TnVrb2t3VXNXNkprcmFnVE1tVEdtSmRqbU5vOEdpXzZsWGlDOE9JTERsX29qMFhMcDY2am91N3NwWnRKaTBnalJrV2lvRWhWczRfXzdYejR3SExTUUN6LUtZT0hUSHMtbnV2TXo0OUJZdUdPbVhOMDRzS2NCUU1aTG5iSlFaZ2Z6VjU2NW1uVWcxU0lkMkt2SC1VTmh1a1gwQ1lVWlVEREpraWJjaTdiU0RSYVdYRFoyTVNjVmhuWlBYYmtSYVdfaFQ1Y0N0ODFTVWc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台積電入列！外媒點名「這2檔」現在最值得立即買進 - 自由財經<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台積電入列！外媒點名「這2檔」現在最值得立即買進 - 自由財經</div>
+  <div class="news-summary">台積電入列！外媒點名「這2檔」現在最值得立即買進 自由財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 07:40:19</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5zd1BLTGJ0bFlmSW9ZV3BVaHVxUnRmMWdUd2pWenNoZlI1UmFQcUhfQ2pOaUJvdzVDNU1hRS1nSFMwQ1kwNjNjeHN0Wk1XRHdHYWhlV2V0cTNXdVBQdWNN0gFkQVVfeXFMT1d4clZYLTZ1UWhkbEFfUGpJbUNOcHZyTnhHaFRKRVV1VDBGX3VaNWNMSEltYnhLYnZhWEFaaDlLQ1lEeWdMZDlwRzJ1T1pWNU5WTDFWQXFxdmUteE1PWlBCQklaWQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台積電入列！外媒點名「這2檔」現在最值得立即買進 - 自由財經
+原文標題：台積電入列！外媒點名「這2檔」現在最值得立即買進 - 自由財經
+摘要：台積電入列！外媒點名「這2檔」現在最值得立即買進 自由財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE5zd1BLTGJ0bFlmSW9ZV3BVaHVxUnRmMWdUd2pWenNoZlI1UmFQcUhfQ2pOaUJvdzVDNU1hRS1nSFMwQ1kwNjNjeHN0Wk1XRHdHYWhlV2V0cTNXdVBQdWNN0gFkQVVfeXFMT1d4clZYLTZ1UWhkbEFfUGpJbUNOcHZyTnhHaFRKRVV1VDBGX3VaNWNMSEltYnhLYnZhWEFaaDlLQ1lEeWdMZDlwRzJ1T1pWNU5WTDFWQXFxdmUteE1PWlBCQklaWQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 - 中時新聞網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 - 中時新聞網</div>
+  <div class="news-summary">SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 中時新聞網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 23:00:30</span>
+    <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE9aNTZyRlJhVU1xWXZCNHJ3cmtjTFMwdkYzZWtWNzUyMk0wU011T19Kdlp6RGNsRjU1QXpTU2Y4T2h6YzZVVFl6UUxnbXFFRGtjYVU4aE9ZcGNRYTMwVkpvRmZsb2ZUVEFIUVM1dTRR?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 - 中時新聞網
+原文標題：SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 - 中時新聞網
+摘要：SPHBM4不是便宜版HBM 盤點三大受惠族群- 財經 中時新聞網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMibkFVX3lxTE9aNTZyRlJhVU1xWXZCNHJ3cmtjTFMwdkYzZWtWNzUyMk0wU011T19Kdlp6RGNsRjU1QXpTU2Y4T2h6YzZVVFl6UUxnbXFFRGtjYVU4aE9ZcGNRYTMwVkpvRmZsb2ZUVEFIUVM1dTRR?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ - 放言Fount Media<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ - 放言Fount Media</div>
+  <div class="news-summary">三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ 放言Fount Media</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 06:00:17</span>
+    <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTE5fN2tDLWpSaElqRmZjQ2FrWDRxdlhxTUdWeGdSUnhtYWUxZG51WHkxUXI2SWFPWDdybGItWnhKM2ktZGlBbmx0cnNkeVpKV0FvdGc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ - 放言Fount Media
+原文標題：三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ - 放言Fount Media
+摘要：三星、SK海力士靠HBM站上AI浪頭！李在明要把南韓從記憶體強國推向半導體全戰場！做得到嗎？ 放言Fount Media
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiUkFVX3lxTE5fN2tDLWpSaElqRmZjQ2FrWDRxdlhxTUdWeGdSUnhtYWUxZG51WHkxUXI2SWFPWDdybGItWnhKM2ktZGlBbmx0cnNkeVpKV0FvdGc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 - 工商時報</div>
+  <div class="news-summary">AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 09:05:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5MZmk1emRJVXVNZmFxRWUzTVlFY1I0LUFtOWw4ZUdjc0Z6c1czTXJOcGZnMV83X0g1TmlXbDA2TnRpbHpQN0lzdTItSkxwS3l0cGdpWkxIV0txTFNvLVVB?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 - 工商時報
+原文標題：AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 - 工商時報
+摘要：AI晶片下一場革命來了！TGV玻璃鑽孔成關鍵戰場台廠誰占先機- 國際 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE5MZmk1emRJVXVNZmFxRWUzTVlFY1I0LUFtOWw4ZUdjc0Z6c1czTXJOcGZnMV83X0g1TmlXbDA2TnRpbHpQN0lzdTItSkxwS3l0cGdpWkxIV0txTFNvLVVB?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 AI伺服器與CPO</h3>
+<div class="news">
+  <div class="news-title-zh">3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 - TechNews 科技新報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 - TechNews 科技新報</div>
+  <div class="news-summary">3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 TechNews 科技新報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 06:22:52</span>
+    <a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxQMWUzRjNPMDAwZmJHQzRER2tEclMyTWduZGdfdzRlMW9HLUV1ZlB1S0pyRDAyTnFWaktET3c3NXlBY1VFbWVLNzNUSUxXNEhEZTI4bElVckVfNEF3dHV0Q1hwMlhRVF9kdF9tbUNPZy1RVm5IUGlFWXRPV0VMal9ibFl0VFZwT2lQVXlnZUUyMXN5Q1VvdGROLXlva2tpc25mVkljeDNPZHlIX3h4SFJib0pLN3FOUUxvSDJ1a0FvbGpsb1NiZEplQQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 - TechNews 科技新報
+原文標題：3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 - TechNews 科技新報
+摘要：3Q26 記憶體價格持續受 AI 伺服器需求支撐，惟因消費端壓力擴大、高基期影響，漲幅收斂 TechNews 科技新報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiyAFBVV95cUxQMWUzRjNPMDAwZmJHQzRER2tEclMyTWduZGdfdzRlMW9HLUV1ZlB1S0pyRDAyTnFWaktET3c3NXlBY1VFbWVLNzNUSUxXNEhEZTI4bElVckVfNEF3dHV0Q1hwMlhRVF9kdF9tbUNPZy1RVm5IUGlFWXRPV0VMal9ibFl0VFZwT2lQVXlnZUUyMXN5Q1VvdGROLXlva2tpc25mVkljeDNPZHlIX3h4SFJib0pLN3FOUUxvSDJ1a0FvbGpsb1NiZEplQQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 - CMoney投資網誌</div>
+  <div class="news-summary">博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 02:33:44</span>
+    <a href="https://news.google.com/rss/articles/CBMiggFBVV95cUxNaVFMTGR6UV9LYmZZVHBHY19qMTk2Z2ZkS3JhX3lZMXM5Z0c5bldGcFh2eVd2cENQRndTMzI5b1EzTjhRbVpzSk52cV9Bend0UEpQZ1hXQWJfTUt5VmZtVFhVamRveVZzMmMyZVJTM0JDcjdnazdDQU1MaHlMQ1MwZ01n?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 - CMoney投資網誌
+原文標題：博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 - CMoney投資網誌
+摘要：博智(8155)搭上 AI 伺服器與工業電腦升級浪潮，EPS 將連續創新高-不敗教主陳重銘 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiggFBVV95cUxNaVFMTGR6UV9LYmZZVHBHY19qMTk2Z2ZkS3JhX3lZMXM5Z0c5bldGcFh2eVd2cENQRndTMzI5b1EzTjhRbVpzSk52cV9Bend0UEpQZ1hXQWJfTUt5VmZtVFhVamRveVZzMmMyZVJTM0JDcjdnazdDQU1MaHlMQ1MwZ01n?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">大立光目標價高盛喊6,231元居冠- 日報 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 大立光目標價高盛喊6,231元居冠- 日報 - 工商時報</div>
+  <div class="news-summary">大立光目標價高盛喊6,231元居冠- 日報 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE0ycnZYbGNXaU5ucURINlNBSlFpaW5pVUtUdFRlLWNISERxM1BPajVENjN4X2x4VElid0g2R3FjelRtb3pMNzhCanZGdEVxYm5sc3JNb29HZVQtT2swRl8w?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：大立光目標價高盛喊6,231元居冠- 日報 - 工商時報
+原文標題：大立光目標價高盛喊6,231元居冠- 日報 - 工商時報
+摘要：大立光目標價高盛喊6,231元居冠- 日報 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE0ycnZYbGNXaU5ucURINlNBSlFpaW5pVUtUdFRlLWNISERxM1BPajVENjN4X2x4VElid0g2R3FjelRtb3pMNzhCanZGdEVxYm5sc3JNb29HZVQtT2swRl8w?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 - 旺得富理財網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 - 旺得富理財網</div>
+  <div class="news-summary">群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 旺得富理財網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 21:09:30</span>
+    <a href="https://news.google.com/rss/articles/CBMiakFVX3lxTFA5VzdIcDBVUl83VkFzdDV1S0NSM215aHRUUDdTWHBzWXFoajNidVVjUEd0RWpnR0ktN3BEQk1hRVJMNVhoTElIdUJ1NV85aDdyTGRWaFZDb1FEN2k4NnlRTWxlbURsMEhyb1E?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 - 旺得富理財網
+原文標題：群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 - 旺得富理財網
+摘要：群創、友達...面板雙虎人氣旺CPO兩年開花結果？大咖法人看法曝：Q3「2原因」不看淡- 上市櫃 旺得富理財網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiakFVX3lxTFA5VzdIcDBVUl83VkFzdDV1S0NSM215aHRUUDdTWHBzWXFoajNidVVjUEd0RWpnR0ktN3BEQk1hRVJMNVhoTElIdUJ1NV85aDdyTGRWaFZDb1FEN2k4NnlRTWxlbURsMEhyb1E?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 - 工商時報</div>
+  <div class="news-summary">光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFAtczdkN3M2dXhheW5YVGJEbnNXWDkyb3ZVUjIxejNodUhYc1VzUEczMm1UWkVfejF4WmtUd1NNT0pNWjNPcFJaU0RNbXRTRGZVc0duUE1IN0RodDlyeV93?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 - 工商時報
+原文標題：光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 - 工商時報
+摘要：光通訊收割期來了！上詮搶進「百年機遇」 交貨進度、技術優勢一次看- 日報 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTFAtczdkN3M2dXhheW5YVGJEbnNXWDkyb3ZVUjIxejNodUhYc1VzUEczMm1UWkVfejF4WmtUd1NNT0pNWjNPcFJaU0RNbXRTRGZVc0duUE1IN0RodDlyeV93?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 低軌衛星</h3>
+<div class="news">
+  <div class="news-title-zh">手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 - Yahoo股市</div>
+  <div class="news-summary">手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 13:30:00</span>
+    <a href="https://news.google.com/rss/articles/CBMigANBVV95cUxNbkhEcDhWQ2NxNFZNc3N3UEdYZnhMb2hlQW9aRE8za214MTBwNUl5X2ZMdWVpVkpzV2xVWjhTOHlRQmhMbW1ySGlkVk03MWZxbnlKTlg5QlF5Rk0yNjdyUDdDRGdpdXlSalVFOHNnbTEyVDFsQjREblMxQ0Q1d2NhNFNnay1YUEQtdm9kSFBGbVNpOE9BV2JKTVVlSVhtUkhhanNKY2NxOExvNDVNUFg1UWo4M1BxX1psZzU5V21hdjFRMDRyU2t5WThlMWlRYkxFdFZfUno5bUZ0QVFLYlFINk1UbXRzR3dxTlk5aGtfZV9rdTB0N3d0Z0RrVmR2azhkVUNNbFFKam1vc2hPMGdZSG9qcHBzTUVtY1h3NmNvb0NNUmNnYWpNc2Fma2xFQlVRWXZPZHNVUk03TW5maW45VGo1NEZDSlJwYlowQU9HNDZqT01Ob0h1VEJEekNWaEtUT25NTDRJT1JMNkpXZ1pDSm5ZakNRV0JPUkZzUFVkX1k?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 - Yahoo股市
+原文標題：手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 - Yahoo股市
+摘要：手握低軌衛星、封裝題材也沒用？外資、投信、自營商都在下殺「這檔面板」 網：今天放空下禮拜數錢 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigANBVV95cUxNbkhEcDhWQ2NxNFZNc3N3UEdYZnhMb2hlQW9aRE8za214MTBwNUl5X2ZMdWVpVkpzV2xVWjhTOHlRQmhMbW1ySGlkVk03MWZxbnlKTlg5QlF5Rk0yNjdyUDdDRGdpdXlSalVFOHNnbTEyVDFsQjREblMxQ0Q1d2NhNFNnay1YUEQtdm9kSFBGbVNpOE9BV2JKTVVlSVhtUkhhanNKY2NxOExvNDVNUFg1UWo4M1BxX1psZzU5V21hdjFRMDRyU2t5WThlMWlRYkxFdFZfUno5bUZ0QVFLYlFINk1UbXRzR3dxTlk5aGtfZV9rdTB0N3d0Z0RrVmR2azhkVUNNbFFKam1vc2hPMGdZSG9qcHBzTUVtY1h3NmNvb0NNUmNnYWpNc2Fma2xFQlVRWXZPZHNVUk03TW5maW45VGo1NEZDSlJwYlowQU9HNDZqT01Ob0h1VEJEekNWaEtUT25NTDRJT1JMNkpXZ1pDSm5ZakNRV0JPUkZzUFVkX1k?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">亞馬遜低軌衛星跨大步 今年稍晚將提供服務 - 經濟日報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 亞馬遜低軌衛星跨大步 今年稍晚將提供服務 - 經濟日報</div>
+  <div class="news-summary">亞馬遜低軌衛星跨大步 今年稍晚將提供服務 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 18:37:52</span>
+    <a href="https://news.google.com/rss/articles/CBMiXEFVX3lxTE16NXlhbFRMVFpzTWhXT1VJUE9zaU1Od3VJWUJlTXZ0b1loZ2pkQzAweTI2VkJDU1d3a1ZFc0w0TGxNbW8tQzJ5d2NpUEktelFUTXNZcE5oZ2J4UUFu0gFiQVVfeXFMUEpMS1dZNjlWQmVBeVhtQjVyOHRWMjJ1MjlOanp3ZVk2THVVLTd2OFl2ODZyeDZVNmwxWjhnZHI1UWhWc0ZOaGRYb1JHblNOTWxtMVBJR2wzZE9zUDNKejBtMkE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：亞馬遜低軌衛星跨大步 今年稍晚將提供服務 - 經濟日報
+原文標題：亞馬遜低軌衛星跨大步 今年稍晚將提供服務 - 經濟日報
+摘要：亞馬遜低軌衛星跨大步 今年稍晚將提供服務 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiXEFVX3lxTE16NXlhbFRMVFpzTWhXT1VJUE9zaU1Od3VJWUJlTXZ0b1loZ2pkQzAweTI2VkJDU1d3a1ZFc0w0TGxNbW8tQzJ5d2NpUEktelFUTXNZcE5oZ2J4UUFu0gFiQVVfeXFMUEpMS1dZNjlWQmVBeVhtQjVyOHRWMjJ1MjlOanp3ZVk2THVVLTd2OFl2ODZyeDZVNmwxWjhnZHI1UWhWc0ZOaGRYb1JHblNOTWxtMVBJR2wzZE9zUDNKejBtMkE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink - MoneyDJ<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink - MoneyDJ</div>
+  <div class="news-summary">亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink MoneyDJ</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 05:01:00</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxPZ3REREdrUUpfVV9hSVQ5U2J0YVBObDRRcDdDaVNXQVViOWN4dnVKYjVRUVFMQWZOdjFCbDNnMVB3cDlQQVhrWEtMczRZRDVjMnJxZnV4eWVFREItZUhsRG0zQnVfRVZaVU15S0pZNWk4RjBQOWRDcU5IUjU4X2pqbHRyc1llSUVmVWhTbGQyZ01Pdw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink - MoneyDJ
+原文標題：亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink - MoneyDJ
+摘要：亞馬遜Leo衛星部署到位 下半年商轉挑戰Starlink MoneyDJ
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxPZ3REREdrUUpfVV9hSVQ5U2J0YVBObDRRcDdDaVNXQVViOWN4dnVKYjVRUVFMQWZOdjFCbDNnMVB3cDlQQVhrWEtMczRZRDVjMnJxZnV4eWVFREItZUhsRG0zQnVfRVZaVU15S0pZNWk4RjBQOWRDcU5IUjU4X2pqbHRyc1llSUVmVWhTbGQyZ01Pdw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 - iThome<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 - iThome</div>
+  <div class="news-summary">SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 iThome</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 04:57:59</span>
+    <a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE4xRTJQaThnLXphZDN2ZnpDSTdXRFlCT2t4bzRsOGU1ZjlaVVF1RXNjSGMyb0Y2dktlajJSSmdfdHZJV1EyaWdrcWpERFRIUQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 - iThome
+原文標題：SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 - iThome
+摘要：SpaceX傳出準備在美國推出Starlink Mobile衛星通訊服務 iThome
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiTkFVX3lxTE4xRTJQaThnLXphZDN2ZnpDSTdXRFlCT2t4bzRsOGU1ZjlaVVF1RXNjSGMyb0Y2dktlajJSSmdfdHZJV1EyaWdrcWpERFRIUQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 - 台視全球資訊網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 - 台視全球資訊網</div>
+  <div class="news-summary">法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 台視全球資訊網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 25 Feb 2026 08:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxNZ1dBbEdrekRHMm9KSUg2VXUwd2tkZTBrTlBTWjNMbjRKUF9FSWYwTTMweThIRWtRelZ6Qk95a0FQcHZibllVVTBkb3owU0Rya0FkNXhhaXkwcnRaZzNUaXV1cmpUaTNDWUFrTU5YdjU2OEpJenRSd01CVk05Z1laRnEtazd1eTRSR1hNSkpEVXdsZw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 - 台視全球資訊網
+原文標題：法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 - 台視全球資訊網
+摘要：法商Eutelsat獲9.75億歐元融資，加速OneWeb低軌衛星群部署 台視全球資訊網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxNZ1dBbEdrekRHMm9KSUg2VXUwd2tkZTBrTlBTWjNMbjRKUF9FSWYwTTMweThIRWtRelZ6Qk95a0FQcHZibllVVTBkb3owU0Rya0FkNXhhaXkwcnRaZzNUaXV1cmpUaTNDWUFrTU5YdjU2OEpJenRSd01CVk05Z1laRnEtazd1eTRSR1hNSkpEVXdsZw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 機器人與工業AI</h3>
+<div class="news">
+  <div class="news-title-zh">陸仿生機器人亮相台系供應鏈布局搶先知- 日報 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 陸仿生機器人亮相台系供應鏈布局搶先知- 日報 - 工商時報</div>
+  <div class="news-summary">陸仿生機器人亮相台系供應鏈布局搶先知- 日報 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTFBaWGs3OVU5M3NJUVVyUDFhQTluYlRkSV9Na2hORmVqbEtFSllGQkQwTHYxejBMS2ZnbW93b2ZqMXlpR1JCR2VNdVNVS1J0S29senIwV0VCSTlTLTN3X3FZ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：陸仿生機器人亮相台系供應鏈布局搶先知- 日報 - 工商時報
+原文標題：陸仿生機器人亮相台系供應鏈布局搶先知- 日報 - 工商時報
+摘要：陸仿生機器人亮相台系供應鏈布局搶先知- 日報 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTFBaWGs3OVU5M3NJUVVyUDFhQTluYlRkSV9Na2hORmVqbEtFSllGQkQwTHYxejBMS2ZnbW93b2ZqMXlpR1JCR2VNdVNVS1J0S29senIwV0VCSTlTLTN3X3FZ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">熱門族群》AI技術落地規模擴大 機器人族群添柴火 - 自由時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 熱門族群》AI技術落地規模擴大 機器人族群添柴火 - 自由時報</div>
+  <div class="news-summary">熱門族群》AI技術落地規模擴大 機器人族群添柴火 自由時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 08:10:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE9XTkJhUHBidmhHTjE0ektUQ3NFZ01EckVQN0pWaE5UTk1ZQkxPeU1ORk1ScVByVFZOdzVtTXFjaTRWNHlTak9GSzR4X2NObE1hLU5IS3B1d2M?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：熱門族群》AI技術落地規模擴大 機器人族群添柴火 - 自由時報
+原文標題：熱門族群》AI技術落地規模擴大 機器人族群添柴火 - 自由時報
+摘要：熱門族群》AI技術落地規模擴大 機器人族群添柴火 自由時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE9XTkJhUHBidmhHTjE0ektUQ3NFZ01EckVQN0pWaE5UTk1ZQkxPeU1ORk1ScVByVFZOdzVtTXFjaTRWNHlTak9GSzR4X2NObE1hLU5IS3B1d2M?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 - DIGITIMES<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 - DIGITIMES</div>
+  <div class="news-summary">人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 DIGITIMES</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOcU9xd3g3ZnlRQXNoOVVPWjFaRWlHZUVoUDJYWlhZaWhLVUNaZ1JZSVVkWW9EaWg3Z1NqZU84cFRpVWRHRGgySy1kcmwzRjF3N052VFQ5amdiMlNHT3hKNTNPclBwLWpmMUpIMmRadDRUS2Fpd3JRLXZtdnpZUkJLRXphMlF5cmlGbmhyNWpR?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 - DIGITIMES
+原文標題：人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 - DIGITIMES
+摘要：人形機器人價格跳水、工業機器人接單創高 AI機器人發展路線走向分流 DIGITIMES
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxOcU9xd3g3ZnlRQXNoOVVPWjFaRWlHZUVoUDJYWlhZaWhLVUNaZ1JZSVVkWW9EaWg3Z1NqZU84cFRpVWRHRGgySy1kcmwzRjF3N052VFQ5amdiMlNHT3hKNTNPclBwLWpmMUpIMmRadDRUS2Fpd3JRLXZtdnpZUkJLRXphMlF5cmlGbmhyNWpR?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 - Yahoo新聞<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 - Yahoo新聞</div>
+  <div class="news-summary">馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 Yahoo新聞</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 05:24:15</span>
+    <a href="https://news.google.com/rss/articles/CBMixwJBVV95cUxOVjhnTVp6SThjQk02NkdZQ2VjM3hCNUlWR1ZZWXNWWEtrdmRnZjFEMEpwRWlMa055T1VScGFfWGR3MFNWdjJYTFFNdmdlZFZHbmlkRnJTVGJvRFVfeE85d3RYa0JZbUFaVHZRdkxWN1V6ei1uYS1wUTdQT19wSGRScGRLTzFVdmg3QjlSaWxMaXJOaDNITGplWmFzblI0bGxiUGVGaWdIMFU1cjkzc2xaRThCNUEwQXk4MFZFS2Y2NDBLYWx5WWtMbkdyTlJIendIcFpNSzFsZ0ZLY3NzR0N6Um5zeG5qR0c0UndYN0N5THI3S3NROGU1T1NHeTVDZGRBWVRORFQ2WDZldXdlRktRZXBIQUV1RGR4ZUNZVFdRLWpWWXZ4VGJKMmU5ajBFelhGdFloeFNkTk1mS0NSZTRyM2NtejBoOUU?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 - Yahoo新聞
+原文標題：馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 - Yahoo新聞
+摘要：馬斯克親訪Optimus產線！ 量產在即？ 年產100萬台目標不變 Yahoo新聞
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMixwJBVV95cUxOVjhnTVp6SThjQk02NkdZQ2VjM3hCNUlWR1ZZWXNWWEtrdmRnZjFEMEpwRWlMa055T1VScGFfWGR3MFNWdjJYTFFNdmdlZFZHbmlkRnJTVGJvRFVfeE85d3RYa0JZbUFaVHZRdkxWN1V6ei1uYS1wUTdQT19wSGRScGRLTzFVdmg3QjlSaWxMaXJOaDNITGplWmFzblI0bGxiUGVGaWdIMFU1cjkzc2xaRThCNUEwQXk4MFZFS2Y2NDBLYWx5WWtMbkdyTlJIendIcFpNSzFsZ0ZLY3NzR0N6Um5zeG5qR0c0UndYN0N5THI3S3NROGU1T1NHeTVDZGRBWVRORFQ2WDZldXdlRktRZXBIQUV1RGR4ZUNZVFdRLWpWWXZ4VGJKMmU5ajBFelhGdFloeFNkTk1mS0NSZTRyM2NtejBoOUU?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 - 經濟日報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 - 經濟日報</div>
+  <div class="news-summary">特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 22 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE84b09IWURfeWt1QXVKTm9FeGhlZ3ktV1NxTWE2emR3OHU2RHE2M09ETXhtSGR3OHNTRER1UGtJcEZfWFVvNUk5Z0F1VDRjazJWSmRUQXFnVEhpZ9IBX0FVX3lxTE9ncFRBNV9wVnZyUHZrTUxPcTAwZm1pd09BWF9Qd052SklKQmpreDkxdkdnLUh5VkM0cXZwX1NSQ1UxY2twWmpES3AzY3oxU2R4cW1YVE1yeUhzQ2JOeXRV?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 - 經濟日報
+原文標題：特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 - 經濟日報
+摘要：特斯拉衝刺機器人下半年 Optimus 3量產 盟立、亞光等將扮演要角 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWkFVX3lxTE84b09IWURfeWt1QXVKTm9FeGhlZ3ktV1NxTWE2emR3OHU2RHE2M09ETXhtSGR3OHNTRER1UGtJcEZfWFVvNUk5Z0F1VDRjazJWSmRUQXFnVEhpZ9IBX0FVX3lxTE9ncFRBNV9wVnZyUHZrTUxPcTAwZm1pd09BWF9Qd052SklKQmpreDkxdkdnLUh5VkM0cXZwX1NSQ1UxY2twWmpES3AzY3oxU2R4cW1YVE1yeUhzQ2JOeXRV?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 無人機與國防</h3>
+<div class="news">
+  <div class="news-title-zh">無人機馬達需求強，富田電機擴大產能- 新聞 - MoneyDJ<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 無人機馬達需求強，富田電機擴大產能- 新聞 - MoneyDJ</div>
+  <div class="news-summary">無人機馬達需求強，富田電機擴大產能- 新聞 MoneyDJ</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 03:56:00</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxNTUFDWU1LUHpVMFBWTmFZOFZ1MXh0ZVY1d1kxR0VLQV9SLWtzb01OMVZjMnlDbVFIckphYlRqV0RUMUl2WU9TX2xIcUQxUkJCZGtjOFhQTHJKbWo5Vlp1OTJlRzRMZkVvVmVCRmkyd2VpZ09SSnZBWWtuTHROMXNtUFpiektQNmo4d1NMSk1iVnEwQQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：無人機馬達需求強，富田電機擴大產能- 新聞 - MoneyDJ
+原文標題：無人機馬達需求強，富田電機擴大產能- 新聞 - MoneyDJ
+摘要：無人機馬達需求強，富田電機擴大產能- 新聞 MoneyDJ
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxNTUFDWU1LUHpVMFBWTmFZOFZ1MXh0ZVY1d1kxR0VLQV9SLWtzb01OMVZjMnlDbVFIckphYlRqV0RUMUl2WU9TX2xIcUQxUkJCZGtjOFhQTHJKbWo5Vlp1OTJlRzRMZkVvVmVCRmkyd2VpZ09SSnZBWWtuTHROMXNtUFpiektQNmo4d1NMSk1iVnEwQQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">富田無人機營運高飛 - 經濟日報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 富田無人機營運高飛 - 經濟日報</div>
+  <div class="news-summary">富田無人機營運高飛 經濟日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 01 Jul 2026 16:12:52</span>
+    <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTE9UVnRPQVk2WmRQRkhBRVNEaGZCc2Z2cnhsclFXdTJWdE5JbU1WbUhmX19zZHdPVHE2VmNnd3RZb0NKdEJLbTNGTVMwVDdSMnNsdDhfVUpKWFlEUdIBX0FVX3lxTE1hajV3QWxpa1pKYTZHOGtFc01JLTF1RXFRRF9DTDVfa3RPQ2hjanpmeFZOMExEQVFFZG9ZamlFNVkwS0Y0bkNZdDJXb01pbGthUTFGUU5vekdqN2NrMUFJ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：富田無人機營運高飛 - 經濟日報
+原文標題：富田無人機營運高飛 - 經濟日報
+摘要：富田無人機營運高飛 經濟日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWkFVX3lxTE9UVnRPQVk2WmRQRkhBRVNEaGZCc2Z2cnhsclFXdTJWdE5JbU1WbUhmX19zZHdPVHE2VmNnd3RZb0NKdEJLbTNGTVMwVDdSMnNsdDhfVUpKWFlEUdIBX0FVX3lxTE1hajV3QWxpa1pKYTZHOGtFc01JLTF1RXFRRF9DTDVfa3RPQ2hjanpmeFZOMExEQVFFZG9ZamlFNVkwS0Y0bkNZdDJXb01pbGthUTFGUU5vekdqN2NrMUFJ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">澳新國防工業戰略 優先發展XL-AUV - 中時新聞網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 澳新國防工業戰略 優先發展XL-AUV - 中時新聞網</div>
+  <div class="news-summary">澳新國防工業戰略 優先發展XL-AUV 中時新聞網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 22:38:52</span>
+    <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTFBacVhlVGVDN2Zkb0pzOFUwVVhMeTJSSVZwelhQTV9VdV9IVVh4ejlja3pHd2l3OG1YbEMxdUVSZ3IzWmlIR0Jrc3dfak0wREdIbHUzdWhRclQ1dlBTdVBHZ0NpU2l0QUJXLWlfVEV3?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：澳新國防工業戰略 優先發展XL-AUV - 中時新聞網
+原文標題：澳新國防工業戰略 優先發展XL-AUV - 中時新聞網
+摘要：澳新國防工業戰略 優先發展XL-AUV 中時新聞網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMibkFVX3lxTFBacVhlVGVDN2Zkb0pzOFUwVVhMeTJSSVZwelhQTV9VdV9IVVh4ejlja3pHd2l3OG1YbEMxdUVSZ3IzWmlIR0Jrc3dfak0wREdIbHUzdWhRclQ1dlBTdVBHZ0NpU2l0QUJXLWlfVEV3?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 - LINE TODAY<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 - LINE TODAY</div>
+  <div class="news-summary">討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 LINE TODAY</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 15:10:04</span>
+    <a href="https://news.google.com/rss/articles/CBMiZEFVX3lxTFBVOTVLZFBEVTYydjZsbmVsaWlLQUdWOTRESWk1cFZxRGYtWHFXbE55Z2RpYi1rWWhJRnZPQWFsVDVMaFFCZW5lc3p6ZHczQUZMTnlaaG5PUjdsa1NycHhLN0ppQno?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 - LINE TODAY
+原文標題：討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 - LINE TODAY
+摘要：討論牆 | 歐洲坦克巨頭KNDS延後上市 暴露國防工業產能隱憂 LINE TODAY
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiZEFVX3lxTFBVOTVLZFBEVTYydjZsbmVsaWlLQUdWOTRESWk1cFZxRGYtWHFXbE55Z2RpYi1rWWhJRnZPQWFsVDVMaFFCZW5lc3p6ZHczQUZMTnlaaG5PUjdsa1NycHhLN0ppQno?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 - 自由財經<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 - 自由財經</div>
+  <div class="news-summary">熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 自由財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 23:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1XQUsyeEpwd3lTTWhMRzhtcTd1RUtwYS13aGlieDRmVkdyUFJzUXV0QVpzaDRweTJkVWZqQWN5aWZVMllKX2o0SVhxWGZZTHJ1TDRnbUV6N2c0Q2VyTEd30gFkQVVfeXFMTUI2VmVYZnk0a3lDTWdoVTkwUXNqMW91RFRyaGhuR0V0Z19pU0xtQndLWFY5RHlJWlVSMkVub3NTWml1elpqNWJ5WTRnVVBzV21rZ1VOSVhweWhfV0pZdHBrX0Nmaw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 - 自由財經
+原文標題：熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 - 自由財經
+摘要：熱門族群》 無人機條例朝野版本齊發 軍工股亮燈表態 自由財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE1XQUsyeEpwd3lTTWhMRzhtcTd1RUtwYS13aGlieDRmVkdyUFJzUXV0QVpzaDRweTJkVWZqQWN5aWZVMllKX2o0SVhxWGZZTHJ1TDRnbUV6N2c0Q2VyTEd30gFkQVVfeXFMTUI2VmVYZnk0a3lDTWdoVTkwUXNqMW91RFRyaGhuR0V0Z19pU0xtQndLWFY5RHlJWlVSMkVub3NTWml1elpqNWJ5WTRnVVBzV21rZ1VOSVhweWhfV0pZdHBrX0Nmaw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 電源與零組件</h3>
+<div class="news">
+  <div class="news-title-zh">AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 - DIGITIMES<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 - DIGITIMES</div>
+  <div class="news-summary">AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 DIGITIMES</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 23:47:29</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxQQ3NlYkpLNUdEN3JhUHhMSGg4OW5wN3F5ZE9RZTFjZ2tjMmdpQ1ZBV3g2QldDeW9aQnZvQ01TRExUakpJRVp4REhWa3J6SDE5Q0lUNE5QZGUwazZGcHNfenVVTnd5SDBxZUs1RkZNT2dUazV2QWhOMEMxd05BenY5S0lKYm8tdGh0c2ZCRk1B?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 - DIGITIMES
+原文標題：AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 - DIGITIMES
+摘要：AI伺服器用電源管理晶片需求竄升 IDM、IC設計訂單爆發 DIGITIMES
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxQQ3NlYkpLNUdEN3JhUHhMSGg4OW5wN3F5ZE9RZTFjZ2tjMmdpQ1ZBV3g2QldDeW9aQnZvQ01TRExUakpJRVp4REhWa3J6SDE5Q0lUNE5QZGUwazZGcHNfenVVTnd5SDBxZUs1RkZNT2dUazV2QWhOMEMxd05BenY5S0lKYm8tdGh0c2ZCRk1B?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 - Yahoo股市</div>
+  <div class="news-summary">電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 28 Jun 2026 22:30:00</span>
+    <a href="https://news.google.com/rss/articles/CBMivwNBVV95cUxQX0g3Q3BMQ1hySG9ZMlJLb1VodW41TVpEQjNnQ0Q3S2EyRG1fT0VQU3U0WGQwTjdVVzNUcU84c1NCOXZwZXdWLV9CMm45VHNsVGx0TmFwSjZTbnJRMDNhdkN2U21XUHd6aFJKR25MY0pCbHM5R0JiTDdUMlpkYWNNYjRpWWViWjV3bkpJdVo1Q3hKYlhSR29MNlNDNTVjd01HTzEtVmxkeHFWYkFjbFF0enUtOHAtaU0zY2JHcTB1UERYWFpwTm4wSFVVNFU2SUFJNWpoX1BiaDN1SElSYlgxNlZjVWVaa1pjNGJuNFpQZFhGZ3Y0QjZxeHo1aGF3SWFJakZ1cmJQYm5fdkxJLTFMN1hSd2xmdHVTNUdVU2pKRFNrQnZrN2sxMjAwS0pBSjR1WkMxLUNyS1NxVmdUSWVWRnhMR3l4Zm8zV3lPYnFSRUV5dURMV2owLWEtei13cldHa0VrVUZGXzJFbHhDNzB2Tmp1elROYWdoZVBmYldKMEtyNk5ZdW5lczFLVktPQzIwcUQ0b2lyMmpqLVdVeVZRcFZxVDZKRnNkOWppQUg0MGk0UUdXWlFUSENpOFFmaU0?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 - Yahoo股市
+原文標題：電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 - Yahoo股市
+摘要：電源管理IC布局擴大！「這檔」7月啟動漲價 法人看好下半年營運優於上半年 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMivwNBVV95cUxQX0g3Q3BMQ1hySG9ZMlJLb1VodW41TVpEQjNnQ0Q3S2EyRG1fT0VQU3U0WGQwTjdVVzNUcU84c1NCOXZwZXdWLV9CMm45VHNsVGx0TmFwSjZTbnJRMDNhdkN2U21XUHd6aFJKR25MY0pCbHM5R0JiTDdUMlpkYWNNYjRpWWViWjV3bkpJdVo1Q3hKYlhSR29MNlNDNTVjd01HTzEtVmxkeHFWYkFjbFF0enUtOHAtaU0zY2JHcTB1UERYWFpwTm4wSFVVNFU2SUFJNWpoX1BiaDN1SElSYlgxNlZjVWVaa1pjNGJuNFpQZFhGZ3Y0QjZxeHo1aGF3SWFJakZ1cmJQYm5fdkxJLTFMN1hSd2xmdHVTNUdVU2pKRFNrQnZrN2sxMjAwS0pBSjR1WkMxLUNyS1NxVmdUSWVWRnhMR3l4Zm8zV3lPYnFSRUV5dURMV2owLWEtei13cldHa0VrVUZGXzJFbHhDNzB2Tmp1elROYWdoZVBmYldKMEtyNk5ZdW5lczFLVktPQzIwcUQ0b2lyMmpqLVdVeVZRcFZxVDZKRnNkOWppQUg0MGk0UUdXWlFUSENpOFFmaU0?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 - TechNews 科技新報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 - TechNews 科技新報</div>
+  <div class="news-summary">Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 TechNews 科技新報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 06:31:47</span>
+    <a href="https://news.google.com/rss/articles/CBMibkFVX3lxTE1mQWhPZW5HeUh6X3k5dGpNWDhVc3dMMjhyV0d2NHRURVBaclN5emdYUUxvRTBBRWZXNXhkNjZLYVlkbnJIWTYtU2RNeFcxSVJtV2t0aXlnX25xOHN5RmhOTVBpS014cHh6M1NVbkF3?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 - TechNews 科技新報
+原文標題：Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 - TechNews 科技新報
+摘要：Vertiv 啟用馬來西亞新廠，助攻 AI 電源和散熱超高需求 TechNews 科技新報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMibkFVX3lxTE1mQWhPZW5HeUh6X3k5dGpNWDhVc3dMMjhyV0d2NHRURVBaclN5emdYUUxvRTBBRWZXNXhkNjZLYVlkbnJIWTYtU2RNeFcxSVJtV2t0aXlnX25xOHN5RmhOTVBpS014cHh6M1NVbkF3?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 - Yahoo股市</div>
+  <div class="news-summary">台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 03:47:26</span>
+    <a href="https://news.google.com/rss/articles/CBMimwNBVV95cUxNMFZWYk9Tdk9TQlVIQWR4MFAtZkVrUHljcDdkSUVSaUxmZXVOa2Myb3I2c2V6aFBEcW43RFk2bnZCYXR2SVl5a080bXRVMklKM1NCOXc5cmNCbDg5U3dsZllHNXlJSDBzSjRCLUJwc1hyYnlfV09JZzFNUUk0MVJ0aWJYMHpzZS14MVFGOXhLSV9EX2FSNVAzaGhVU1NESFFrSXoxNWFvay1xeFlpbG15bE5nX2F1US1uN294dkktYVNSZUFLQWtudjduc2V6cXNVakdfdTRISUttcmJCNXMyT0tUclZkbTBaZGl5a0g2VHlsSHhvRVd4XzliOEZOTi1udlZHWjFPNzRBQXU4eHFBWE44RW0wOXlfYjZBajltQTRSV04xc3BNaV9tSndEOVNWSUVMQ2VGcjBoc0g1bjdlS2dkdlNVNUxNQTRXVmJiMVg5NXhYNElUaGw4dW1WSTZyampVOFRjOGZGZnh5TUs3bVJqQTV5MW5kcnEzcmN2RTgwb2R3QUZ4Z3RxUEozOHdRR2xmM1VaSTRtT28?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 - Yahoo股市
+原文標題：台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 - Yahoo股市
+摘要：台達電跌深就是機會？法人看好「AI電源+液冷散熱」撐起下半年行情 Q2營收有望季增 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMimwNBVV95cUxNMFZWYk9Tdk9TQlVIQWR4MFAtZkVrUHljcDdkSUVSaUxmZXVOa2Myb3I2c2V6aFBEcW43RFk2bnZCYXR2SVl5a080bXRVMklKM1NCOXc5cmNCbDg5U3dsZllHNXlJSDBzSjRCLUJwc1hyYnlfV09JZzFNUUk0MVJ0aWJYMHpzZS14MVFGOXhLSV9EX2FSNVAzaGhVU1NESFFrSXoxNWFvay1xeFlpbG15bE5nX2F1US1uN294dkktYVNSZUFLQWtudjduc2V6cXNVakdfdTRISUttcmJCNXMyT0tUclZkbTBaZGl5a0g2VHlsSHhvRVd4XzliOEZOTi1udlZHWjFPNzRBQXU4eHFBWE44RW0wOXlfYjZBajltQTRSV04xc3BNaV9tSndEOVNWSUVMQ2VGcjBoc0g1bjdlS2dkdlNVNUxNQTRXVmJiMVg5NXhYNElUaGw4dW1WSTZyampVOFRjOGZGZnh5TUs3bVJqQTV5MW5kcnEzcmN2RTgwb2R3QUZ4Z3RxUEozOHdRR2xmM1VaSTRtT28?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 - MoneyDJ<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 - MoneyDJ</div>
+  <div class="news-summary">AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 MoneyDJ</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 04:24:00</span>
+    <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxNZHN4TlhLTjVsS0lCTUxscS1Bc0xhLVhVRGZtZF9zVHpFcWh2eWlOMjYtbmo0cU1VR0pfLUdMUlpGbjRySmVVYU9yM2pQTEFaYjVrM2NxaUZNdDBqdWJpZlY0ZkhxQUpNQjlRekxuYUMtRmp1Nm5rcWtxc3psblhJdkltUnBkUFk2VV92RXo4UWNMdw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 - MoneyDJ
+原文標題：AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 - MoneyDJ
+摘要：AES-KY看中大型工業BBU是未來數年重要成長引擎- 新聞 MoneyDJ
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikgFBVV95cUxNZHN4TlhLTjVsS0lCTUxscS1Bc0xhLVhVRGZtZF9zVHpFcWh2eWlOMjYtbmo0cU1VR0pfLUdMUlpGbjRySmVVYU9yM2pQTEFaYjVrM2NxaUZNdDBqdWJpZlY0ZkhxQUpNQjlRekxuYUMtRmp1Nm5rcWtxc3psblhJdkltUnBkUFk2VV92RXo4UWNMdw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 宏觀_關稅地緣</h3>
+<div class="news">
+  <div class="news-title-zh">川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 - UDN<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 - UDN</div>
+  <div class="news-summary">川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 UDN</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 02 Jul 2026 23:31:40</span>
+    <a href="https://news.google.com/rss/articles/CBMiUEFVX3lxTE4wQkt0a0NFdWg4TDJsdFFlWmNjcldybTZZWENWSHpXa1NiOTZqamtjRWRHbXVWSExhRjgxS2xLOE5XUVE1UDAyYnpWY014azVa?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 - UDN
+原文標題：川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 - UDN
+摘要：川普買股時機精準？關稅害美股崩跌後掃貨327檔隔天宣布暫停部分關稅| 全球財經| 全球 UDN
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiUEFVX3lxTE4wQkt0a0NFdWg4TDJsdFFlWmNjcldybTZZWENWSHpXa1NiOTZqamtjRWRHbXVWSExhRjgxS2xLOE5XUVE1UDAyYnpWY014azVa?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 - news.cnyes.com<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 - news.cnyes.com</div>
+  <div class="news-summary">川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 news.cnyes.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 13:35:28</span>
+    <a href="https://news.google.com/rss/articles/CBMiT0FVX3lxTE5FcV8xQXFWRlhSeGhXQUdOc08yWFJ3ejFCa2VmV0diYUk4WmNtMGZ1c3k1dDhZdkJ1R1JtQ3ZQVG8wbWsyTzhVVkxKVUJaeUU?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 - news.cnyes.com
+原文標題：川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 - news.cnyes.com
+摘要：川普新關稅籠罩！全球零售商搶先囤貨 中美航線運費飆漲六成 news.cnyes.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiT0FVX3lxTE5FcV8xQXFWRlhSeGhXQUdOc08yWFJ3ejFCa2VmV0diYUk4WmNtMGZ1c3k1dDhZdkJ1R1JtQ3ZQVG8wbWsyTzhVVkxKVUJaeUU?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 - 今周刊<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 - 今周刊</div>
+  <div class="news-summary">美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 今周刊</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 15:16:00</span>
+    <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxNZjVhWERjUE5WTXl4d01Hb1ktVnZ1MzBob1hnUjdWNWFDODVzQ2gzVDdMMWtVQV9naWtiSVFEbVMzclhJdGFKV1dHUVNPUUNsWnpRT3g5TXQ1T3gyaTRGOXhtUXlfM1FTNmpsX2NfdFJNU1BXaUwxTG5DUERTelA0Nw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 - 今周刊
+原文標題：美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 - 今周刊
+摘要：美中貿易戰變「斷鏈大戰」！稀土、晶片互掐命門：企業生存不再拚效率，韌性才是最後護城河 今周刊
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMigAFBVV95cUxNZjVhWERjUE5WTXl4d01Hb1ktVnZ1MzBob1hnUjdWNWFDODVzQ2gzVDdMMWtVQV9naWtiSVFEbVMzclhJdGFKV1dHUVNPUUNsWnpRT3g5TXQ1T3gyaTRGOXhtUXlfM1FTNmpsX2NfdFJNU1BXaUwxTG5DUERTelA0Nw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 - Newtalk新聞<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 - Newtalk新聞</div>
+  <div class="news-summary">歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 Newtalk新聞</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 00:36:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTFA5c0NuZ3dCRmZyeldQUUtfRHZEVHUwNDRXMmhyRGpPbFlTaHg0T2NCd3UtRmQ0ZlpGOFY2SWZHNHUzQUFfSDNqcW1LdjNhTW0ySnlZeFh0UVA4M2s?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 - Newtalk新聞
+原文標題：歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 - Newtalk新聞
+摘要：歐中貿易戰 義智庫警示：北京擴充「地緣經濟武器」 Newtalk新聞
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiW0FVX3lxTFA5c0NuZ3dCRmZyeldQUUtfRHZEVHUwNDRXMmhyRGpPbFlTaHg0T2NCd3UtRmQ0ZlpGOFY2SWZHNHUzQUFfSDNqcW1LdjNhTW0ySnlZeFh0UVA4M2s?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 - 工商時報</div>
+  <div class="news-summary">牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 10 Jun 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE5kbDJxNW9rc0xiTUJUU0plWlZHV09tRDM2R3BieWxMVExVaW5HYmhDX3dWYUlHd3BjaHlNeW9oMm5MLUhNdV93RWRiUHNuZU9yTXlKQUs1OG1DVnBudHNn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 - 工商時報
+原文標題：牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 - 工商時報
+摘要：牽動台積電？外媒曝台灣AI晶片銷陸擬「加強管制」 經濟部回應了- 要聞 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE5kbDJxNW9rc0xiTUJUU0plWlZHV09tRDM2R3BieWxMVExVaW5HYmhDX3dWYUlHd3BjaHlNeW9oMm5MLUhNdV93RWRiUHNuZU9yTXlKQUs1OG1DVnBudHNn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 宏觀_台股大盤</h3>
+<div class="news">
+  <div class="news-title-zh">TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 - CMoney<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 - CMoney</div>
+  <div class="news-summary">TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 CMoney</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 04 Jul 2026 22:13:15</span>
+    <a href="https://news.google.com/rss/articles/CBMiWEFVX3lxTE1yOFptaUVab1dvRFJQVVI0OGpUTXZDb0Fwb1dlcnFvc3ltWUM5a196Z09jVVRxa2dkbDk3aDlJWEtGV09vUGZXM2twSFczNG9WOUJjVmZOd0I?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 - CMoney
+原文標題：TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 - CMoney
+摘要：TWA00 加權指數- 炒股從小就開始！⋯Trump Accounts 正式上線- 股市爆料同學會 CMoney
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWEFVX3lxTE1yOFptaUVab1dvRFJQVVI0OGpUTXZDb0Fwb1dlcnFvc3ltWUM5a196Z09jVVRxa2dkbDk3aDlJWEtGV09vUGZXM2twSFczNG9WOUJjVmZOd0I?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台股守住46K 短線聚焦6月營收- 日報 - 工商時報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台股守住46K 短線聚焦6月營收- 日報 - 工商時報</div>
+  <div class="news-summary">台股守住46K 短線聚焦6月營收- 日報 工商時報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE9GSVZ3ZjVBVTM1RlVndTFaU2lRaHpRRzVBSURpeDRESzFjTGhqY0V2alV1TmtyQW5yTWwtbEt2a3NUMkZWMFMwOUVDenItX0pRVl9kV2M3WDJLV0twYXJR?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台股守住46K 短線聚焦6月營收- 日報 - 工商時報
+原文標題：台股守住46K 短線聚焦6月營收- 日報 - 工商時報
+摘要：台股守住46K 短線聚焦6月營收- 日報 工商時報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE9GSVZ3ZjVBVTM1RlVndTFaU2lRaHpRRzVBSURpeDRESzFjTGhqY0V2alV1TmtyQW5yTWwtbEt2a3NUMkZWMFMwOUVDenItX0pRVl9kV2M3WDJLV0twYXJR?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 - Storm.mg<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 - Storm.mg</div>
+  <div class="news-summary">台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 Storm.mg</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 02:47:03</span>
+    <a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE1VUG5rQ2JycExmZ0FPc0dWdHExbjZQTEt1ZUpHMWdVNTg2UTZORVB0REdtTUZ3cUwwOE56Wi1YYUxZLXlIZmJzYWczb1NaUQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 - Storm.mg
+原文標題：台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 - Storm.mg
+摘要：台股延長到3點半收盤？金管會給答案了 謝金河對比各國：「這群人」影響最大 | 李瑋萱 | 新聞 Storm.mg
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiTkFVX3lxTE1VUG5rQ2JycExmZ0FPc0dWdHExbjZQTEt1ZUpHMWdVNTg2UTZORVB0REdtTUZ3cUwwOE56Wi1YYUxZLXlIZmJzYWczb1NaUQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 - 三立新聞網SETN.com<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 - 三立新聞網SETN.com</div>
+  <div class="news-summary">台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 三立新聞網SETN.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 04:57:08</span>
+    <a href="https://news.google.com/rss/articles/CBMiS0FVX3lxTE81Y3dyc05aTTJQdGFoaHRrSzN6M0R5dFhhcmFnQU5ZR2RVRldIZm9PQUNfSGF4U1NGU2VaeVBvamk4bVNBVUFIM2RHTQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 - 三立新聞網SETN.com
+原文標題：台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 - 三立新聞網SETN.com
+摘要：台股戲劇翻紅穩嗎？ 七月ETF9檔現金入袋盤點 三立新聞網SETN.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiS0FVX3lxTE81Y3dyc05aTTJQdGFoaHRrSzN6M0R5dFhhcmFnQU5ZR2RVRldIZm9PQUNfSGF4U1NGU2VaeVBvamk4bVNBVUFIM2RHTQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 - sinotrade.com.tw<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 - sinotrade.com.tw</div>
+  <div class="news-summary">三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 sinotrade.com.tw</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 29 Jun 2026 08:40:49</span>
+    <a href="https://news.google.com/rss/articles/CBMiywRBVV95cUxPREp3am95R1Nzdi1sSWtQWDBqeDRKblU5Y2NpNTZGdmpYRlA2RjZBaEdSNklmbm9WRE5IZkFjQjZmRjg3Z3g4cWVqR3FoMi1JRFZWeXJRU1RmNld2SWdrYzlSWTdPSkxpWW1kelY5N1k3UXRiZFp2T004cEZ3VGV6Nmp0a2JkbUtjX040MFpXaVpvUENBcEdDa2thOTVuSjVjSW9xazZabnU1REU2d3owbGtPaUNvWlg1V05ReE1NaGx5MGdFcXRLWmpyS29kLUVNRmc3T1ZZQkE5VFZBaE5rMFl6Y3NEUEdmUkR0am9MSUF1dlNFb2xMaFcyc1A2X3U0RzJ1Z2pDZldKWjRDR2ItQ3hFcFhERUNfMEFKd05WNEJPYnRQZldSZWR5a0psSWxWTlJ2R3VyZ2piSlpFaTBPWGYwTktfSzBhYml3MjhWcWZHbXFtWnVjX3BIWmM3czFfMWxtMVpHOTl5NklBdUJsRWFSbDd4WXR0bVRjQzYtcGROa0hzcHZpdndmbkdOYkxaQ0p0Z3ljU05CU3p0a29PNlNucGxESGJERktDLVlaRjJJMFF6NWYxdW1NZTBHdTVsWXhTVkpHNVZ2VG4zSDhjbllQWXJQNE4zQVNLTFhEX1loM3NsTFBOaGp2X0J2THNDd3BBTC1VQ0FyZDNCMTY0a1VNVlRpMlY4Zk80ZVA5M3hSbW0xdWxMLVRrUVlBVW1lZHN4QzdSNUZlVmlYYkU4bXVYSUNFbFhnUFVxRFBOVlI5YjJxNmtqd1d2Zw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 - sinotrade.com.tw
+原文標題：三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 - sinotrade.com.tw
+摘要：三大法人買賣超 – 外資買超(2409)友達、(2454)聯發科，投信買超(3189)景碩、(2344)華邦電，法人合計買超31.5億元 sinotrade.com.tw
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiywRBVV95cUxPREp3am95R1Nzdi1sSWtQWDBqeDRKblU5Y2NpNTZGdmpYRlA2RjZBaEdSNklmbm9WRE5IZkFjQjZmRjg3Z3g4cWVqR3FoMi1JRFZWeXJRU1RmNld2SWdrYzlSWTdPSkxpWW1kelY5N1k3UXRiZFp2T004cEZ3VGV6Nmp0a2JkbUtjX040MFpXaVpvUENBcEdDa2thOTVuSjVjSW9xazZabnU1REU2d3owbGtPaUNvWlg1V05ReE1NaGx5MGdFcXRLWmpyS29kLUVNRmc3T1ZZQkE5VFZBaE5rMFl6Y3NEUEdmUkR0am9MSUF1dlNFb2xMaFcyc1A2X3U0RzJ1Z2pDZldKWjRDR2ItQ3hFcFhERUNfMEFKd05WNEJPYnRQZldSZWR5a0psSWxWTlJ2R3VyZ2piSlpFaTBPWGYwTktfSzBhYml3MjhWcWZHbXFtWnVjX3BIWmM3czFfMWxtMVpHOTl5NklBdUJsRWFSbDd4WXR0bVRjQzYtcGROa0hzcHZpdndmbkdOYkxaQ0p0Z3ljU05CU3p0a29PNlNucGxESGJERktDLVlaRjJJMFF6NWYxdW1NZTBHdTVsWXhTVkpHNVZ2VG4zSDhjbllQWXJQNE4zQVNLTFhEX1loM3NsTFBOaGp2X0J2THNDd3BBTC1VQ0FyZDNCMTY0a1VNVlRpMlY4Zk80ZVA5M3hSbW0xdWxMLVRrUVlBVW1lZHN4QzdSNUZlVmlYYkU4bXVYSUNFbFhnUFVxRFBOVlI5YjJxNmtqd1d2Zw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 美股盤後影響</h3>
+<div class="news">
+  <div class="news-title-zh">費半拖累台股一度挫900點 奮力翻紅收46780 - Yahoo股市<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 費半拖累台股一度挫900點 奮力翻紅收46780 - Yahoo股市</div>
+  <div class="news-summary">費半拖累台股一度挫900點 奮力翻紅收46780 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 10:15:03</span>
+    <a href="https://news.google.com/rss/articles/CBMikAJBVV95cUxNeW5CV1NLNmtIZjJBS3h6al9fZUdrYWgyWGhDNjVTaE1xLUx6X0VfZnJqanFPRFNKczY2T2s1SDZKUU1INy10TlBnbU1ITXh4WWxXdUlINjRMXzYybUFVUi1HOGF6RDFCN01IU0xES0xkLUtzYlJQQWFUcEdzb3VzQWlfdDhoRTh0NW1wdlYwdXh0enNfX3lkdk01UWJZb3duTkRXWnBTVUhZVWRYd25HT2hSRFdVTnlwbzJsaFlKQ1RPYmxKRFdiNEpDZDlwWFJXbDdHSU51NzBqaUR3UHRwSWQ4WnA0MnRsa2RUamt0LWtITGFYVkJHa1lIVWRzVTFUcEhWWkVNYUo1a3liNzdaeQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：費半拖累台股一度挫900點 奮力翻紅收46780 - Yahoo股市
+原文標題：費半拖累台股一度挫900點 奮力翻紅收46780 - Yahoo股市
+摘要：費半拖累台股一度挫900點 奮力翻紅收46780 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikAJBVV95cUxNeW5CV1NLNmtIZjJBS3h6al9fZUdrYWgyWGhDNjVTaE1xLUx6X0VfZnJqanFPRFNKczY2T2s1SDZKUU1INy10TlBnbU1ITXh4WWxXdUlINjRMXzYybUFVUi1HOGF6RDFCN01IU0xES0xkLUtzYlJQQWFUcEdzb3VzQWlfdDhoRTh0NW1wdlYwdXh0enNfX3lkdk01UWJZb3duTkRXWnBTVUhZVWRYd25HT2hSRFdVTnlwbzJsaFlKQ1RPYmxKRFdiNEpDZDlwWFJXbDdHSU51NzBqaUR3UHRwSWQ4WnA0MnRsa2RUamt0LWtITGFYVkJHa1lIVWRzVTFUcEhWWkVNYUo1a3liNzdaeQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">費半指數下挫　法人：台股面臨46000點保衛戰 - 經濟日報<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 費半指數下挫　法人：台股面臨46000點保衛戰 - 經濟日報</div>
+  <div class="news-summary">費半指數下挫 法人：台股面臨46000點保衛戰 經濟日報美股｜道瓊登高、費半重挫 美光、台積ADR跌跌不休 蘋果逆勢大漲近5％ 工商時報那指費半收黑、道瓊再創新高！台指期夜盤大跌938點 Yahoo股市</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 03 Jul 2026 00:30:33</span>
+    <a href="https://news.google.com/rss/articles/CBMiWkFVX3lxTFBHYmRQak1lMndHMDN2RUN3Yk9sNks5UDdWV3RiclVGaEdZckRoMG13aXRfTllYdVBVVWllSndzZmotT180NHJWSHNMR3BsVkhYaUFXbVBEeVZTd9IBX0FVX3lxTFBINE1UMXFRX1Brd3hFR0pIaVdMYktqbElvdUxiRmRNdnZFdHRReGNBU2VWMXhwSFlYSjU3R0t2OHNWNmp2ZTVtaFNyWVhoRlJhaVN4TUtkcXFDTE1RbHVN?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：費半指數下挫　法人：台股面臨46000點保衛戰 - 經濟日報
+原文標題：費半指數下挫　法人：台股面臨46000點保衛戰 - 經濟日報
+摘要：費半指數下挫 法人：台股面臨46000點保衛戰 經濟日報美股｜道瓊登高、費半重挫 美光、台積ADR跌跌不休 蘋果逆勢大漲近5％ 工商時報那指費半收黑、道瓊再創新高！台指期夜盤大跌938點 Yahoo股市
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiWkFVX3lxTFBHYmRQak1lMndHMDN2RUN3Yk9sNks5UDdWV3RiclVGaEdZckRoMG13aXRfTllYdVBVVWllSndzZmotT180NHJWSHNMR3BsVkhYaUFXbVBEeVZTd9IBX0FVX3lxTFBINE1UMXFRX1Brd3hFR0pIaVdMYktqbElvdUxiRmRNdnZFdHRReGNBU2VWMXhwSFlYSjU3R0t2OHNWNmp2ZTVtaFNyWVhoRlJhaVN4TUtkcXFDTE1RbHVN?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Nvidia財報出爐，首季營收成長85% - iThome<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Nvidia財報出爐，首季營收成長85% - iThome</div>
+  <div class="news-summary">Nvidia財報出爐，首季營收成長85% iThome</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 21 May 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiTkFVX3lxTE1sbWVGcmJSWWxQdzF2ZjBoVEg2cmQySVBZTy1hYmVGRDA0UXV1cHpyaS1VX0dRNHUyWGZRWnVJZlhHc1RIX0EyNDBZYXFSQQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：Nvidia財報出爐，首季營收成長85% - iThome
+原文標題：Nvidia財報出爐，首季營收成長85% - iThome
+摘要：Nvidia財報出爐，首季營收成長85% iThome
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiTkFVX3lxTE1sbWVGcmJSWWxQdzF2ZjBoVEg2cmQySVBZTy1hYmVGRDA0UXV1cHpyaS1VX0dRNHUyWGZRWnVJZlhHc1RIX0EyNDBZYXFSQQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 - CMoney投資網誌</div>
+  <div class="news-summary">【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 01:30:29</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxPcnJpSEUxQ2hFSlFZdlhfR0pmd1UwcWN0a3Q0cWU1VTVRTEpHQlZjM2tkVklRVWhNZkJRVzUtclc2akJaRnVDQ2pucnFyWUtOTDJuak9tcnNfX1pYZDJYZjdPeFdpODRkSnhORzRmUFQ4SDRUb3RlczlBTk9MUzIwbU5VOEpLVDU5V04tREFR?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 - CMoney投資網誌
+原文標題：【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 - CMoney投資網誌
+摘要：【06/30 產業即時新聞】電子上游-ABF族群受Nvidia財報激勵強勢表態，法人買盤助攻重回盤面焦點。 CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxPcnJpSEUxQ2hFSlFZdlhfR0pmd1UwcWN0a3Q0cWU1VTVRTEpHQlZjM2tkVklRVWhNZkJRVzUtclc2akJaRnVDQ2pucnFyWUtOTDJuak9tcnNfX1pYZDJYZjdPeFdpODRkSnhORzRmUFQ4SDRUb3RlczlBTk9MUzIwbU5VOEpLVDU5V04tREFR?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ - CMoney投資網誌<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ - CMoney投資網誌</div>
+  <div class="news-summary">【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ CMoney投資網誌</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Tue, 30 Jun 2026 22:23:33</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxOZ21MSTBhdUQzckJvZVdZMDdKSWdVSXZtYS1hVWUzUVdIY1V1MWVKY0hGd2syMFVKV2ZUb3l6OU9rMlBHRFhmVFFZc1dpT2ltZ3dIaEZKWU0wS0tuOU5TWlJ6M3VrVG83MXFaN2c1blZwY3BCOFdIVTVXVm1ROXhHTW5HRWdMNWYxNzNYOFZB?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則台股新聞的多空意義與操作建議：
+
+標題：【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ - CMoney投資網誌
+原文標題：【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ - CMoney投資網誌
+摘要：【美股巨頭】Mag 7縮水2.3兆美元，Meta還值得持有嗎？ CMoney投資網誌
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxOZ21MSTBhdUQzckJvZVdZMDdKSWdVSXZtYS1hVWUzUVdIY1V1MWVKY0hGd2syMFVKV2ZUb3l6OU9rMlBHRFhmVFFZc1dpT2ltZ3dIaEZKWU0wS0tuOU5TWlJ6M3VrVG83MXFaN2c1blZwY3BCOFdIVTVXVm1ROXhHTW5HRWdMNWYxNzNYOFZB?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+</section>
+
+<footer>
+  自動產生於 2026-07-05 08:02:52｜本機歸檔：~/Downloads/news/2026-07/｜
+  <a href="https://wang2026378.github.io/stocks/首頁.html" style="color:var(--accent)">← 回首頁</a>
+</footer>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const t=btn.dataset.copy;
+    navigator.clipboard.writeText(t).then(()=>{
+      const o=btn.textContent;btn.textContent='✓ 已複製';
+      setTimeout(()=>btn.textContent=o,1500);
+    });
+  });
+});
+</script>
+</body>
+</html>
