@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>美股情報 2026-08-03</title>
+<style>
+:root{--up:#e94545;--down:#22a96b;--bg:#0f1419;--card:#1a2028;--border:#2a3441;--text:#e6edf3;--muted:#8b96a3;--accent:#ffb800;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.65;padding:20px;max-width:1200px;margin:auto}
+header{padding:20px 0 30px;border-bottom:2px solid var(--accent);margin-bottom:30px}
+h1{font-size:28px;color:var(--accent)}
+.subtitle{color:var(--muted);margin-top:8px;font-size:14px}
+h2.section{font-size:22px;margin:40px 0 18px;color:var(--accent);border-left:5px solid var(--accent);padding-left:14px}
+h3.stock{font-size:18px;margin:24px 0 12px;color:#ffd969}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:6px;vertical-align:middle}
+.tag-holding{background:#e94545;color:#fff}
+.tag-watch{background:#3a4452;color:#fff}
+.tag-breaking{background:#ff4400;color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.news{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px}
+.news-title-zh{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.news-title-en{font-size:13px;color:var(--muted);margin-bottom:10px;font-style:italic}
+.news-summary{font-size:14px;color:#c8d3df;margin-bottom:10px}
+.news-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.news-meta a{color:#5ab8ff;text-decoration:none}
+.news-meta a:hover{text-decoration:underline}
+.copy-btn{background:#3a4452;color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:12px;cursor:pointer;margin-left:auto}
+.copy-btn:hover{background:#4a5462}
+.analysis{background:linear-gradient(135deg,#1f2a3a,#1a2028);border-left:4px solid var(--accent);padding:14px 18px;margin:12px 0 24px;border-radius:0 8px 8px 0;font-size:14.5px;color:#dde6f0;white-space:pre-wrap}
+.analysis-label{font-size:11px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;font-weight:600}
+.taiwan-impact{background:linear-gradient(135deg,#3a1f1f,#2a1818);border:2px solid var(--up);padding:20px;border-radius:10px;margin:30px 0}
+.taiwan-impact h2{color:var(--up);margin-bottom:12px}
+.taiwan-impact-body{white-space:pre-wrap;font-size:15px;color:#f0e0e0}
+.breaking-banner{background:linear-gradient(90deg,#ff4400,#ff7700);padding:14px 20px;border-radius:8px;margin-bottom:20px;color:#fff;font-weight:600}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 20px;margin-bottom:24px}
+.toc-title{color:var(--accent);font-weight:600;margin-bottom:8px}
+.toc a{color:#5ab8ff;text-decoration:none;margin-right:14px;display:inline-block;margin-bottom:4px}
+footer{margin-top:40px;padding:20px 0;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center}
+.empty{color:var(--muted);font-style:italic;padding:10px}
+.signal{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-left:10px;vertical-align:middle}
+.signal-score{background:rgba(0,0,0,0.3);padding:2px 8px;border-radius:10px;font-family:monospace;font-size:12px}
+.sentiment-tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;margin-left:6px;font-weight:600}
+.sent-pos{background:#e94545;color:#fff}
+.sent-neg{background:#22a96b;color:#fff}
+.sent-neu{background:#3a4452;color:#aab5c2}
+.social-block{background:#161b22;border:1px dashed #3a4452;border-radius:8px;padding:14px;margin:10px 0 20px}
+.social-label{font-size:11px;color:#ffb800;letter-spacing:2px;margin-bottom:10px;font-weight:600}
+.social-item{padding:8px 0;border-bottom:1px solid #2a3441;font-size:13.5px}
+.social-item:last-child{border:none}
+.social-meta{font-size:11px;color:#8b96a3;margin-top:4px}
+.social-meta a{color:#5ab8ff;text-decoration:none;margin-right:10px}
+.top10{background:linear-gradient(135deg,#1a2e1f,#1f2a3a);border:2px solid var(--accent);border-radius:14px;padding:24px 28px;margin-bottom:28px;box-shadow:0 4px 24px rgba(255,184,0,0.15)}
+.top10-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,184,0,0.3)}
+.top10-icon{font-size:28px}
+.top10-title{font-size:22px;color:var(--accent);font-weight:700}
+.top10-sub{color:#a8b3c2;font-size:13px;margin-left:auto}
+.top10-list{counter-reset:item;padding:0;margin:0;list-style:none}
+.top10-list li{counter-increment:item;position:relative;padding:11px 0 11px 40px;border-bottom:1px dashed rgba(255,255,255,0.06);font-size:15.5px;line-height:1.65;color:#eaeef5}
+.top10-list li:last-child{border-bottom:none}
+.top10-list li::before{content:counter(item);position:absolute;left:0;top:11px;width:28px;height:28px;background:var(--accent);color:#0f1419;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.top10-list li:nth-child(1)::before{background:#ff4400;color:#fff}
+.top10-list li:nth-child(2)::before{background:#ff7a4d;color:#fff}
+.top10-list li:nth-child(3)::before{background:#ffa033;color:#0f1419}
+.social5{background:linear-gradient(135deg,#2a1f3a,#1f2a3a);border:2px solid #a855f7;border-radius:14px;padding:24px 28px;margin-bottom:28px;box-shadow:0 4px 24px rgba(168,85,247,0.12)}
+.social5-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(168,85,247,0.3)}
+.social5-icon{font-size:26px}
+.social5-title{font-size:21px;color:#c084fc;font-weight:700}
+.social5-sub{color:#a8b3c2;font-size:13px;margin-left:auto}
+.social5-item{padding:12px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
+.social5-item:last-child{border-bottom:none}
+.social5-title-line{font-size:15px;color:#eaeef5;line-height:1.55;margin-bottom:6px}
+.social5-meta{font-size:12px;color:#a8b3c2;margin-bottom:6px}
+.social5-meta a{color:#c084fc;text-decoration:none;margin-left:8px}
+.social5-insight{background:rgba(168,85,247,0.08);border-left:3px solid #c084fc;padding:8px 12px;font-size:13.5px;color:#dde6f0;line-height:1.6;border-radius:0 6px 6px 0}
+.social5-insight::before{content:'🎯 投顧視角';color:#c084fc;font-weight:600;font-size:11px;letter-spacing:1px;display:block;margin-bottom:3px}
+</style>
+</head>
+<body>
+<header>
+  <h1>📰 美股情報 — 2026年08月03日</h1>
+  <div class="subtitle">川普投顧 VIP — Gemma 4 16 檔個股操作策略 + 今日美股策略｜共 93 則內容｜新聞：Yahoo / Google News / Reuters / Bloomberg｜社群：Reddit / Threads / PTT</div>
+</header>
+
+<div class="breaking-banner">🚨 重大新聞警報（19 則）<div>• 有 1,000 美元嗎？台積電1000億美元投資亞利桑那州成為必買股</div><div>• ASML vs. 台積電：哪隻半導體供應鏈股票在人工智慧方面表現較好？</div><div>• SoundHound AI 8 月 5 日發布的下一份收益報告可能會導致該股飆升。這就是為什麼。</div><div>• 隨著川普轉向伊朗，道瓊期貨上漲，油價下跌；SpaceX、AMD、Sandisk、禮來公司獲利迫在眉睫</div><div>• 本週值得關注的財報：SpaceX 第一份財報、迪士尼、AMD 和麥當勞</div></div>
+
+
+<section id="top10">
+  <div class="top10">
+    <div class="top10-head">
+      <span class="top10-icon">📌</span>
+      <span class="top10-title">3 分鐘看懂今日重點</span>
+      <span class="top10-sub">共 93 則內容濃縮 · Gemma 4 主編精選</span>
+    </div>
+    <ol class="top10-list">
+  <li>🤖 AI 洗牌加速，資金正從傳統權值股輪動至具備實質基礎設施的「下一代硬科技」環節（如量子計算、先進半導體）。</li>
+  <li>🇹🇼 台積電(TSM) 在亞利桑那的大規模投資，鞏固其在美國晶片供應鏈的核心地位，是必關注的領頭羊。</li>
+  <li>🚀 關注具備爆發潛力的「下一代硬科技」標的，特別是量子計算（IonQ, QBTS）和先進半導體設備商，有結構性輪動機會。</li>
+  <li>📊 本週財報焦點集中於 SpaceX、AMD 等公司，其**營收指引 (Guidance)** 將比當期數據更決定市場情緒。</li>
+  <li>🌍 地緣政治風險持續影響能源與工業股，川普政策轉向（如伊朗議題）會直接牽動油價與相關產業走勢。</li>
+  <li>🤖 大型科技公司正經歷「AI 洗牌」，投資者需區分真正具有護城河的領導者，而非單純概念炒作。</li>
+  <li>📈 半導體供應鏈結構性趨勢明顯，應關注晶圓代工（TSM）與關鍵設備商（如 ASML 的生態位）。</li>
+  <li>⚠️ 市場資金正從大型權值股流出，注意史蒂夫·科恩等機構投資人正在「拋售大科技，買入被忽視標的」的訊號。</li>
+  <li>💬 量子計算領域競爭激烈（IonQ vs QBTS），分析師持續指出該領域有爆發力，但需區分技術成熟度與估值泡沫。</li>
+  <li>💡 投資策略上，應將焦點從單純的「降息預期」轉移至「通膨黏性」和產業結構轉型的實質需求端。</li>
+    </ol>
+  </div>
+</section>
+
+
+
+<nav class="toc">
+  <div class="toc-title">🧭 目錄</div>
+  <a href="#top10">📌 3 分鐘看懂</a>
+  <a href="#social5">💬 社群 5 焦點</a>
+  <a href="#taiwan">🎯 今日美股策略</a>
+  <a href="#stocks">📊 個股新聞</a>
+  <a href="#themes">🎯 主題情報</a>
+</nav>
+
+<section id="taiwan">
+  <div class="taiwan-impact">
+    <h2>🎯 今日美股操作策略</h2>
+    <div class="taiwan-impact-body">**【川普投顧 VIP 會員：今日美股操作策略】**
+
+**總體判斷：結構性轉型加速，聚焦「AI 基礎設施」與「新興硬科技」。**
+
+1. **三大指數展望與動能：** 市場資金正經歷由大型權值股（Mega-Cap Tech）向更具成長潛力、但被市場低估的「下一代硬體」（如量子計算、特定半導體環節）進行結構性輪動。Nasdaq 100 受 AI 敘事帶動，短期動能最強；S&amp;P 500 則呈現分化，資金正篩選出具備實質護城河的領導者。
+2. **聯準會與利率：** 市場對降息預期已消化部分風險，焦點轉向數據背後的「通膨黏性」而非單純的利率點位。政策定調將更側重於經濟結構的穩健性，保持謹慎觀望態度。
+3. **本週重點日程：** 關注大型科技股財報的指引（Guidance）變化，這比當期數據更具預測價值。若 CPI/PCE 指標過於強勁，需警惕市場情緒過熱後的修正風險。
+4. **三大族群觀察：**
+    * **AI 半導體 (Semiconductors)：** 仍是核心主軸，重點關注晶圓代工（如 TSM 的先進製程佈局）與關鍵設備供應鏈的「剛性需求」。
+    * **量子運算 (Quantum Computing)：** 受益於長期趨勢敘事，具備高 Beta 的衛星標的。若資金輪動順暢，將有爆發力。
+    * **電動車/能源轉型：** 景氣循環更明顯，需區分「概念炒作」與「實質需求落地」的標的。
+5. **對台股供應鏈連動影響：** 台積電在亞利桑那等地的資本支出（CapEx）持續是市場焦點，顯示其全球擴張佈局穩固。整體來看，AI 相關的先進封裝與晶片測試環節將帶動廣達、鴻海等後端供應鏈的穩定增長。
+6. **具體操作建議：** **逢高出清大型權值股（如部分 Mega-Cap），轉向「結構性成長標的」加碼，特別是具有明確技術壁壘的半導體設備商及量子計算領域領導者。** 避免追逐單一敘事過熱的個股。
+7. **風險警示：** 地緣政治帶來的供應鏈重組與關稅政策仍是潛在變數，需密切關注關鍵晶片戰略地位的變化；大型財報若不及預期，可能引發市場情緒快速修正。</div>
+  </div>
+</section>
+
+<section id="stocks">
+  <h2 class="section">📊 個股新聞</h2>
+  <h3 class="stock">TSM — 台積電ADR <span style="color:#8b96a3;font-size:13px">（半導體）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬：TSM/半導體個股操作策略】**
+
+**總結判斷：** 觀望觀察，短期不宜急動，中長期趨勢仍穩健看好。
+
+**短線（1-3 天）：** **偏空/謹慎觀望。** 市場焦點分散於科恩的「被忽視標的」和亞州建廠消息，單日波動性高，建議等待情緒過濾。
+**中線（1-2 週）：** 密切關注**產業催化劑**（如AI晶片需求數據、ASML/TSM的合作進展）。若有重大政策利多或業績超預期，將是主要的上攻點。
+
+**具體操作建議：** **持續持有 (Hold)。** 邏輯為台積電作為產業龍頭，其長期護城河穩固，短期波動可視為買入機會的訊號。
+**對台股供應鏈連動影響：** 正面帶動。TSM在美國的擴張，必然會拉高對台灣晶圓代工及設備周邊環節的需求預期，利好整體供應鏈情緒。
+
+**風險提示：** 注意地緣政治不確定性（美中關係）仍是最大的潛在下行風險點。請嚴格設定停損點位。</div>
+<div class="news">
+  <div class="news-title-zh">有 1,000 美元嗎？台積電1000億美元投資亞利桑那州成為必買股<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Got $1,000? Taiwan Semiconductor Manufacturing&#x27;s $100 Billion Arizona Investment Makes It a Must-Own Stock</div>
+  <div class="news-summary">台積電正在透過在亞利桑那州的投資進行多項檢查。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:05:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/got-1000-taiwan-semiconductors-100-billion-arizona/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：有 1,000 美元嗎？台積電1000億美元投資亞利桑那州成為必買股
+原文標題：Got $1,000? Taiwan Semiconductor Manufacturing&#x27;s $100 Billion Arizona Investment Makes It a Must-Own Stock
+摘要：台積電正在透過在亞利桑那州的投資進行多項檢查。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/got-1000-taiwan-semiconductors-100-billion-arizona/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">ASML vs. 台積電：哪隻半導體供應鏈股票在人工智慧方面表現較好？<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 ASML vs. TSMC: Which Semiconductor Supply Chain Stock Is the Better AI Play?</div>
+  <div class="news-summary">兩家公司在人工智慧的建設熱潮中發揮重要作用。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 16:24:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/asml-vs-tsmc-which-semiconductor-supply-chain-stoc/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：ASML vs. 台積電：哪隻半導體供應鏈股票在人工智慧方面表現較好？
+原文標題：ASML vs. TSMC: Which Semiconductor Supply Chain Stock Is the Better AI Play?
+摘要：兩家公司在人工智慧的建設熱潮中發揮重要作用。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/asml-vs-tsmc-which-semiconductor-supply-chain-stoc/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">億萬富翁史蒂夫科恩正在買入這只被忽視的股票，同時拋售大型科技公司<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Billionaire Steve Cohen Is Buying This Overlooked Stock While Dumping Big Tech</div>
+  <div class="news-summary">這位成功的對沖基金經理似乎在第一季對零食產生了渴望。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 09:04:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/billionaire-steve-cohen-is-buying-this-overlooked/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：億萬富翁史蒂夫科恩正在買入這只被忽視的股票，同時拋售大型科技公司
+原文標題：Billionaire Steve Cohen Is Buying This Overlooked Stock While Dumping Big Tech
+摘要：這位成功的對沖基金經理似乎在第一季對零食產生了渴望。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/billionaire-steve-cohen-is-buying-this-overlooked/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">TSLA — Tesla <span style="color:#8b96a3;font-size:13px">（電動車）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬】Tesla (TSLA) 個股操作策略分析**
+
+**總體判斷：中性偏觀望，等待 AI 產業結構性確認。**
+
+*   **短線（1-3 天）：** **觀望/減碼。** 市場焦點集中於大型科技公司（AMZN, MSFT, GOOGL）的 AI 領漲動能，TSLA 在當前敘事中相對被邊緣化，短期缺乏明確爆發點。
+*   **中線（1-2 週）：** **關注產業催化劑。** 需密切觀察 TSLA 的新產品發表進度（如 FSD 或下一代平台）以及其在 AI 垂直整合方面的實際落地成果，而非僅依賴「生產地獄」的歷史敘事。
+*   **具體操作建議：** **觀望。** 在缺乏重大利多催化劑且市場資金流向明確指向大型雲端/AI 巨頭時，不宜貿然追高或深度減倉，應等待價格回歸基本面支撐區間。
+*   **台股連動影響：** 若 TSLA 轉型成功並擴大自動駕駛應用場景，將帶動對台灣半導體設備、感測器供應鏈的結構性需求增長。
+*   **風險提示：** 近期市場情緒過熱，單純基於「電動車趨勢」進行操作風險極高；應以穩健配置為主，避免追逐短期新聞炒作。</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up</div>
+  <div class="news-summary">該 IPO 股票於 7 月 7 日快速進入科技指數。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:39:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出
+原文標題：SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up
+摘要：該 IPO 股票於 7 月 7 日快速進入科技指數。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">儘管評級上調，為何摩根士丹利仍不認為 Rivian 值得買入<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 Why Morgan Stanley won’t call Rivian a buy despite upgrade</div>
+  <div class="news-summary">九年前，特斯拉試圖擴大新車生產線的規模，幾乎耗盡了其現金儲備，馬斯克後來將這段混亂稱為「生產地獄」。 Rivian (RIVN) 現在正在透過 R2 來應對這項挑戰，這是一款價格實惠的 SUV，旨在將小眾汽車製造商轉變為大眾市場汽車製造商。 …</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 19:13:00</span>
+    <a href="https://www.thestreet.com/investing/stocks/rivian-stock-morgan-stanley-rating?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：儘管評級上調，為何摩根士丹利仍不認為 Rivian 值得買入
+原文標題：Why Morgan Stanley won’t call Rivian a buy despite upgrade
+摘要：九年前，特斯拉試圖擴大新車生產線的規模，幾乎耗盡了其現金儲備，馬斯克後來將這段混亂稱為「生產地獄」。 Rivian (RIVN) 現在正在透過 R2 來應對這項挑戰，這是一款價格實惠的 SUV，旨在將小眾汽車製造商轉變為大眾市場汽車製造商。 …
+來源：Yahoo | 連結：https://www.thestreet.com/investing/stocks/rivian-stock-morgan-stanley-rating?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">大型科技公司 2 兆美元的 AI 洗牌改變了一切<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Big Tech’s $2 trillion AI shakeout just changed everything</div>
+  <div class="news-summary">華爾街剛對人工智慧產業採取了嚴厲的態度。根據 CNBC 報道，亞馬遜 (AMZN)、微軟 (MSFT) 和 Alphabet (GOOGL) 在財報週期間的總市值增加了近 1.5 兆美元。微軟的收益超過 6000 億美元，而亞馬遜和 Alphabet 各...</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:33:00</span>
+    <a href="https://www.thestreet.com/investing/big-techs-2-trillion-ai-shakeout-just-changed-everything?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：大型科技公司 2 兆美元的 AI 洗牌改變了一切
+原文標題：Big Tech’s $2 trillion AI shakeout just changed everything
+摘要：華爾街剛對人工智慧產業採取了嚴厲的態度。根據 CNBC 報道，亞馬遜 (AMZN)、微軟 (MSFT) 和 Alphabet (GOOGL) 在財報週期間的總市值增加了近 1.5 兆美元。微軟的收益超過 6000 億美元，而亞馬遜和 Alphabet 各...
+來源：Yahoo | 連結：https://www.thestreet.com/investing/big-techs-2-trillion-ai-shakeout-just-changed-everything?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">IONQ — IonQ <span style="color:#8b96a3;font-size:13px">（量子運算）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【VIP 個股操作策略：IonQ (IONQ)】**
+
+**總體判斷：觀望為主，逢低觀察結構性機會。**
+
+**短線（1-3 天）：** 偏向謹慎觀望。市場情緒受整體科技類股波動影響較大，短期缺乏明確的催化劑支撐，建議等待盤整區確認方向。
+**中線（1-2 週）：** 密切關注產業大型合作公告或具體商業化里程碑進展。若能看到與實際應用場景（如製藥、材料科學）掛鉤的實質進展，將是主要的上行催化劑。
+**操作建議：持續持有 (逢低觀察加碼點)。** 操作邏輯為：雖然短期波動大，但 IonQ 在市場敘事中具備較強的「增長故事」（高成長率、國內半導體佈局），適合長期佈局者在回檔時分批吸籌。
+**對台股供應鏈影響：** 產業趨勢正面。若量子運算技術成熟，台灣晶圓代工及相關精密設備供應商將是主要的受益節點，建議關注其概念性權值股。
+**風險提示：** 量子計算屬於高風險、長週期技術賽道，短期內受市場資金流向影響極大，切勿追高。
+
+---
+*（本策略僅供參考，投資決策需結合個人風險承受能力與整體市場判斷。）*</div>
+<div class="news">
+  <div class="news-title-zh">IonQ 與 Rigetti：2026 年哪隻量子計算股票比較值得買進？<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 IonQ vs. Rigetti: Which Quantum Computing Stock Is a Better Buy in 2026?</div>
+  <div class="news-summary">IonQ 正在以 201% 的收入成長和國內半導體業務進行擴張，而 Rigetti 則面臨收入逆風和資本限制。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:12:31</span>
+    <a href="https://www.fool.com/coverage/better-buy/2026/08/02/ionq-vs-rigetti-which-quantum-computing-stock-is-a-better-buy-in-2026/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：IonQ 與 Rigetti：2026 年哪隻量子計算股票比較值得買進？
+原文標題：IonQ vs. Rigetti: Which Quantum Computing Stock Is a Better Buy in 2026?
+摘要：IonQ 正在以 201% 的收入成長和國內半導體業務進行擴張，而 Rigetti 則面臨收入逆風和資本限制。
+來源：Yahoo | 連結：https://www.fool.com/coverage/better-buy/2026/08/02/ionq-vs-rigetti-which-quantum-computing-stock-is-a-better-buy-in-2026/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">頂級分析師認為 3 隻量子計算股票會飆升<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 3 Quantum Computing Stocks a Top Analyst Says Can Soar</div>
+  <div class="news-summary">生物學中有一個概念叫做適應性輻射。當一個物種進入一個生態位未被佔據的新環境並迅速進化成多種不同的形式時，就會發生這種情況。我們在技術領域看到了類似的模式。當突破性技術出現時，它通常會引發一波創新浪潮，越來越多的公司開發競爭方法並迅速填補以前空缺的市場。 主張 55% 折扣 TipRank 透過 TipRank 解鎖強大的投資工具</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:00:00</span>
+    <a href="https://finance.yahoo.com/technology/ai/articles/3-quantum-computing-stocks-top-180000942.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：頂級分析師認為 3 隻量子計算股票會飆升
+原文標題：3 Quantum Computing Stocks a Top Analyst Says Can Soar
+摘要：生物學中有一個概念叫做適應性輻射。當一個物種進入一個生態位未被佔據的新環境並迅速進化成多種不同的形式時，就會發生這種情況。我們在技術領域看到了類似的模式。當突破性技術出現時，它通常會引發一波創新浪潮，越來越多的公司開發競爭方法並迅速填補以前空缺的市場。 主張 55% 折扣 TipRank 透過 TipRank 解鎖強大的投資工具
+來源：Yahoo | 連結：https://finance.yahoo.com/technology/ai/articles/3-quantum-computing-stocks-top-180000942.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">IonQ 與 D-Wave Quantum：2026 年哪一種量子計算股票比較值得買進？<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 IonQ vs. D-Wave Quantum: Which Quantum Computing Stock Is a Better Buy in 2026?</div>
+  <div class="news-summary">兩家公司都在燒錢且無利可圖，但他們的技術押注和客戶名單卻講述了一個截然不同的故事。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 13:54:01</span>
+    <a href="https://www.fool.com/coverage/better-buy/2026/08/02/ionq-vs-d-wave-quantum-which-quantum-computing-stock-is-a-better-buy-in-2026/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：IonQ 與 D-Wave Quantum：2026 年哪一種量子計算股票比較值得買進？
+原文標題：IonQ vs. D-Wave Quantum: Which Quantum Computing Stock Is a Better Buy in 2026?
+摘要：兩家公司都在燒錢且無利可圖，但他們的技術押注和客戶名單卻講述了一個截然不同的故事。
+來源：Yahoo | 連結：https://www.fool.com/coverage/better-buy/2026/08/02/ionq-vs-d-wave-quantum-which-quantum-computing-stock-is-a-better-buy-in-2026/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">AVGO — Broadcom <span style="color:#8b96a3;font-size:13px">（半導體）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【VIP 個股操作策略：博通 (AVGO)】**
+
+**總體判斷：** 結構性優勢確立，逢低吸籌的買入點位持續存在。
+
+**短線（1-3 天）：** **偏多/觀望。** 關注市場對「非單一晶片供應商」分散風險的認可度。短期波動應視為獲利了結後的正常修正，不宜追高。
+
+**中線（1-2 週）：** **重點觀察點：** 留意半導體產業鏈內其他關鍵設備/IP廠商的動向，以及大型客戶在AI基礎設施支出上的具體採購結構變化。若有關於「邊緣運算」或「特定垂直整合解決方案」的正面消息，將是強力催化劑。
+
+**具體操作建議：** **持續持有 / 逢低加碼。** 科恩等資金流向顯示市場正在重新評估被大型科技巨頭掩蓋的價值點；逢關鍵支撐位回檔時為優質配置。
+
+**對台股供應鏈連動影響：** 博通在網路基礎設施和特定晶片解決方案上的領先地位，預示未來需求將更分散化，利好具備高階設計能力、能提供整體解決方案（System Solution）的台灣相關廠商。
+
+**風險提示：** 警惕市場過度樂觀導致估值泡沫化，若宏觀經濟數據出現急劇惡化訊號，短期調整壓力可能加大。</div>
+<div class="news">
+  <div class="news-title-zh">3 只具有長期成長和收入的頂級科技股<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 3 Top Tech Stocks for Long-Term Growth and Income</div>
+  <div class="news-summary">這就是為什麼微軟、德州儀器和博通看起來是為了長期回報。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 09:58:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/3-top-tech-stocks-for-long-term-growth-and-income/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：3 只具有長期成長和收入的頂級科技股
+原文標題：3 Top Tech Stocks for Long-Term Growth and Income
+摘要：這就是為什麼微軟、德州儀器和博通看起來是為了長期回報。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/3-top-tech-stocks-for-long-term-growth-and-income/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">億萬富翁史蒂夫科恩正在買入這只被忽視的股票，同時拋售大型科技公司<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Billionaire Steve Cohen Is Buying This Overlooked Stock While Dumping Big Tech</div>
+  <div class="news-summary">這位成功的對沖基金經理似乎在第一季對零食產生了渴望。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 09:04:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/billionaire-steve-cohen-is-buying-this-overlooked/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：億萬富翁史蒂夫科恩正在買入這只被忽視的股票，同時拋售大型科技公司
+原文標題：Billionaire Steve Cohen Is Buying This Overlooked Stock While Dumping Big Tech
+摘要：這位成功的對沖基金經理似乎在第一季對零食產生了渴望。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/billionaire-steve-cohen-is-buying-this-overlooked/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">雙極矽市場結構意味著什麼：Nividia VS.博通<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 What The Bipolar Silicon Market Structure Means Moving Forward: Nividia Vs. Broadcom</div>
+  <div class="news-summary">英偉達 (NVIDIA) 和博通 (Broadcom) 剛剛公佈了連續兩個季度的井噴報告，它們以相反的策略向相同的超大規模客戶進行銷售，而它們的股票反應之間的差距告訴您有關人工智能基礎設施支出下一步走向的重要信息。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 14:15:18</span>
+    <a href="https://247wallst.com/investing/2026/08/01/what-the-bipolar-silicon-market-structure-means-moving-forward-nividia-vs-broadcom/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：雙極矽市場結構意味著什麼：Nividia VS.博通
+原文標題：What The Bipolar Silicon Market Structure Means Moving Forward: Nividia Vs. Broadcom
+摘要：英偉達 (NVIDIA) 和博通 (Broadcom) 剛剛公佈了連續兩個季度的井噴報告，它們以相反的策略向相同的超大規模客戶進行銷售，而它們的股票反應之間的差距告訴您有關人工智能基礎設施支出下一步走向的重要信息。
+來源：Yahoo | 連結：https://247wallst.com/investing/2026/08/01/what-the-bipolar-silicon-market-structure-means-moving-forward-nividia-vs-broadcom/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">GOOGL — Alphabet <span style="color:#8b96a3;font-size:13px">（AI雲端）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【GOOGL 個股操作策略報告】**
+
+**短線判斷：觀望偏多。** 消息面極度熱絡，短期內受 AI 敘事推升帶動情緒交易，建議觀察技術指標背離訊號，避免追高進場。
+
+**中線關注事件：AI 產業領導地位確立與雲端增長。** 應持續關注後續財報季的雲端營收指引（Google Cloud），以及大型科技公司在 AI 基礎設施上的資本支出動態，這將是決定估值區間的核心催化劑。
+
+**具體操作建議：持續持有。** **邏輯：** 公司核心地位穩固，AI 生態系統的領先者地位難以撼動，長期價值仍在積累中。若回檔至關鍵支撐位（請參考技術圖表），可逢低分批加碼佈局。
+
+**台股供應鏈連動影響：正面。** GOOGL 穩定的雲端需求，將持續帶動台灣半導體設備及晶片代工廠的營運能見度，利好相關產業鏈。
+
+**風險提示：** 市場過熱情緒是主要風險點。若宏觀經濟數據不及預期或聯準會鷹派轉向，科技股可能面臨整體修正壓力，請注意分批建倉紀律。</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up</div>
+  <div class="news-summary">該 IPO 股票於 7 月 7 日快速進入科技指數。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:39:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出
+原文標題：SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up
+摘要：該 IPO 股票於 7 月 7 日快速進入科技指數。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">大型科技公司 2 兆美元的 AI 洗牌改變了一切<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Big Tech’s $2 trillion AI shakeout just changed everything</div>
+  <div class="news-summary">華爾街剛對人工智慧產業採取了嚴厲的態度。根據 CNBC 報道，亞馬遜 (AMZN)、微軟 (MSFT) 和 Alphabet (GOOGL) 在財報週期間的總市值增加了近 1.5 兆美元。微軟的收益超過 6000 億美元，而亞馬遜和 Alphabet 各...</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:33:00</span>
+    <a href="https://www.thestreet.com/investing/big-techs-2-trillion-ai-shakeout-just-changed-everything?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：大型科技公司 2 兆美元的 AI 洗牌改變了一切
+原文標題：Big Tech’s $2 trillion AI shakeout just changed everything
+摘要：華爾街剛對人工智慧產業採取了嚴厲的態度。根據 CNBC 報道，亞馬遜 (AMZN)、微軟 (MSFT) 和 Alphabet (GOOGL) 在財報週期間的總市值增加了近 1.5 兆美元。微軟的收益超過 6000 億美元，而亞馬遜和 Alphabet 各...
+來源：Yahoo | 連結：https://www.thestreet.com/investing/big-techs-2-trillion-ai-shakeout-just-changed-everything?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">華倫·巴菲特後悔沒有早點投資 Alphabet。新任執行長格雷格·阿貝爾不會有同樣的擔憂。<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Warren Buffett Regretted Not Investing in Alphabet Earlier. New CEO Greg Abel Won&#x27;t Have the Same Worry.</div>
+  <div class="news-summary">伯克希爾哈撒韋公司執行長格雷格阿貝爾押注哪家公司將成為人工智慧領域的領導者。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:25:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/warren-buffett-regretted-not-investing-in-alphabet/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：華倫·巴菲特後悔沒有早點投資 Alphabet。新任執行長格雷格·阿貝爾不會有同樣的擔憂。
+原文標題：Warren Buffett Regretted Not Investing in Alphabet Earlier. New CEO Greg Abel Won&#x27;t Have the Same Worry.
+摘要：伯克希爾哈撒韋公司執行長格雷格阿貝爾押注哪家公司將成為人工智慧領域的領導者。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/warren-buffett-regretted-not-investing-in-alphabet/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">QBTS — D-Wave Quantum <span style="color:#8b96a3;font-size:13px">（量子運算）</span><span class="tag tag-holding">持股</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【D-Wave (QBTS) 個股操作策略報告】**
+
+**總體判斷：觀望後逢低佈局，中長期關注技術突破帶動的結構性復甦。**
+
+**短線（1-3 天）：** 偏向謹慎觀望。市場情緒受「量子計算概念炒作」影響較大，短期波動劇烈。除非有重大利多消息或資金輪動明確指引，否則不建議追高進場。
+**中線（1-2 週）：** 密切關注產業催化劑。IBM 等巨頭在「準確性驗證」上的突破是關鍵技術里程碑；同時，市場對 AI/量子領域的長期敘事仍具吸引力，需等待更明確的實質進展或資金回流訊號。
+**操作建議：** **觀望後逢低加碼（Accumulate on Dips）**。邏輯為：雖然短期炒作風險高，但若能確認產業技術瓶頸（如準確性）已迎刃而解，則具備結構性反轉的潛力，適合耐心佈局者在回檔時分批介入。
+**對台股供應鏈影響：** 概念層面有正面連動。隨著全球科技巨頭加大 AI/量子投入，台灣相關晶片、光學元件及精密儀器供應商將受益於產業景氣的提升。
+**風險提示：** 量子計算仍處於極早期階段，技術路線圖變動大，且個股估值已高度依賴「敘事」而非短期現金流，操作風險極高，務必嚴格控制單筆權重。</div>
+<div class="news">
+  <div class="news-title-zh">頂級分析師認為 3 隻量子計算股票會飆升<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 3 Quantum Computing Stocks a Top Analyst Says Can Soar</div>
+  <div class="news-summary">生物學中有一個概念叫做適應性輻射。當一個物種進入一個生態位未被佔據的新環境並迅速進化成多種不同的形式時，就會發生這種情況。我們在技術領域看到了類似的模式。當突破性技術出現時，它通常會引發一波創新浪潮，越來越多的公司開發競爭方法並迅速填補以前空缺的市場。 主張 55% 折扣 TipRank 透過 TipRank 解鎖強大的投資工具</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:00:00</span>
+    <a href="https://finance.yahoo.com/technology/ai/articles/3-quantum-computing-stocks-top-180000942.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：頂級分析師認為 3 隻量子計算股票會飆升
+原文標題：3 Quantum Computing Stocks a Top Analyst Says Can Soar
+摘要：生物學中有一個概念叫做適應性輻射。當一個物種進入一個生態位未被佔據的新環境並迅速進化成多種不同的形式時，就會發生這種情況。我們在技術領域看到了類似的模式。當突破性技術出現時，它通常會引發一波創新浪潮，越來越多的公司開發競爭方法並迅速填補以前空缺的市場。 主張 55% 折扣 TipRank 透過 TipRank 解鎖強大的投資工具
+來源：Yahoo | 連結：https://finance.yahoo.com/technology/ai/articles/3-quantum-computing-stocks-top-180000942.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">IBM 終於解決了量子運算最令人頭痛的問題之一<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 IBM Is Finally Fixing One of Quantum Computing’s Biggest Headaches</div>
+  <div class="news-summary">IBM 和研究合作夥伴在三篇新論文中展示如何即時檢查量子計算的準確性。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Thu, 30 Jul 2026 18:50:00</span>
+    <a href="https://finance.yahoo.com/m/3e3a69b4-d19e-3be2-85f1-23f713598af2/ibm-is-finally-fixing-one-of.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：IBM 終於解決了量子運算最令人頭痛的問題之一
+原文標題：IBM Is Finally Fixing One of Quantum Computing’s Biggest Headaches
+摘要：IBM 和研究合作夥伴在三篇新論文中展示如何即時檢查量子計算的準確性。
+來源：Yahoo | 連結：https://finance.yahoo.com/m/3e3a69b4-d19e-3be2-85f1-23f713598af2/ibm-is-finally-fixing-one-of.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">3隻人工智慧股票可能會在未來幾年獎勵耐心的投資者<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 3 AI Stocks That Could Reward Patient Investors for Years to Come</div>
+  <div class="news-summary">到 2026 年，三隻量子計算股票的價值已蒸發近一半，但收入卻在飆升，政府仍在持續簽署合約。劇烈逆轉的準備可能已經就位。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Thu, 30 Jul 2026 18:30:26</span>
+    <a href="https://247wallst.com/investing/2026/07/30/3-ai-stocks-that-could-reward-patient-investors-for-years-to-come/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：3隻人工智慧股票可能會在未來幾年獎勵耐心的投資者
+原文標題：3 AI Stocks That Could Reward Patient Investors for Years to Come
+摘要：到 2026 年，三隻量子計算股票的價值已蒸發近一半，但收入卻在飆升，政府仍在持續簽署合約。劇烈逆轉的準備可能已經就位。
+來源：Yahoo | 連結：https://247wallst.com/investing/2026/07/30/3-ai-stocks-that-could-reward-patient-investors-for-years-to-come/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">NVDA — NVIDIA <span style="color:#8b96a3;font-size:13px">（半導體）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬：個股操作策略分析】**
+
+**總體定調：謹慎觀察，鎖定結構性成長主題。**
+
+**🎯 短線判斷 (1-3 天)：** 資金關注點分散，短期波動風險較高。建議對單一消息面過度反應的標的保持警惕，避免追高殺低。
+**🗓️ 中線佈局 (1-2 週)：** 市場焦點將轉向大型科技公司（如 NVDA）的實質業務表現，以及 AI 產業鏈的具體進展。需密切關注 SoundHound AI 的財報情緒面，但整體操作應以結構性趨勢為主軸。
+**💡 操作建議：** **持續觀望 / 觀察進場時機**。目前市場訊號尚未形成共識，不宜貿然建倉。待 NVDA 或其他具體催化劑（如大型併購消息）確認方向後，再擇時介入。操作邏輯為：「等待明確的產業領頭羊輪動標的。」
+**🇹🇼 台股連動影響：** 關注 AI 硬體供應鏈相關權值股，特別是高階封裝、先進製程設備供應商，具備結構性上修潛力。
+**⚠️ 風險提示：** 個股消息面過熱後容易出現情緒性修正，請務必嚴格設定停損點位。</div>
+<div class="news">
+  <div class="news-title-zh">我不會讓 RMD 毀了我的退休生活。這是我的管理計劃。<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 I Won&#x27;t Let RMDs Ruin My Retirement. Here&#x27;s My Plan to Manage Them.</div>
+  <div class="news-summary">RMD 可能會很麻煩。制定策略會有所幫助。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:47:00</span>
+    <a href="https://www.fool.com/retirement/2026/08/02/i-wont-let-rmds-ruin-my-retirement-heres-my-plan-t/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：我不會讓 RMD 毀了我的退休生活。這是我的管理計劃。
+原文標題：I Won&#x27;t Let RMDs Ruin My Retirement. Here&#x27;s My Plan to Manage Them.
+摘要：RMD 可能會很麻煩。制定策略會有所幫助。
+來源：Yahoo | 連結：https://www.fool.com/retirement/2026/08/02/i-wont-let-rmds-ruin-my-retirement-heres-my-plan-t/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SoundHound AI 8 月 5 日發布的下一份收益報告可能會導致該股飆升。這就是為什麼。<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 SoundHound AI&#x27;s Next Earnings Report on Aug. 5 Could Send the Stock Soaring. Here&#x27;s Why.</div>
+  <div class="news-summary">今年迄今為止，SoundHound AI 股票的價值已下跌約 40%。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:45:01</span>
+    <a href="https://www.fool.com/investing/2026/08/02/soundhound-ais-next-earnings-report-on-aug-5-could-send-the-stock-soaring-heres-why/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SoundHound AI 8 月 5 日發布的下一份收益報告可能會導致該股飆升。這就是為什麼。
+原文標題：SoundHound AI&#x27;s Next Earnings Report on Aug. 5 Could Send the Stock Soaring. Here&#x27;s Why.
+摘要：今年迄今為止，SoundHound AI 股票的價值已下跌約 40%。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/soundhound-ais-next-earnings-report-on-aug-5-could-send-the-stock-soaring-heres-why/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up</div>
+  <div class="news-summary">該 IPO 股票於 7 月 7 日快速進入科技指數。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:39:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出
+原文標題：SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up
+摘要：該 IPO 股票於 7 月 7 日快速進入科技指數。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">AMD — AMD <span style="color:#8b96a3;font-size:13px">（半導體）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【AMD 個股操作策略分析】**
+
+**短線判斷：偏多，但需謹慎追高。** 消息面受川普言論帶動市場情緒反彈，短期上漲動能存在支撐；然而，在獲利了結的壓力下，建議等待更明確的技術性回檔確認買點。
+
+**中線關注：財報季與產業催化劑。** 本週需重點觀察 AMD 自身的季度財報表現（若有），以及整體半導體景氣循環是否出現實質轉機。此外，市場對 AI 需求和晶片週期復甦的預期是核心驅動力。
+
+**具體操作建議：持續觀望，待回檔確認進場點。** 在盤整區或關鍵支撐位附近分批建立底倉，避免追逐消息帶動的過熱漲幅。
+
+**台股連動影響：正面潛在拉抬。** AMD 的強勢表現通常會帶動整個半導體供應鏈（如晶圓代工、封測）的情緒，對台灣相關電子股具正向提振效應。
+
+**風險提示：政策不確定性高。** 需密切關注地緣政治和宏觀經濟數據的變化，避免單純基於消息面進行過度配置。</div>
+<div class="news">
+  <div class="news-title-zh">隨著川普轉向伊朗，道瓊期貨上漲，油價下跌；SpaceX、AMD、Sandisk、禮來公司獲利迫在眉睫<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Dow Jones Futures Rise, Oil Prices Dive As Trump Shifts On Iran; SpaceX, AMD, Sandisk, Eli Lilly Earnings Loom</div>
+  <div class="news-summary">川普總統表示，他正在推遲對伊朗發動新的大規模攻擊。隨著市場反彈嘗試的開始，SpaceX、AMD、Sandisk、禮來公司的獲利即將顯現。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 22:17:33</span>
+    <a href="https://finance.yahoo.com/m/a6fd7cc1-160f-33be-9c9b-10601e0fcebe/dow-jones-futures-rise%2C-oil.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：隨著川普轉向伊朗，道瓊期貨上漲，油價下跌；SpaceX、AMD、Sandisk、禮來公司獲利迫在眉睫
+原文標題：Dow Jones Futures Rise, Oil Prices Dive As Trump Shifts On Iran; SpaceX, AMD, Sandisk, Eli Lilly Earnings Loom
+摘要：川普總統表示，他正在推遲對伊朗發動新的大規模攻擊。隨著市場反彈嘗試的開始，SpaceX、AMD、Sandisk、禮來公司的獲利即將顯現。
+來源：Yahoo | 連結：https://finance.yahoo.com/m/a6fd7cc1-160f-33be-9c9b-10601e0fcebe/dow-jones-futures-rise%2C-oil.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">本週值得關注的財報：SpaceX 第一份財報、迪士尼、AMD 和麥當勞<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Earnings to watch this week: SpaceX&#x27;s first earnings report, Disney, AMD, &amp; McDonald&#x27;s</div>
+  <div class="news-summary">雅虎財經的 Josh Lipton 仔細研究了本週投資者需要關注的最大季度收益報告，其中包括麥當勞 (MCD)、SpaceX (SPCX)、迪士尼 (DIS) 和 AMD (AMD)。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:00:00</span>
+    <a href="https://finance.yahoo.com/video/earnings-watch-week-spacexs-first-180000072.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：本週值得關注的財報：SpaceX 第一份財報、迪士尼、AMD 和麥當勞
+原文標題：Earnings to watch this week: SpaceX&#x27;s first earnings report, Disney, AMD, &amp; McDonald&#x27;s
+摘要：雅虎財經的 Josh Lipton 仔細研究了本週投資者需要關注的最大季度收益報告，其中包括麥當勞 (MCD)、SpaceX (SPCX)、迪士尼 (DIS) 和 AMD (AMD)。
+來源：Yahoo | 連結：https://finance.yahoo.com/video/earnings-watch-week-spacexs-first-180000072.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">就業報告、Palantir、AMD、SpaceX、禮來公司等本週值得關注<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Jobs Report, Palantir, AMD, SpaceX, Eli Lilly, and More to Watch This Week</div>
+  <div class="news-summary">在又一個財報發布週中，我們也將看到麥當勞、迪士尼、優步、德文能源等公司的報告。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:00:00</span>
+    <a href="https://finance.yahoo.com/m/d48ba174-5866-3af8-8bf4-9425cfbf2121/jobs-report%2C-palantir%2C-amd%2C.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：就業報告、Palantir、AMD、SpaceX、禮來公司等本週值得關注
+原文標題：Jobs Report, Palantir, AMD, SpaceX, Eli Lilly, and More to Watch This Week
+摘要：在又一個財報發布週中，我們也將看到麥當勞、迪士尼、優步、德文能源等公司的報告。
+來源：Yahoo | 連結：https://finance.yahoo.com/m/d48ba174-5866-3af8-8bf4-9425cfbf2121/jobs-report%2C-palantir%2C-amd%2C.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">AAPL — Apple <span style="color:#8b96a3;font-size:13px">（科技消費）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#5ac88a;color:#fff">📉 偏空<span class="signal-score">-3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬：Apple (AAPL) 短中期操作策略】**
+
+**短期判斷 (1-3 天)：觀望/謹慎減倉**。儘管公司基本面強勁（業績亮眼），但市場情緒出現分歧，特別是相關 ETF 的表現與個股走勢背離，顯示資金流向存在結構性疑慮。
+**中期關注 (1-2 週)：產業催化劑為主**。重點觀察後續供應鏈的具體釋出訊號（如記憶體晶片短缺是否已緩解）以及市場對新產品線（如AI整合）的消化程度，而非單純依賴歷史業績。
+**操作建議：持續觀望，待技術性超賣或明確催化劑確認後再分批建倉買進。** 操作邏輯是等待市場情緒穩定，避免追高接棒已反應完利多消息的標的。
+**台股連動影響：正面。** 記憶體短缺問題若能得到解決訊號，將直接利好台灣晶圓代工及電子零組件供應鏈。
+**風險提示：** 注意「備兌買權 ETF」結構性風險帶來的潛在情緒面拋售壓力；短期內應嚴格控制單一標的部位過大。</div>
+<div class="news">
+  <div class="news-title-zh">蘋果 7 月飆漲 15%，但 GPIQ 持有者損失 6%：備兌買權 ETF 的隱性選擇稅<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Apple Soared 15% in July, but GPIQ Holders Lost 6%: The Hidden Options Tax on Covered-Call ETFs</div>
+  <div class="news-summary">蘋果剛剛公佈了有史以來最強勁的 6 月份季度業績，並飆升了兩位數，但圍繞納斯達克 100 巨頭建立的一款受歡迎的收益 ETF 卻出現了相反的走勢。理解其中的原因揭示了從未出現在基金費用比率線上的隱藏成本。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:40:55</span>
+    <a href="https://247wallst.com/investing/etf/2026/08/02/apple-soared-15-in-july-but-gpiq-holders-lost-6-the-hidden-options-tax-on-covered-call-etfs/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：蘋果 7 月飆漲 15%，但 GPIQ 持有者損失 6%：備兌買權 ETF 的隱性選擇稅
+原文標題：Apple Soared 15% in July, but GPIQ Holders Lost 6%: The Hidden Options Tax on Covered-Call ETFs
+摘要：蘋果剛剛公佈了有史以來最強勁的 6 月份季度業績，並飆升了兩位數，但圍繞納斯達克 100 巨頭建立的一款受歡迎的收益 ETF 卻出現了相反的走勢。理解其中的原因揭示了從未出現在基金費用比率線上的隱藏成本。
+來源：Yahoo | 連結：https://247wallst.com/investing/etf/2026/08/02/apple-soared-15-in-july-but-gpiq-holders-lost-6-the-hidden-options-tax-on-covered-call-etfs/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up</div>
+  <div class="news-summary">該 IPO 股票於 7 月 7 日快速進入科技指數。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:39:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 與「七巨頭」：納斯達克 100 強新成員如何脫穎而出
+原文標題：SpaceX vs. the &quot;Magnificent Seven&quot;: How the New Nasdaq-100 Member Stacks Up
+摘要：該 IPO 股票於 7 月 7 日快速進入科技指數。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/spacex-vs-the-magnificent-seven-how-the-new-nasdaq/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">全球記憶體短缺對 MacBook Air 造成衝擊<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 The global memory shortage hits the MacBook Air</div>
+  <div class="news-summary">全球記憶體晶片短缺似乎正在影響蘋果最受歡迎的 Mac 的供應。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:33:59</span>
+    <a href="https://finance.yahoo.com/technology/articles/global-memory-shortage-hits-macbook-213359147.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：全球記憶體短缺對 MacBook Air 造成衝擊
+原文標題：The global memory shortage hits the MacBook Air
+摘要：全球記憶體晶片短缺似乎正在影響蘋果最受歡迎的 Mac 的供應。
+來源：Yahoo | 連結：https://finance.yahoo.com/technology/articles/global-memory-shortage-hits-macbook-213359147.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">IBM — IBM <span style="color:#8b96a3;font-size:13px">（AI企業軟體）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【IBM 個股操作策略分析】**
+
+**短期判斷 (1-3 天)：觀望偏空**。執行長關於「確定性」的發言雖營造氣氛，但與 Alphabet 收入規模的巨大落差（$1,190B vs $170B）形成強烈對比，顯示市場仍關注其成長動能不及頂尖AI巨頭。短期操作應謹慎，等待更明確的技術或財報催化劑確認轉折點。
+
+**中期展望 (1-2 週)：持續觀察**。重點鎖定後續是否有具體的量子運算商業化里程碑公布，而非僅停留在概念發言上。關注產業合作夥伴（如雲端服務商）是否能提供實質性的訂單增長數據。
+
+**具體操作建議：暫不進場 (Wait &amp; See)**。等待股價回測關鍵支撐區並伴隨正面催化劑確認方向，切勿追高概念。
+
+**台股連動影響：中性偏弱**。IBM的科技轉型敘事（量子、AI）與台灣晶圓代工及硬體供應鏈仍有連結，但短期內受自身成長結構壓力較大，對整體供應鏈帶動有限。
+
+**風險提示：** 需警惕「概念炒作」導致的過度樂觀情緒，投資決策應以實質營收增長為核心依據。</div>
+<div class="news">
+  <div class="news-title-zh">IBM執行長就量子運算發出直言不諱的訊息<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 IBM CEO sends blunt message on quantum computing</div>
+  <div class="news-summary">我曾多次注意到，當對話圍繞著變革性技術時，最接近該技術的人會以安靜、幾乎令人不安的確定性談論它。然後我們讓其他人仍在爭論它是否真實。聽起來和 7 月 30 日一模一樣。那時......</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 15:33:00</span>
+    <a href="https://www.thestreet.com/investing/international-business-machines-corporation-ibm-ceo-arvind-krishna-ai-and-quantum-computing-1-trillion-opportunity-by-late-2030s?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：IBM執行長就量子運算發出直言不諱的訊息
+原文標題：IBM CEO sends blunt message on quantum computing
+摘要：我曾多次注意到，當對話圍繞著變革性技術時，最接近該技術的人會以安靜、幾乎令人不安的確定性談論它。然後我們讓其他人仍在爭論它是否真實。聽起來和 7 月 30 日一模一樣。那時......
+來源：Yahoo | 連結：https://www.thestreet.com/investing/international-business-machines-corporation-ibm-ceo-arvind-krishna-ai-and-quantum-computing-1-trillion-opportunity-by-late-2030s?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">當 ACN 股票下跌時，ACN 持有者得到了什麼報酬<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 What ACN Holders Got Paid While The Stock Fell Behind</div>
+  <div class="news-summary">一家諮詢巨頭向其所有者大量現金，但其股價卻遠遠落後於市場。以下是這筆錢真正購買的物品及其現在的含義。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 15:01:50</span>
+    <a href="https://www.trefis.com/articles/609626/what-acn-holders-got-paid-while-the-stock-fell-behind/2026-08-01?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：當 ACN 股票下跌時，ACN 持有者得到了什麼報酬
+原文標題：What ACN Holders Got Paid While The Stock Fell Behind
+摘要：一家諮詢巨頭向其所有者大量現金，但其股價卻遠遠落後於市場。以下是這筆錢真正購買的物品及其現在的含義。
+來源：Yahoo | 連結：https://www.trefis.com/articles/609626/what-acn-holders-got-paid-while-the-stock-fell-behind/2026-08-01?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Alphabet 與 IBM：不同的收入趨勢讓投資者了解這些人工智慧公司的哪些資訊<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Alphabet vs. IBM: What Diverging Revenue Trends Tell Investors About These Artificial Intelligence Companies</div>
+  <div class="news-summary">Alphabet 的收入已飆升至 1,190 億美元以上，而 IBM 仍在 170 億美元左右波動——這一差距不斷擴大，揭示了截然不同的成長軌跡。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 13:03:01</span>
+    <a href="https://www.fool.com/coverage/charts/2026/08/01/alphabet-vs-ibm-what-diverging-revenue-trends-tell-investors-about-these-artificial-intelligence-companies/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Alphabet 與 IBM：不同的收入趨勢讓投資者了解這些人工智慧公司的哪些資訊
+原文標題：Alphabet vs. IBM: What Diverging Revenue Trends Tell Investors About These Artificial Intelligence Companies
+摘要：Alphabet 的收入已飆升至 1,190 億美元以上，而 IBM 仍在 170 億美元左右波動——這一差距不斷擴大，揭示了截然不同的成長軌跡。
+來源：Yahoo | 連結：https://www.fool.com/coverage/charts/2026/08/01/alphabet-vs-ibm-what-diverging-revenue-trends-tell-investors-about-these-artificial-intelligence-companies/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">LITE — Lumentum <span style="color:#8b96a3;font-size:13px">（CPO光通訊）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#5ac88a;color:#fff">📉 偏空<span class="signal-score">-3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【Lumentum (LITE) 個股操作策略報告】**
+
+**總體判斷：極度謹慎觀望，等待結構性確認訊號。**
+
+**短期（1-3 天）：空方佔優勢。** 儘管光學產業受 AI 需求帶動的敘事熱度高，但市場已因大型科技公司財報的「過度預期」和交易員情緒修正而出現劇烈超買回檔風險。賣壓強勁，短期反彈動能不足。
+
+**中期（1-2 週）：重點關注 AI 資本支出指引與產業領頭羊的定價能力。** 下一個關鍵催化劑將來自於主要雲端服務供應商 (CSP) 的季度財報中，關於光模組（Co-Packaged Optics, CPO）實際導入進度和預期出貨量級別的具體指引。
+
+**操作建議：暫不進場 / 觀察進場時機。** 等待股價回測關鍵支撐區帶動至相對低點，並確認市場情緒從「敘事驅動」轉向「基本面驗證」後再考慮分批建倉。
+
+**台股連動影響：正面結構性受益。** LITE 的疲軟反映了光通訊晶片和模組的週期性修正，若其企穩，代表台灣在相關高階元件供應鏈（如光學元件、封裝測試）仍具備抗週期性支撐力，但短期操作需謹慎對標美股情緒。
+
+**風險提示：** 警惕「AI 估值泡沫」的快速洩氣風險；若市場因宏觀經濟擔憂轉向避險，光學類股將面臨系統性拋售壓力。</div>
+<div class="news">
+  <div class="news-title-zh">應用光電和相干公司上漲 7%，Lumentum 上漲 5%，風險情緒蔓延至光學股<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Applied Optoelectronics and Coherent Gain 7%, Lumentum Adds 5% as Risk-On Feeling Spreads to Optics Stocks</div>
+  <div class="news-summary">隨著人工智慧資料中心的需求將估值推向三位數，光學股的漲幅遠遠超過了半導體股的整體​​漲幅，但成長興奮與財務現實之間的差距可能比投資者意識到的要大。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Fri, 31 Jul 2026 19:17:49</span>
+    <a href="https://247wallst.com/investing/2026/07/31/applied-optoelectronics-and-coherent-gain-7-lumentum-adds-5-as-risk-on-feeling-spreads-to-optics-stocks/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：應用光電和相干公司上漲 7%，Lumentum 上漲 5%，風險情緒蔓延至光學股
+原文標題：Applied Optoelectronics and Coherent Gain 7%, Lumentum Adds 5% as Risk-On Feeling Spreads to Optics Stocks
+摘要：隨著人工智慧資料中心的需求將估值推向三位數，光學股的漲幅遠遠超過了半導體股的整體​​漲幅，但成長興奮與財務現實之間的差距可能比投資者意識到的要大。
+來源：Yahoo | 連結：https://247wallst.com/investing/2026/07/31/applied-optoelectronics-and-coherent-gain-7-lumentum-adds-5-as-risk-on-feeling-spreads-to-optics-stocks/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">為什麼康寧股票在獲利後經歷了四個月以來最糟糕的一天<span class="sentiment-tag sent-neg">📉 空</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Why Corning Stock Had Its Worst Day in Four Months After Earnings</div>
+  <div class="news-summary">康寧第二季獲利超出預期，但股價下跌符合預期。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Tue, 28 Jul 2026 21:30:00</span>
+    <a href="https://finance.yahoo.com/m/d4e10d4e-1e60-3253-b7ce-b020844e1695/why-corning-stock-had-its.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：為什麼康寧股票在獲利後經歷了四個月以來最糟糕的一天
+原文標題：Why Corning Stock Had Its Worst Day in Four Months After Earnings
+摘要：康寧第二季獲利超出預期，但股價下跌符合預期。
+來源：Yahoo | 連結：https://finance.yahoo.com/m/d4e10d4e-1e60-3253-b7ce-b020844e1695/why-corning-stock-had-its.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">由於交易員質疑人工智慧支出熱潮，相干公司股價下跌 11%，應用光電公司股價下跌 10%，Lumentum 股價下跌 9%<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 Coherent Sinks 11%, Applied Optoelectronics Falls 10%, Lumentum Drops 9% as Traders Question AI Spending Spree</div>
+  <div class="news-summary">今年飆升三位數的光學股週二遭受重創，原因可以追溯到 Alphabet 最新財報中的一行交易員無法停止談論的內容。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Tue, 28 Jul 2026 16:15:54</span>
+    <a href="https://247wallst.com/investing/2026/07/28/coherent-sinks-11-applied-optoelectronics-falls-10-lumentum-drops-9-as-traders-question-ai-spending-spree/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：由於交易員質疑人工智慧支出熱潮，相干公司股價下跌 11%，應用光電公司股價下跌 10%，Lumentum 股價下跌 9%
+原文標題：Coherent Sinks 11%, Applied Optoelectronics Falls 10%, Lumentum Drops 9% as Traders Question AI Spending Spree
+摘要：今年飆升三位數的光學股週二遭受重創，原因可以追溯到 Alphabet 最新財報中的一行交易員無法停止談論的內容。
+來源：Yahoo | 連結：https://247wallst.com/investing/2026/07/28/coherent-sinks-11-applied-optoelectronics-falls-10-lumentum-drops-9-as-traders-question-ai-spending-spree/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">SMR — NuScale Power <span style="color:#8b96a3;font-size:13px">（核能）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【NuScale Power (SMR) 個股操作策略】**
+
+**短期判斷：** 偏向觀望，不宜急於進場。近期新聞帶動的漲勢可能過快，缺乏實質交易確認支撐。
+**中期關注點：** 核心焦點鎖定在「下一份財報電話會議」及大型專案（如田納西河谷）的具體簽約細節。需密切觀察管理層對營收預期與進度指引的發言，這將是決定股價結構性走勢的主因。
+**操作建議：** **持續觀望，等待財報後確認訊號。** 邏輯為：在重大催化劑（如財報）前，過早建倉風險極高；待管理層釋出正面、可量化的營收指引時，方考慮分批佈局。
+**台股連動影響：** 目前無直接顯著的供應鏈聯動性，但若全球能源轉型趨勢加速，相關設備或關鍵元件供應商可能間接受惠。
+**風險提示：** 該類高成長、重資本支出產業標的波動極大，務必嚴格控制單一個股權重比，並警惕新聞帶動的過度樂觀情緒。</div>
+<div class="news">
+  <div class="news-title-zh">NuScale Power 8 月 5 日發布的下一份收益報告可能會導致該股飆升。這就是為什麼。<span class="sentiment-tag sent-pos">🚀 多</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 NuScale Power&#x27;s Next Earnings Report on Aug. 5 Could Send the Stock Soaring. Here&#x27;s Why.</div>
+  <div class="news-summary">NuScale Power 可能會在下一次財報電話會議上發布重要更新。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:09:01</span>
+    <a href="https://www.fool.com/investing/2026/08/02/nuscale-powers-next-earnings-report-on-aug-5-could-send-the-stock-soaring-heres-why/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：NuScale Power 8 月 5 日發布的下一份收益報告可能會導致該股飆升。這就是為什麼。
+原文標題：NuScale Power&#x27;s Next Earnings Report on Aug. 5 Could Send the Stock Soaring. Here&#x27;s Why.
+摘要：NuScale Power 可能會在下一次財報電話會議上發布重要更新。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/nuscale-powers-next-earnings-report-on-aug-5-could-send-the-stock-soaring-heres-why/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">NuScale Power (SMR) 獲得新的 SMR 支持，100 美元的公允價值可信嗎？<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 NuScale Power (SMR) Gains Fresh SMR Backing, Is A $100 Fair Value Credible?</div>
+  <div class="news-summary">為什麼 NuScale Power 股票重新成為焦點 在田納西河谷管理局和 ENTRA1 Energy 概述了在六座擬建工廠中採用高達 6 吉瓦小型模組化反應器技術的計劃後，NuScale Power (SMR) 引起了新的關注。請參閱我們對 NuScale Power 的最新分析。 NuScale Power 股價一直波動較大，近期與人工智慧資料中心頭條新聞相關的股價上漲後，其 1 天股價回報率下跌 2.09% 至 8.42 美元。 1年股東總回報率下降了81.05%...</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 03:18:03</span>
+    <a href="https://finance.yahoo.com/markets/stocks/articles/nuscale-power-smr-gains-fresh-031803692.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：NuScale Power (SMR) 獲得新的 SMR 支持，100 美元的公允價值可信嗎？
+原文標題：NuScale Power (SMR) Gains Fresh SMR Backing, Is A $100 Fair Value Credible?
+摘要：為什麼 NuScale Power 股票重新成為焦點 在田納西河谷管理局和 ENTRA1 Energy 概述了在六座擬建工廠中採用高達 6 吉瓦小型模組化反應器技術的計劃後，NuScale Power (SMR) 引起了新的關注。請參閱我們對 NuScale Power 的最新分析。 NuScale Power 股價一直波動較大，近期與人工智慧資料中心頭條新聞相關的股價上漲後，其 1 天股價回報率下跌 2.09% 至 8.42 美元。 1年股東總回報率下降了81.05%...
+來源：Yahoo | 連結：https://finance.yahoo.com/markets/stocks/articles/nuscale-power-smr-gains-fresh-031803692.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">這個歷史性的 6 吉瓦 SMR 計劃可能會改變 NuScale 股票的遊戲規則<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 This Historic 6-Gigawatt SMR Program Could Be a Game Changer for NuScale Stock</div>
+  <div class="news-summary">NuScale、ENTRA1 和 TVA 之間具有里程碑意義的交易可能是 NuScale 的第一筆重大交易，但請閱讀細則。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Fri, 31 Jul 2026 18:50:00</span>
+    <a href="https://www.fool.com/investing/2026/07/31/this-historic-6-gigawatt-smr-program-could-be-a-ga/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：這個歷史性的 6 吉瓦 SMR 計劃可能會改變 NuScale 股票的遊戲規則
+原文標題：This Historic 6-Gigawatt SMR Program Could Be a Game Changer for NuScale Stock
+摘要：NuScale、ENTRA1 和 TVA 之間具有里程碑意義的交易可能是 NuScale 的第一筆重大交易，但請閱讀細則。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/07/31/this-historic-6-gigawatt-smr-program-could-be-a-ga/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">UUU — American Shared <span style="color:#8b96a3;font-size:13px">（能源鈾）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#ff7a4d;color:#fff">📈 偏多<span class="signal-score">+3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 專屬分析】American Shared (UUU) 個股操作策略**
+
+**短期判斷：觀望偏謹慎**
+今日市場焦點集中在美銀、豐田和殼牌等大型權值股，Zacks 對 UUU 的覆蓋雖為「中性」，但缺乏強勁的即時催化劑支撐。短線交易建議保持觀望，等待更明確的資金輪動訊號。
+
+**中期關注事件：產業敘事與流動性驗證**
+未來兩週應密切關注能源類股整體情緒是否能從「戰術配置」轉向「結構性投資」。特別留意其在能源轉型趨勢下的具體營收指引，以及是否有新的大型資本支出（Capex）消息發酵。
+
+**具體操作建議：持續觀望 / 觀察進場時機**
+建議目前不急於建倉，應等待股價回測關鍵支撐位或市場整體風險偏好明顯提升的訊號後再擇時入場。邏輯是：在權值股領漲帶動下，個股輪動資金尚未完全確認方向。
+
+**台股連動影響：能源基礎建設相關概念可關注**
+若 UUU 表現強勁，可能帶動對全球基礎能源設施（如儲能、管線）需求預期的提升，間接利多台灣部分與環節相關的供應鏈廠商。
+
+**風險提示：** 個股輪動性高，短期內受大盤情緒影響劇烈，切勿單憑分析機構評級進行操作。</div>
+<div class="news">
+  <div class="news-title-zh">Zacks 開始覆蓋通用安全產品並提供中立建議<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Zacks Initiates Coverage of Universal Safety Products With Neutral Recommendation</div>
+  <div class="news-summary">了解為什麼 Zacks 將 Universal Safety Products 評為“中性”，成為華爾街第一個對該股進行覆蓋的公司。在收入基礎和執行風險較小的情況下探索 UUU 的新鮮流動性和明確的過渡路徑。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Tue, 10 Feb 2026 14:25:00</span>
+    <a href="https://finance.yahoo.com/news/zacks-initiates-coverage-universal-safety-142500462.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Zacks 開始覆蓋通用安全產品並提供中立建議
+原文標題：Zacks Initiates Coverage of Universal Safety Products With Neutral Recommendation
+摘要：了解為什麼 Zacks 將 Universal Safety Products 評為“中性”，成為華爾街第一個對該股進行覆蓋的公司。在收入基礎和執行風險較小的情況下探索 UUU 的新鮮流動性和明確的過渡路徑。
+來源：Yahoo | 連結：https://finance.yahoo.com/news/zacks-initiates-coverage-universal-safety-142500462.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Zacks 分析師部落格重點介紹了美國銀行、豐田汽車、殼牌和 Universal Safety<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 The Zacks Analyst Blog Highlights Bank of America, Toyota Motor, Shell and Universal Safety</div>
+  <div class="news-summary">美國銀行在今天的分析師部落格中處於領先地位，新研究強調了獲利動能、貸款成長和數位擴張。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Tue, 10 Feb 2026 10:37:00</span>
+    <a href="https://finance.yahoo.com/news/zacks-analyst-blog-highlights-bank-103700133.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Zacks 分析師部落格重點介紹了美國銀行、豐田汽車、殼牌和 Universal Safety
+原文標題：The Zacks Analyst Blog Highlights Bank of America, Toyota Motor, Shell and Universal Safety
+摘要：美國銀行在今天的分析師部落格中處於領先地位，新研究強調了獲利動能、貸款成長和數位擴張。
+來源：Yahoo | 連結：https://finance.yahoo.com/news/zacks-analyst-blog-highlights-bank-103700133.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">美國銀行、豐田汽車和殼牌的頂尖研究報告<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Top Research Reports for Bank of America, Toyota Motor &amp; Shell</div>
+  <div class="news-summary">美國銀行、豐田汽車和殼牌主導了今天的 Zacks 研究，強調了獲利趨勢、混合動力、液化天然氣實力和揮之不去的風險。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Mon, 09 Feb 2026 19:36:00</span>
+    <a href="https://finance.yahoo.com/news/top-research-reports-bank-america-193600167.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：美國銀行、豐田汽車和殼牌的頂尖研究報告
+原文標題：Top Research Reports for Bank of America, Toyota Motor &amp; Shell
+摘要：美國銀行、豐田汽車和殼牌主導了今天的 Zacks 研究，強調了獲利趨勢、混合動力、液化天然氣實力和揮之不去的風險。
+來源：Yahoo | 連結：https://finance.yahoo.com/news/top-research-reports-bank-america-193600167.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">QQQ — Nasdaq 100 ETF <span style="color:#8b96a3;font-size:13px">（ETF）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#8b96a3;color:#fff">⚖️ 中性震盪<span class="signal-score">+0</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬分析】美股科技巨頭與市場結構風險警訊**
+
+**短線判斷 (1-3 天)：極度謹慎觀望，偏空。** 儘管蘋果表現強勁，但市場資金正暴露於「收益陷阱」的結構性風險（如 QQQ 周邊產品的隱性成本過高），短期內追逐單一飆股或高派息 ETF 的操作空間有限，應警惕情緒驅動的反轉。
+
+**中線關注 (1-2 週)：密切觀察聯準會議程與科技權重分化。** 需重點關注是否有更明確的宏觀利率指引，以及市場是否開始區分「實質成長」與「高派息誘餌」。
+
+**具體操作建議：持續觀望，等待結構性修正確認進場點。** **邏輯核心：** 在缺乏清晰、廣泛共識的催化劑下，不宜追高，應等待市場消化過度樂觀情緒後的技術回檔區間尋找價值錨點。
+
+**對台股供應鏈連動影響：** 科技巨頭獲利強勁但 ETF 結構風險暴露，暗示資金可能從「純粹的指數追蹤」轉向「具備實質護城河的硬體端」。台灣半導體及關鍵零組件供應商仍是相對穩健的避險標的。
+
+**風險提示：** 本週市場情緒極度敏感，請務必注意個股輪動性過快帶來的操作陷阱，切勿盲目追高或抄底。</div>
+<div class="news">
+  <div class="news-title-zh">蘋果 7 月飆漲 15%，但 GPIQ 持有者損失 6%：備兌買權 ETF 的隱性選擇稅<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Apple Soared 15% in July, but GPIQ Holders Lost 6%: The Hidden Options Tax on Covered-Call ETFs</div>
+  <div class="news-summary">蘋果剛剛公佈了有史以來最強勁的 6 月份季度業績，並飆升了兩位數，但圍繞納斯達克 100 巨頭建立的一款受歡迎的收益 ETF 卻出現了相反的走勢。理解其中的原因揭示了從未出現在基金費用比率線上的隱藏成本。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 21:40:55</span>
+    <a href="https://247wallst.com/investing/etf/2026/08/02/apple-soared-15-in-july-but-gpiq-holders-lost-6-the-hidden-options-tax-on-covered-call-etfs/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：蘋果 7 月飆漲 15%，但 GPIQ 持有者損失 6%：備兌買權 ETF 的隱性選擇稅
+原文標題：Apple Soared 15% in July, but GPIQ Holders Lost 6%: The Hidden Options Tax on Covered-Call ETFs
+摘要：蘋果剛剛公佈了有史以來最強勁的 6 月份季度業績，並飆升了兩位數，但圍繞納斯達克 100 巨頭建立的一款受歡迎的收益 ETF 卻出現了相反的走勢。理解其中的原因揭示了從未出現在基金費用比率線上的隱藏成本。
+來源：Yahoo | 連結：https://247wallst.com/investing/etf/2026/08/02/apple-soared-15-in-july-but-gpiq-holders-lost-6-the-hidden-options-tax-on-covered-call-etfs/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">偽裝成收益率的資本回報：為什麼 QDTE 13.33 美元的追蹤支出正在慢慢返還您自己的資金<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Return of Capital Disguised as Yield: Why QDTE’s $13.33 Trailing Payout Is Slowly Returning Your Own Money</div>
+  <div class="news-summary">QDTE 已經連續進行了 123 週的派息，並將自己定位為納斯達克 100 指數的收入機器，但該基金自己的持股檔案揭示了大多數投資者在兌現每週支票之前從未想過要檢查的內容。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 23:39:26</span>
+    <a href="https://247wallst.com/investing/etf/2026/08/01/return-of-capital-disguised-as-yield-why-qdtes-13-33-trailing-payout-is-slowly-returning-your-own-money/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：偽裝成收益率的資本回報：為什麼 QDTE 13.33 美元的追蹤支出正在慢慢返還您自己的資金
+原文標題：Return of Capital Disguised as Yield: Why QDTE’s $13.33 Trailing Payout Is Slowly Returning Your Own Money
+摘要：QDTE 已經連續進行了 123 週的派息，並將自己定位為納斯達克 100 指數的收入機器，但該基金自己的持股檔案揭示了大多數投資者在兌現每週支票之前從未想過要檢查的內容。
+來源：Yahoo | 連結：https://247wallst.com/investing/etf/2026/08/01/return-of-capital-disguised-as-yield-why-qdtes-13-33-trailing-payout-is-slowly-returning-your-own-money/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">URA 的內部結構決定了這次下跌的命運<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 What&#x27;s Inside URA Decides This Dip&#x27;s Fate</div>
+  <div class="news-summary">鈾基金的深度潛水歷史為任何受到當前折扣誘惑的人提供了慘痛的教訓。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sat, 01 Aug 2026 16:36:32</span>
+    <a href="https://www.trefis.com/articles/609653/whats-inside-ura-decides-this-dips-fate/2026-08-01?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：URA 的內部結構決定了這次下跌的命運
+原文標題：What&#x27;s Inside URA Decides This Dip&#x27;s Fate
+摘要：鈾基金的深度潛水歷史為任何受到當前折扣誘惑的人提供了慘痛的教訓。
+來源：Yahoo | 連結：https://www.trefis.com/articles/609653/whats-inside-ura-decides-this-dips-fate/2026-08-01?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">MU — Micron <span style="color:#8b96a3;font-size:13px">（半導體）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#e94545;color:#fff">🚀 強烈偏多<span class="signal-score">+7</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【MU 個股操作策略報告】**
+
+**短線判斷：觀望/空方謹慎**。今日暴跌反映市場對 AI 支出熱潮「持續性」的疑慮已具體化，短期情緒過度反應風險高，不宜追高或逢低急進。
+
+**中線關注事件：聯準會（Fed）議息指引與晶圓代工/AI 巨頭資本支出動向**。市場焦點將從單純的「需求爆發」轉向「盈利可持續性」，需觀察大型客戶的下修預警或實際訂單能見度變化。
+
+**具體操作建議：暫不進場，待結構性回檔確認入場點。** 邏輯為等待市場情緒消化完畢後，價格回測至關鍵支撐區（如技術分析上的重要均線或歷史低點），再考慮分批建倉。
+
+**台股連動影響：正面潛在拉抬。** 美光作為記憶體龍頭，其估值重挫若能被市場消化，將帶動對台灣晶圓代工及相關封裝測試的信心回溫。
+
+**風險提示：** 警惕「過度悲觀」導致的非基本面性拋售。請密切關注美股科技指數（如半導體板塊 ETF）整體走勢，而非僅依賴單一股票的短期波動。</div>
+<div class="news">
+  <div class="news-title-zh">美光科技股價暴跌，但這就是我不買進的原因<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Micron Technology Stock Is Plummeting, but Here&#x27;s Why I&#x27;m Not Buying the Dip</div>
+  <div class="news-summary">投資者對人工智慧支出熱潮的可持續性越來越感到緊張。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 17:45:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/micron-technology-stock-plummeting-not-buying-dip/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：美光科技股價暴跌，但這就是我不買進的原因
+原文標題：Micron Technology Stock Is Plummeting, but Here&#x27;s Why I&#x27;m Not Buying the Dip
+摘要：投資者對人工智慧支出熱潮的可持續性越來越感到緊張。
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/micron-technology-stock-plummeting-not-buying-dip/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">2026 年迄今表現最佳的標普 500 股票<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 The Best-Performing S&amp;P 500 Stocks Of 2026 So Far</div>
+  <div class="news-summary">儘管股市確實有起有落，但由於人工智慧產業的繁榮，某些公司卻經歷了令人難以置信的歲月。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 14:07:00</span>
+    <a href="https://www.moneydigest.com/2226227/best-performing-sp-500-stocks-2026/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：2026 年迄今表現最佳的標普 500 股票
+原文標題：The Best-Performing S&amp;P 500 Stocks Of 2026 So Far
+摘要：儘管股市確實有起有落，但由於人工智慧產業的繁榮，某些公司卻經歷了令人難以置信的歲月。
+來源：Yahoo | 連結：https://www.moneydigest.com/2226227/best-performing-sp-500-stocks-2026/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">美光科技股價較高下跌 39%。歷史表明，現在 5,000 美元的投資到 2028 年中期將價值如此之多。<span class="sentiment-tag sent-pos">🚀 多</span></div>
+  <div class="news-title-en">🇺🇸 Micron Stock Is Down 39% From Its High. History Suggests a $5,000 Investment Now Will Be Worth This Much by Mid-2028.</div>
+  <div class="news-summary">現在是買美光股的好機會嗎？</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 11:50:00</span>
+    <a href="https://www.fool.com/investing/2026/08/02/micron-stock-is-down-39-from-its-high-history-sugg/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：美光科技股價較高下跌 39%。歷史表明，現在 5,000 美元的投資到 2028 年中期將價值如此之多。
+原文標題：Micron Stock Is Down 39% From Its High. History Suggests a $5,000 Investment Now Will Be Worth This Much by Mid-2028.
+摘要：現在是買美光股的好機會嗎？
+來源：Yahoo | 連結：https://www.fool.com/investing/2026/08/02/micron-stock-is-down-39-from-its-high-history-sugg/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">BTC-USD — Bitcoin <span style="color:#8b96a3;font-size:13px">（加密貨幣）</span><span class="tag tag-watch">觀察</span><span class="signal" style="background:#5ac88a;color:#fff">📉 偏空<span class="signal-score">-3</span></span></h3><div class="analysis"><div class="analysis-label">🤖 GEMMA 4 個股操作策略</div>**【川普投顧 VIP 會員專屬：BTC-USD 短中線操作策略】**
+
+**短期判斷 (1-3 天)：觀望偏空。** 市場情緒面受到兩極化影響：一方面有機構分析師提醒關注「商業基本面」而非僅看資產負債表；另一方面，權威投資人（如奧利裡）明確將資金流向具備實體基礎設施的能源類股，對加密貨幣形成結構性質疑。短期內缺乏統一、強勁的買盤動能支撐。
+
+**中期關注 (1-2 週)：密切關注宏觀寬鬆預期與美日匯率走勢。** 需持續觀察聯準會（Fed）的利率指引，以及日本日圓貶值對全球風險資產情緒的連帶影響。若美元指數回落過快，將為加密貨幣提供潛在買盤機會。
+
+**具體操作建議：暫不進場，等待結構性修正確認入場點位。** 邏輯是：當市場焦點從「數位稀缺性」轉向「實體基礎建設（能源/電力）」時，BTC短期上漲動能將受限，應等待價格回測關鍵支撐區後再擇時介入。
+
+**台股連動影響：** 若加密資產因宏觀資金流向調整而承壓，可能導致整體風險情緒降溫，間接對電子科技類股（如半導體相關）造成短期賣壓。
+
+**風險提示：** 警惕「敘事轉移」帶來的劇烈波動；不應單押於任何單一資產類別的趨勢判斷。</div>
+<div class="news">
+  <div class="news-title-zh">為什麼資產負債表不能代表比特幣持有者的一切<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Why the balance sheet can&#x27;t be everything for bitcoin holders</div>
+  <div class="news-summary">梅爾克（Scott Melker）剖析了加密貨幣控股公司公佈的資產負債表，以及為何投資者仍應重視數位資產以外的商業基本面。 《The Daily Wolf with Scott Melker》每天中午 12 點播出。專注於您每天對加密事物的了解。請務必查看雅虎財經的新加密中心，以查找最新的加密相關新聞。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 18:00:00</span>
+    <a href="https://finance.yahoo.com/video/why-balance-sheet-cant-everything-180000542.html?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：為什麼資產負債表不能代表比特幣持有者的一切
+原文標題：Why the balance sheet can&#x27;t be everything for bitcoin holders
+摘要：梅爾克（Scott Melker）剖析了加密貨幣控股公司公佈的資產負債表，以及為何投資者仍應重視數位資產以外的商業基本面。 《The Daily Wolf with Scott Melker》每天中午 12 點播出。專注於您每天對加密事物的了解。請務必查看雅虎財經的新加密中心，以查找最新的加密相關新聞。
+來源：Yahoo | 連結：https://finance.yahoo.com/video/why-balance-sheet-cant-everything-180000542.html?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">&#x27;先生。凱文·奧利裡（Kevin O&#x27;Leary）拋售山寨幣，稱能源股已取代加密貨幣成為首選<span class="sentiment-tag sent-neg">📉 空</span></div>
+  <div class="news-title-en">🇺🇸 &#x27;Mr. Wonderful&#x27; Kevin O&#x27;Leary Dumps Altcoins, Says Energy Stocks Have Replaced Crypto As Top Bet</div>
+  <div class="news-summary">奧利裡表示，Bitzero 是他最喜歡的加密貨幣相關賭注之一，並補充說，擁有電力、土地和光纖比客戶是人工智慧公司還是比特幣礦工更重要。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 14:04:35</span>
+    <a href="https://stocktwits.com/news-articles/markets/cryptocurrency/kevin-oleary-sells-all-altcoins-backs-bitcoin-ethereum-usdc/cZ86IZTRJ5K?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：&#x27;先生。凱文·奧利裡（Kevin O&#x27;Leary）拋售山寨幣，稱能源股已取代加密貨幣成為首選
+原文標題：&#x27;Mr. Wonderful&#x27; Kevin O&#x27;Leary Dumps Altcoins, Says Energy Stocks Have Replaced Crypto As Top Bet
+摘要：奧利裡表示，Bitzero 是他最喜歡的加密貨幣相關賭注之一，並補充說，擁有電力、土地和光纖比客戶是人工智慧公司還是比特幣礦工更重要。
+來源：Yahoo | 連結：https://stocktwits.com/news-articles/markets/cryptocurrency/kevin-oleary-sells-all-altcoins-backs-bitcoin-ethereum-usdc/cZ86IZTRJ5K?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Scott Bessent 剛剛買進日圓的 1.2 兆美元原因<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 The $1.2 Trillion Reason Scott Bessent Just Bought Japanese Yen</div>
+  <div class="news-summary">在內閣會議期間，財政部長的便箋簿上發現了一張手寫便條，引發了一系列事件，將東京的貨幣市場與您的房屋抵押貸款支付聯繫起來。日本日圓貶值與美國借貸成本之間的關聯是顯而易見的。</div>
+  <div class="news-meta">
+    <span>📡 Yahoo</span>
+    <span>🕒 Sun, 02 Aug 2026 13:48:51</span>
+    <a href="https://247wallst.com/investing/2026/08/02/the-1-2-trillion-reason-scott-bessent-just-bought-japanese-yen/?.tsrc=rss" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Scott Bessent 剛剛買進日圓的 1.2 兆美元原因
+原文標題：The $1.2 Trillion Reason Scott Bessent Just Bought Japanese Yen
+摘要：在內閣會議期間，財政部長的便箋簿上發現了一張手寫便條，引發了一系列事件，將東京的貨幣市場與您的房屋抵押貸款支付聯繫起來。日本日圓貶值與美國借貸成本之間的關聯是顯而易見的。
+來源：Yahoo | 連結：https://247wallst.com/investing/2026/08/02/the-1-2-trillion-reason-scott-bessent-just-bought-japanese-yen/?.tsrc=rss">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+</section>
+
+<section id="themes">
+  <h2 class="section">🎯 主題情報</h2>
+  <h3 class="stock">🎯 太空AI</h3>
+<div class="news">
+  <div class="news-title-zh">SpaceX 股票：尋找底部（納斯達克股票代碼：SPCX） - Seeking Alpha<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX Stock: Looking For A Bottom (NASDAQ:SPCX) - Seeking Alpha</div>
+  <div class="news-summary">SpaceX 股票：尋找底部（納斯達克股票代碼：SPCX） 尋求 AlphaSpaceX 股票在財報公佈前一周遭遇動盪 雅虎財經 SpaceX IPO 支付華爾街 1 億美元：首次盈利能否回報投資者？雅虎財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 14:00:41</span>
+    <a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE1EYXlTRnlILU1nZm16SzZaMXE3azFybTYybnZacW1wbzc0ZEJuSzNVVWF6RF9WbXV6ZkREdFlvTG0zRUZraVNjWnZhR2I4SFZUcEtDMzRsTVd5QUtJLUdsRFBiT2ZzWTBTOGg3YmRGN1dGUnB4a2JB?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 股票：尋找底部（納斯達克股票代碼：SPCX） - Seeking Alpha
+原文標題：SpaceX Stock: Looking For A Bottom (NASDAQ:SPCX) - Seeking Alpha
+摘要：SpaceX 股票：尋找底部（納斯達克股票代碼：SPCX） 尋求 AlphaSpaceX 股票在財報公佈前一周遭遇動盪 雅虎財經 SpaceX IPO 支付華爾街 1 億美元：首次盈利能否回報投資者？雅虎財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMid0FVX3lxTE1EYXlTRnlILU1nZm16SzZaMXE3azFybTYybnZacW1wbzc0ZEJuSzNVVWF6RF9WbXV6ZkREdFlvTG0zRUZraVNjWnZhR2I4SFZUcEtDMzRsTVd5QUtJLUdsRFBiT2ZzWTBTOGg3YmRGN1dGUnB4a2JB?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">SpaceX 正計劃在路易斯安那州沿海地區建造一座火箭發射太空港。以下是計劃。 - 諾拉網站<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX is planning a rocket-launching spaceport in coastal Louisiana. Here are the plans. - nola.com</div>
+  <div class="news-summary">SpaceX 正計劃在路易斯安那州沿海地區建造一座火箭發射太空港。以下是計劃。諾拉網站</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 09:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiggJBVV95cUxNZWxWRFoxZVEtUVFienk2QTREUnFBYnp3OHVnblF4dUd4QmhDS3dQMkpvUFNGWTZsRGFJMllTMF9XWGlyeGlGTHg5UURaTmVvZEw3eVFINTJFa05oLVlMSXhfZ2xRLXdIZUpiZHBjMHpaTHNTWHg1UVVzVnBjMFpWcFNqM0xzdFhPaDNYSzBRamVHMUZTM2M2eE9jNFR4Q180Rnd6YkpMeTlGUl9xQnBjeVk3RVUyVXVKa2tnd0pUOWRKbVBOeU5OOVk2QUlSTVVvTTFqMjJ2SFFFeEstX3g5d0JqVVZSbm9qQmNNOWtmdmN4ZWE2WTVyMGhHMTFvdTJnVkHSAYcCQVVfeXFMUEdpNmMzY3FzbG1hbE5EV2FrSGF5RWtlNVowT0VsUkU2MnAxYjBkekVIeFEzd084czd1WkVvanBRLU5Val9HV2xaNjgzclBhYm5ZcF8wMmxsU2U2TGxPOWRZTGItRTRxZjhyN2JVTTBPNEhaQWZrR0I4LUlRUV9mYmNHdjRIa3AyLVRYcWVjalFiaVJXaEVuV3p2Vl82MFllX1ZNeUJpUnAzNU5TSzlCYlVMV2UxdWxESG9oQ21RV1pESEJHRjdxaGZOeTlzYXZzUmtZRmVySWxEczJRQkdZSWU1SFB5cTVMcXlMS1VrUmJlSUhsRE9PdTN3NThqOW81ajVtMExZckk?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：SpaceX 正計劃在路易斯安那州沿海地區建造一座火箭發射太空港。以下是計劃。 - 諾拉網站
+原文標題：SpaceX is planning a rocket-launching spaceport in coastal Louisiana. Here are the plans. - nola.com
+摘要：SpaceX 正計劃在路易斯安那州沿海地區建造一座火箭發射太空港。以下是計劃。諾拉網站
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiggJBVV95cUxNZWxWRFoxZVEtUVFienk2QTREUnFBYnp3OHVnblF4dUd4QmhDS3dQMkpvUFNGWTZsRGFJMllTMF9XWGlyeGlGTHg5UURaTmVvZEw3eVFINTJFa05oLVlMSXhfZ2xRLXdIZUpiZHBjMHpaTHNTWHg1UVVzVnBjMFpWcFNqM0xzdFhPaDNYSzBRamVHMUZTM2M2eE9jNFR4Q180Rnd6YkpMeTlGUl9xQnBjeVk3RVUyVXVKa2tnd0pUOWRKbVBOeU5OOVk2QUlSTVVvTTFqMjJ2SFFFeEstX3g5d0JqVVZSbm9qQmNNOWtmdmN4ZWE2WTVyMGhHMTFvdTJnVkHSAYcCQVVfeXFMUEdpNmMzY3FzbG1hbE5EV2FrSGF5RWtlNVowT0VsUkU2MnAxYjBkekVIeFEzd084czd1WkVvanBRLU5Val9HV2xaNjgzclBhYm5ZcF8wMmxsU2U2TGxPOWRZTGItRTRxZjhyN2JVTTBPNEhaQWZrR0I4LUlRUV9mYmNHdjRIa3AyLVRYcWVjalFiaVJXaEVuV3p2Vl82MFllX1ZNeUJpUnAzNU5TSzlCYlVMV2UxdWxESG9oQ21RV1pESEJHRjdxaGZOeTlzYXZzUmtZRmVySWxEczJRQkdZSWU1SFB5cTVMcXlMS1VrUmJlSUhsRE9PdTN3NThqOW81ajVtMExZckk?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">NASA 和 SpaceX 推進星艦火箭風洞測試 - NASA (.gov)<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 NASA, SpaceX Advance Wind Tunnel Tests for Starship Rocket - NASA (.gov)</div>
+  <div class="news-summary">NASA 和 SpaceX 推進星艦火箭風洞測試 NASA (.gov)</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 18:39:47</span>
+    <a href="https://news.google.com/rss/articles/CBMi-AFBVV95cUxPNjJQOWp2VVhScWFpUXU0LUtvc3VlZEVaTHBxZGRkbzF5eGlQVGpsRDFnVV9HYzdYUEZSTjZPNG5MYzdYU3lkYWtqaXQ1OGNYM2FJc3JQeWNaMzljZTNuaVZGZEExVk1zLVBXcGo3VC1iSkt3MERBUEZwMXM1M25fY2VlN2VuVHlaMHBFa0RVMnk5Mm1IRlZFaXFlbm1ZeE40eXJFcWJQcThsOUY5ZXdIZTNzelY3elVvRHpFdks5TWxNUjV4YVlxOW1BbUhYZXJtLXVPbk0zVTVGOXBQSkhOWV93bEdHaEhGNkdXQTVHVk9xdHlqeDNXbA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：NASA 和 SpaceX 推進星艦火箭風洞測試 - NASA (.gov)
+原文標題：NASA, SpaceX Advance Wind Tunnel Tests for Starship Rocket - NASA (.gov)
+摘要：NASA 和 SpaceX 推進星艦火箭風洞測試 NASA (.gov)
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi-AFBVV95cUxPNjJQOWp2VVhScWFpUXU0LUtvc3VlZEVaTHBxZGRkbzF5eGlQVGpsRDFnVV9HYzdYUEZSTjZPNG5MYzdYU3lkYWtqaXQ1OGNYM2FJc3JQeWNaMzljZTNuaVZGZEExVk1zLVBXcGo3VC1iSkt3MERBUEZwMXM1M25fY2VlN2VuVHlaMHBFa0RVMnk5Mm1IRlZFaXFlbm1ZeE40eXJFcWJQcThsOUY5ZXdIZTNzelY3elVvRHpFdks5TWxNUjV4YVlxOW1BbUhYZXJtLXVPbk0zVTVGOXBQSkhOWV93bEdHaEhGNkdXQTVHVk9xdHlqeDNXbA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">下一代星鏈衛星在太空中看到 SpaceX 的星際飛船（影片） - space.com<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 SpaceX&#x27;s Starship seen in space by next-gen Starlink satellite (video) - space.com</div>
+  <div class="news-summary">下一代星鏈衛星在太空中看到 SpaceX 的星艦（影片） space.com 星艦發射 13 成功了嗎？ MediumWatch SpaceX 的星際飛船在這些令人驚嘆的新影片中降落在海上 Yahoo</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 23:27:19</span>
+    <a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxPWEF3elFoc1FSWko2OTJvMmVmcm05eWt3cDVHR0pfV0h6SVZIOEZIS3ZuUFBQS1A5bDdtRFlfU21nTzJzYnpHcTQ1NnpSanpIRlpFeE1hWDJoaWZYMDZoWTFoLWpCbVRib0E2X2xJVzdWNmpFNHFSZ3RMaUNrWGl0V2YzOEo3NVd3dHI4d0U5SkJqcF9qVjV1aDJ5UVd2Nm5LUTVZUUtTdDRxVlVyaEFEdGgxcnBnRnhINHZzejRyZ3k4UVp4VVE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：下一代星鏈衛星在太空中看到 SpaceX 的星際飛船（影片） - space.com
+原文標題：SpaceX&#x27;s Starship seen in space by next-gen Starlink satellite (video) - space.com
+摘要：下一代星鏈衛星在太空中看到 SpaceX 的星艦（影片） space.com 星艦發射 13 成功了嗎？ MediumWatch SpaceX 的星際飛船在這些令人驚嘆的新影片中降落在海上 Yahoo
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMixgFBVV95cUxPWEF3elFoc1FSWko2OTJvMmVmcm05eWt3cDVHR0pfV0h6SVZIOEZIS3ZuUFBQS1A5bDdtRFlfU21nTzJzYnpHcTQ1NnpSanpIRlpFeE1hWDJoaWZYMDZoWTFoLWpCbVRib0E2X2xJVzdWNmpFNHFSZ3RMaUNrWGl0V2YzOEo3NVd3dHI4d0U5SkJqcF9qVjV1aDJ5UVd2Nm5LUTVZUUtTdDRxVlVyaEFEdGgxcnBnRnhINHZzejRyZ3k4UVp4VVE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">由於擔心天空中存在深度造假，Google暫停了人工智慧衛星圖像 - NPR<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Google pauses AI satellite images, after fears of deepfakes in the sky - NPR</div>
+  <div class="news-summary">谷歌暫停人工智能衛星圖像，因為擔心天空中存在深度造假 NPR谷歌在推出後不到24小時內就撤回了衛星圖像人工智能工具，稱：我們還看到了《印度時報》一天，谷歌很容易欺騙衛星圖像《紐約時報》在警告錯誤信息風險後谷歌撤回了新的地球人工智能谷歌的虛假地球TechnicaGoogle在強烈反對後撤回了新的衛星圖像人工智慧工具 Tech XploreGoogle Earth 短暫地允許您從衛星圖像生成人工智慧圖像 - 然後谷歌將其撤回 雅虎 TechGoogle 在用戶創建虛假衛星圖像後撤回了人工智能功能（GOOGL：納斯達克） - 知乎</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 17:48:26</span>
+    <a href="https://news.google.com/rss/articles/CBMiuAFBVV95cUxPOTNrVDk0NTVFVFRNSlVEU2UxNExON1I0WDhqTzV1aDJLdHo1eWc3QnE4TkRzNjFqZGtNbFFsVEhjNnBxT09UdTAya2pSMi02bWN1SnpaTl9KMWh2MWdCY1ZlWHJuVFJSYkZ3bGpFVWRHTk9aSnRPcGN4NVBNNVdES1VJSlp0U1F0R3VFak5xdldCTTNpVWtLblE1dnpNdlI4X3pTSHhnSWozOGhYamFrdHlIMG1QbkVT?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：由於擔心天空中存在深度造假，Google暫停了人工智慧衛星圖像 - NPR
+原文標題：Google pauses AI satellite images, after fears of deepfakes in the sky - NPR
+摘要：谷歌暫停人工智能衛星圖像，因為擔心天空中存在深度造假 NPR谷歌在推出後不到24小時內就撤回了衛星圖像人工智能工具，稱：我們還看到了《印度時報》一天，谷歌很容易欺騙衛星圖像《紐約時報》在警告錯誤信息風險後谷歌撤回了新的地球人工智能谷歌的虛假地球TechnicaGoogle在強烈反對後撤回了新的衛星圖像人工智慧工具 Tech XploreGoogle Earth 短暫地允許您從衛星圖像生成人工智慧圖像 - 然後谷歌將其撤回 雅虎 TechGoogle 在用戶創建虛假衛星圖像後撤回了人工智能功能（GOOGL：納斯達克） - 知乎
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiuAFBVV95cUxPOTNrVDk0NTVFVFRNSlVEU2UxNExON1I0WDhqTzV1aDJLdHo1eWc3QnE4TkRzNjFqZGtNbFFsVEhjNnBxT09UdTAya2pSMi02bWN1SnpaTl9KMWh2MWdCY1ZlWHJuVFJSYkZ3bGpFVWRHTk9aSnRPcGN4NVBNNVdES1VJSlp0U1F0R3VFak5xdldCTTNpVWtLblE1dnpNdlI4X3pTSHhnSWozOGhYamFrdHlIMG1QbkVT?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 量子運算</h3>
+<div class="news">
+  <div class="news-title-zh">量子電腦完成了超出經典模擬實際範圍的驗證任務 - Phys.org<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Quantum computer completes verified task beyond practical reach of classical simulations - Phys.org</div>
+  <div class="news-summary">量子電腦完成了超出經典模擬實際範圍的驗證任務 Phys.org</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 12:00:05</span>
+    <a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE5zVlRVSTJEZEdMRmp3RXVSOEhkcm9oWllLN1JHVWRoVTJzZGFqZVRuOWRvdkpaYVRXU05SRDZUSWdfd3hGZW5vUVNKWnltRUpud1hjb05zRk81RS03TGZmbll2cTRMM0djZDAxYlJTZmt0R1FPaHVEMA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：量子電腦完成了超出經典模擬實際範圍的驗證任務 - Phys.org
+原文標題：Quantum computer completes verified task beyond practical reach of classical simulations - Phys.org
+摘要：量子電腦完成了超出經典模擬實際範圍的驗證任務 Phys.org
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMieEFVX3lxTE5zVlRVSTJEZEdMRmp3RXVSOEhkcm9oWllLN1JHVWRoVTJzZGFqZVRuOWRvdkpaYVRXU05SRDZUSWdfd3hGZW5vUVNKWnltRUpud1hjb05zRk81RS03TGZmbll2cTRMM0djZDAxYlJTZmt0R1FPaHVEMA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">各國政府在量子電腦上花費了數十億美元。人工智慧篡奪了它們嗎？ - ABC 新聞與頭條新聞 – 澳洲廣播公司<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Governments have spent billions on quantum computers. Has AI usurped them? - ABC News &amp; Headlines – Australian Broadcasting Corporation</div>
+  <div class="news-summary">各國政府在量子電腦上花費了數十億美元。人工智慧篡奪了它們嗎？ ABC 新聞與頭條 – 澳洲廣播公司</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 19:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxQU0hTdlNSY0JpcXRhVURJMU9QcEt5LUhQX3lubWdJY0VyQ1pvQ2Nnazg0S19DTmVydlFaQjNDYzZoS2x3bVM3cklBbzFOYVhadnBGWUV5b2ttREl4Wlk1SktNZlBrU0VoaWg5NG1xM1pjdnA1QnhBX1VJZmplbGVsaFZrLXJUeUFnR3FINg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：各國政府在量子電腦上花費了數十億美元。人工智慧篡奪了它們嗎？ - ABC 新聞與頭條新聞 – 澳洲廣播公司
+原文標題：Governments have spent billions on quantum computers. Has AI usurped them? - ABC News &amp; Headlines – Australian Broadcasting Corporation
+摘要：各國政府在量子電腦上花費了數十億美元。人工智慧篡奪了它們嗎？ ABC 新聞與頭條 – 澳洲廣播公司
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijAFBVV95cUxQU0hTdlNSY0JpcXRhVURJMU9QcEt5LUhQX3lubWdJY0VyQ1pvQ2Nnazg0S19DTmVydlFaQjNDYzZoS2x3bVM3cklBbzFOYVhadnBGWUV5b2ttREl4Wlk1SktNZlBrU0VoaWg5NG1xM1pjdnA1QnhBX1VJZmplbGVsaFZrLXJUeUFnR3FINg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">研究人員透過可信賴量子運算展示量子優勢 - IBM<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Researchers demonstrate quantum advantage through trusted quantum computation - IBM</div>
+  <div class="news-summary">研究人員透過可信任量子運算展示量子優勢 IBM</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 15:38:59</span>
+    <a href="https://news.google.com/rss/articles/CBMiX0FVX3lxTE1tbHRoZFVoRnFjLUhHMEcyaHBWTlJMRUQwRXo5UEJweTJwLU1lTnpNaEsxY2cwZ2hYaHBXYTAzZTNPeWZtZEpBcVZnWnNPbnlmZTJhZVViWmxkZjVJSFBF?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：研究人員透過可信賴量子運算展示量子優勢 - IBM
+原文標題：Researchers demonstrate quantum advantage through trusted quantum computation - IBM
+摘要：研究人員透過可信任量子運算展示量子優勢 IBM
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiX0FVX3lxTE1tbHRoZFVoRnFjLUhHMEcyaHBWTlJMRUQwRXo5UEJweTJwLU1lTnpNaEsxY2cwZ2hYaHBXYTAzZTNPeWZtZEpBcVZnWnNPbnlmZTJhZVViWmxkZjVJSFBF?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Gil Kalai（希伯來大學 / Reichman 大學）：為什麼噪音可能會摧毀量子電腦 - The Quantum Insider<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Gil Kalai (Hebrew University / Reichman University): Why noise may doom quantum computers - The Quantum Insider</div>
+  <div class="news-summary">Gil Kalai（希伯來大學/賴克曼大學）：為什麼噪音可能會摧毀量子電腦 The Quantum Insider</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 08:02:07</span>
+    <a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxNS2FfcjluajNCT2VQdmJnX0w1Tk1hM0U4a2EzZ1NXMFM5eEtRUWc4REtoQ3JoRlVkX0dYbUdKYUFMcXh3STRqcmJfVEtMM1lQZzNtcVBaSl90NmsxT3JpMGs3anhQbF9rV3dVQVdpbnR5VGcxWXBfbzlQak9HSUlHU2R5UlFSUktIZ3AxaDI4a1NGRXBGWHBmTk5OWDR0ell4dFg0eFhheEJwWWlQLUdXN205S1VSU19OSU1BV0t3UTZGSVEz?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Gil Kalai（希伯來大學 / Reichman 大學）：為什麼噪音可能會摧毀量子電腦 - The Quantum Insider
+原文標題：Gil Kalai (Hebrew University / Reichman University): Why noise may doom quantum computers - The Quantum Insider
+摘要：Gil Kalai（希伯來大學/賴克曼大學）：為什麼噪音可能會摧毀量子電腦 The Quantum Insider
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMixAFBVV95cUxNS2FfcjluajNCT2VQdmJnX0w1Tk1hM0U4a2EzZ1NXMFM5eEtRUWc4REtoQ3JoRlVkX0dYbUdKYUFMcXh3STRqcmJfVEtMM1lQZzNtcVBaSl90NmsxT3JpMGs3anhQbF9rV3dVQVdpbnR5VGcxWXBfbzlQak9HSUlHU2R5UlFSUktIZ3AxaDI4a1NGRXBGWHBmTk5OWDR0ell4dFg0eFhheEJwWWlQLUdXN205S1VSU19OSU1BV0t3UTZGSVEz?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">兩項獨立研究將半導體量子位元推向實用規模 - Phys.org<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Two independent studies push semiconductor qubits towards practical scales - Phys.org</div>
+  <div class="news-summary">兩項獨立研究將半導體量子位元推向實用規模 Phys.org</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 11:20:04</span>
+    <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE9TYjhyVTZLOWlyYjdZT1pON2RDQ0dSWWFtUENieGN6ZUlkak8xX3Y0RWhXSWtXeC1hd0NPVWpBQWlidHNhR1RmZ1dpbWJiaG55VVJTWVVxcW16dkpwWlFGcG5jMXJad3hHVzJ3M0ppcDl3TGVRYzJJdHpaUG5LcVE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：兩項獨立研究將半導體量子位元推向實用規模 - Phys.org
+原文標題：Two independent studies push semiconductor qubits towards practical scales - Phys.org
+摘要：兩項獨立研究將半導體量子位元推向實用規模 Phys.org
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMif0FVX3lxTE9TYjhyVTZLOWlyYjdZT1pON2RDQ0dSWWFtUENieGN6ZUlkak8xX3Y0RWhXSWtXeC1hd0NPVWpBQWlidHNhR1RmZ1dpbWJiaG55VVJTWVVxcW16dkpwWlFGcG5jMXJad3hHVzJ3M0ppcDl3TGVRYzJJdHpaUG5LcVE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 半導體與AI晶片</h3>
+<div class="news">
+  <div class="news-title-zh">人工智慧在「RAMaggedon」晶片危機中使消費者價格保持在高位 - 雅虎財經<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 AI keeps consumer prices high in &#x27;RAMaggedon&#x27; chip crunch - Yahoo Finance UK</div>
+  <div class="news-summary">人工智慧在「RAMaggedon」晶片危機中使消費者價格保持在高位 雅虎財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 03:36:00</span>
+    <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOdnVLNjN3bjF0MTAxb29sWkdjLTNPbjdvMzhSbEF4NzBQMEY5cTVkZmhjdHQ0ZHdXcG5FOTNSYU80RjZ4OU1RMlpFc1FhU1luTUlpd29LNjBFZWxkdFFBR2hTWmVfVGJ6T29nX1NRYUdacDN4QU4yZlhhTDFxaGRQalJEWVk?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：人工智慧在「RAMaggedon」晶片危機中使消費者價格保持在高位 - 雅虎財經
+原文標題：AI keeps consumer prices high in &#x27;RAMaggedon&#x27; chip crunch - Yahoo Finance UK
+摘要：人工智慧在「RAMaggedon」晶片危機中使消費者價格保持在高位 雅虎財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMihAFBVV95cUxOdnVLNjN3bjF0MTAxb29sWkdjLTNPbjdvMzhSbEF4NzBQMEY5cTVkZmhjdHQ0ZHdXcG5FOTNSYU80RjZ4OU1RMlpFc1FhU1luTUlpd29LNjBFZWxkdFFBR2hTWmVfVGJ6T29nX1NRYUdacDN4QU4yZlhhTDFxaGRQalJEWVk?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">聯發科計劃融資 50 億美元用於人工智慧資料中心晶片 - 路透社中文網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 MediaTek plans $5 billion financing for AI data-center chips - Reuters</div>
+  <div class="news-summary">聯發科計劃融資 50 億美元用於 AI 資料中心晶片 路透社</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 11:08:09</span>
+    <a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxOMHlyNnM2ZnRxc183Q0dmN2V4RC1yWDBYSjdxT2kwYVd1X0U0bXc2M3ctRmpRQkx4amdockRSX3dBa3FFZ2VCMXR6bnlWRnQ4UUFVZHdpSF80UVZWc0ZjV3lvV2xVdzNpVmJoSUFQd0tGSTg4b1Vjb0pQTEFmLW1iRkRWc2RoSVF4Q3huTDhNMkp4bzNHV1lsNjRrOGlzdFJGZDdmUTE4QnJoTUpndmxRT3Q1NWg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：聯發科計劃融資 50 億美元用於人工智慧資料中心晶片 - 路透社中文網
+原文標題：MediaTek plans $5 billion financing for AI data-center chips - Reuters
+摘要：聯發科計劃融資 50 億美元用於 AI 資料中心晶片 路透社
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMitAFBVV95cUxOMHlyNnM2ZnRxc183Q0dmN2V4RC1yWDBYSjdxT2kwYVd1X0U0bXc2M3ctRmpRQkx4amdockRSX3dBa3FFZ2VCMXR6bnlWRnQ4UUFVZHdpSF80UVZWc0ZjV3lvV2xVdzNpVmJoSUFQd0tGSTg4b1Vjb0pQTEFmLW1iRkRWc2RoSVF4Q3huTDhNMkp4bzNHV1lsNjRrOGlzdFJGZDdmUTE4QnJoTUpndmxRT3Q1NWg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">透過受儲存啟發的新型記憶體技術，GPU 可能會激增至數 TB - The Register<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 GPUs could explode to multiple TB with new storage-inspired memory tech - The Register</div>
+  <div class="news-summary">借助受儲存啟發的新型記憶體技術，GPU 可能會激增至數 TB</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 18:33:00</span>
+    <a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxQazZpeU56ZFBqYWQtd050QXZPbGtsMkc2b2VvdTZHaGlERy1QUDNCekVBdjBwZ21CWUFfdmxGNFg0ZGZ4OEljajZlVmI0cXF6dHVmaUFlelJaTS1FTDc0OVA5ZDYtS01ZeFlfVjBRNXhXbFNxbHppZFNfdWhIVEVQOXZ4RHB2TWxkbWNIeGNDaGhjZFBmaG1CcjQwYjBFOGt1cFJJclJ5UmZCT2VIMXRPQUFuNE1FWXVGUHlIdzUxYkFPdnRB?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：透過受儲存啟發的新型記憶體技術，GPU 可能會激增至數 TB - The Register
+原文標題：GPUs could explode to multiple TB with new storage-inspired memory tech - The Register
+摘要：借助受儲存啟發的新型記憶體技術，GPU 可能會激增至數 TB
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMixAFBVV95cUxQazZpeU56ZFBqYWQtd050QXZPbGtsMkc2b2VvdTZHaGlERy1QUDNCekVBdjBwZ21CWUFfdmxGNFg0ZGZ4OEljajZlVmI0cXF6dHVmaUFlelJaTS1FTDc0OVA5ZDYtS01ZeFlfVjBRNXhXbFNxbHppZFNfdWhIVEVQOXZ4RHB2TWxkbWNIeGNDaGhjZFBmaG1CcjQwYjBFOGt1cFJJclJ5UmZCT2VIMXRPQUFuNE1FWXVGUHlIdzUxYkFPdnRB?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">荒謬的 GPU 定價更新：2026 年中版 - TechSpot<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Absurd GPU Pricing Update: Mid-2026 Edition - TechSpot</div>
+  <div class="news-summary">荒謬的 GPU 定價更新：2026 年中版 TechSpot</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 10:32:00</span>
+    <a href="https://news.google.com/rss/articles/CBMia0FVX3lxTE9EY2NkbmxNdXNldUpXSlFXQ1JEVVhiNjBkWERmUjNDb3Fka0lNMXo2ZTFpeXVrRFBuQWNWejJ2UXhFSmhIdzBoMVIyVk0zbFFOS2ZvT2YyVmZMSzIxR3JPbV9FX2ZfR1VDRDBj?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：荒謬的 GPU 定價更新：2026 年中版 - TechSpot
+原文標題：Absurd GPU Pricing Update: Mid-2026 Edition - TechSpot
+摘要：荒謬的 GPU 定價更新：2026 年中版 TechSpot
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMia0FVX3lxTE9EY2NkbmxNdXNldUpXSlFXQ1JEVVhiNjBkWERmUjNDb3Fka0lNMXo2ZTFpeXVrRFBuQWNWejJ2UXhFSmhIdzBoMVIyVk0zbFFOS2ZvT2YyVmZMSzIxR3JPbV9FX2ZfR1VDRDBj?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">HBC、HBM 與 SRAM：第 2 部分 – 從架構師的角度進行平衡比較 - Qualcomm<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 HBC vs HBM vs SRAM: Part 2 – A balanced comparison from an architect’s view - Qualcomm</div>
+  <div class="news-summary">HBC、HBM 與 SRAM：第 2 部分 – 從架構師的角度進行平衡比較 Qualcomm</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 15:30:00</span>
+    <a href="https://news.google.com/rss/articles/CBMijgFBVV95cUxNbjhfQ3k3S1hUS2FZenNWWlAxY2VHRHZkVjItY2h5ZVR0UklaYWZwYkh4Z0FTc1NEM1JNczc3QzZRallrMTdpbHFtdTZsdndtbGgwN1JTV2RaSGFxODNZQmszOEFWa3ZZWjNxT2hxSnVLTk9GLTVNa1BPdHAzNmJiUngwVWR1Y1Z3TGJRekNn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：HBC、HBM 與 SRAM：第 2 部分 – 從架構師的角度進行平衡比較 - Qualcomm
+原文標題：HBC vs HBM vs SRAM: Part 2 – A balanced comparison from an architect’s view - Qualcomm
+摘要：HBC、HBM 與 SRAM：第 2 部分 – 從架構師的角度進行平衡比較 Qualcomm
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijgFBVV95cUxNbjhfQ3k3S1hUS2FZenNWWlAxY2VHRHZkVjItY2h5ZVR0UklaYWZwYkh4Z0FTc1NEM1JNczc3QzZRallrMTdpbHFtdTZsdndtbGgwN1JTV2RaSGFxODNZQmszOEFWa3ZZWjNxT2hxSnVLTk9GLTVNa1BPdHAzNmJiUngwVWR1Y1Z3TGJRekNn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 AI雲端與大模型</h3>
+<div class="news">
+  <div class="news-title-zh">Gemini Spark 現已與 Chrome 整合 - blog.google<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Gemini Spark now integrates with Chrome - blog.google</div>
+  <div class="news-summary">Gemini Spark 現已與 Chrome blog.google 集成</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 20:15:25</span>
+    <a href="https://news.google.com/rss/articles/CBMikwFBVV95cUxPM3VnRE5fZjA5T1hxZnZTNkpiYUkxbmNnT1dHR0tCemw3NF9OODJibGlGeFI4SW96ckRQOGJzajlzaHQwcU5YekxRejhDU1NiQVpybXloX2VSZ1hMNmVHV2pYYUx6ZEhGZFZVNmI0S2RVbFRHTjlyMy12N2dVVlFCV2E0SXFvMmt1d0JGMUczZFlHTWs?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Gemini Spark 現已與 Chrome 整合 - blog.google
+原文標題：Gemini Spark now integrates with Chrome - blog.google
+摘要：Gemini Spark 現已與 Chrome blog.google 集成
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMikwFBVV95cUxPM3VnRE5fZjA5T1hxZnZTNkpiYUkxbmNnT1dHR0tCemw3NF9OODJibGlGeFI4SW96ckRQOGJzajlzaHQwcU5YekxRejhDU1NiQVpybXloX2VSZ1hMNmVHV2pYYUx6ZEhGZFZVNmI0S2RVbFRHTjlyMy12N2dVVlFCV2E0SXFvMmt1d0JGMUczZFlHTWs?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">Gemini 未來將創建行動和桌面應用程序，如 Android 版 AI Studio，iOS 版被取消 - 9to5Google<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Gemini will create mobile &amp; desktop apps in the future as AI Studio for Android, iOS is canceled - 9to5Google</div>
+  <div class="news-summary">Gemini 未來將創建行動和桌面應用程序，稱為 Android 版 AI Studio，iOS 版本已取消 9to5Google</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 23:39:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiZkFVX3lxTE1mXy1jdV9NV0RGZWVlU2ZhYkFBSURRNkRCLUpWOUF5X1ZJQjJHRjN5OXptYmRpTDFuU0tjQW44aGp6YXBmSFRVd1pqMjAxcnNWNzVGUE1NRU16b2tVWGJiLTBZNEF2Zw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Gemini 未來將創建行動和桌面應用程序，如 Android 版 AI Studio，iOS 版被取消 - 9to5Google
+原文標題：Gemini will create mobile &amp; desktop apps in the future as AI Studio for Android, iOS is canceled - 9to5Google
+摘要：Gemini 未來將創建行動和桌面應用程序，稱為 Android 版 AI Studio，iOS 版本已取消 9to5Google
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiZkFVX3lxTE1mXy1jdV9NV0RGZWVlU2ZhYkFBSURRNkRCLUpWOUF5X1ZJQjJHRjN5OXptYmRpTDFuU0tjQW44aGp6YXBmSFRVd1pqMjAxcnNWNzVGUE1NRU16b2tVWGJiLTBZNEF2Zw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">利用 GPT-5.6 推進性價比前沿 - OpenAI<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Advancing the price-performance frontier with GPT-5.6 - OpenAI</div>
+  <div class="news-summary">利用 GPT-5.6 OpenAI 推進性價比前沿</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 20:29:58</span>
+    <a href="https://news.google.com/rss/articles/CBMihgFBVV95cUxQRnlkYzM3c2c5ajVNcWNYZ3ZoV3M1anl1T3lFSUtHRzVBcmU1cUpaSkJ2MHR1ZXpJVWtLSWhfQTZOQzdfY252YmhzeG1DX2t2elJmVXVNYmR3VkN2NjRES0JHaS1WUmdMNGhnTi1wVE5yMGYzeU9Hanh4Q2E3YnRBM1VVTEVDdw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：利用 GPT-5.6 推進性價比前沿 - OpenAI
+原文標題：Advancing the price-performance frontier with GPT-5.6 - OpenAI
+摘要：利用 GPT-5.6 OpenAI 推進性價比前沿
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMihgFBVV95cUxQRnlkYzM3c2c5ajVNcWNYZ3ZoV3M1anl1T3lFSUtHRzVBcmU1cUpaSkJ2MHR1ZXpJVWtLSWhfQTZOQzdfY252YmhzeG1DX2t2elJmVXVNYmR3VkN2NjRES0JHaS1WUmdMNGhnTi1wVE5yMGYzeU9Hanh4Q2E3YnRBM1VVTEVDdw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">由於 AI 成本受到嚴格審查，OpenAI 將 GPT-5.6 定價下調高達 80% - 福布斯<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 OpenAI Cuts GPT-5.6 Pricing Up To 80%, As AI Costs Come Under Scrutiny - Forbes</div>
+  <div class="news-summary">由於人工智慧成本受到福布斯審查，OpenAI 將 GPT-5.6 定價下調高達 80%</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 09:45:00</span>
+    <a href="https://news.google.com/rss/articles/CBMivAFBVV95cUxPYzktYjZIQ1FmQ2h5TkhKbjViTE5DdE5teG9qV2RabjlnbGR4VW9SODhuSVVBR3BuejM1N3BQSlBhc28wM0VHYjVYZXVqSTZnR1hKQWhxMVA1QkRMRFBqMmtUbzQzd054TlNSeEJJNGd6VElvQUJmSEtLZWhSNmo0enN6bUtJWmlXZkp1S2N5d2QtOEd1T3ZFd2pZSUV2dUVsYXU5eTFObDdFVmFNRHRyVHNOdG1vcjhpZzI0SQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：由於 AI 成本受到嚴格審查，OpenAI 將 GPT-5.6 定價下調高達 80% - 福布斯
+原文標題：OpenAI Cuts GPT-5.6 Pricing Up To 80%, As AI Costs Come Under Scrutiny - Forbes
+摘要：由於人工智慧成本受到福布斯審查，OpenAI 將 GPT-5.6 定價下調高達 80%
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMivAFBVV95cUxPYzktYjZIQ1FmQ2h5TkhKbjViTE5DdE5teG9qV2RabjlnbGR4VW9SODhuSVVBR3BuejM1N3BQSlBhc28wM0VHYjVYZXVqSTZnR1hKQWhxMVA1QkRMRFBqMmtUbzQzd054TlNSeEJJNGd6VElvQUJmSEtLZWhSNmo0enN6bUtJWmlXZkp1S2N5d2QtOEd1T3ZFd2pZSUV2dUVsYXU5eTFObDdFVmFNRHRyVHNOdG1vcjhpZzI0SQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">在我們的網路安全評估中調查三個現實世界事件 - Anthropic<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Investigating three real-world incidents in our cybersecurity evaluations - Anthropic</div>
+  <div class="news-summary">在我們的網路安全評估中調查三起現實世界事件 AnthropicAnthropic 的 Claude AI 逃脫了對三個組織進行黑客攻擊的測試 BBCClaude 在互聯網上發布了惡意代碼並攻擊了 3 個真實公司 Ars Technica</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 23:03:16</span>
+    <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTE4zdnpHN3VXRHJaYjZ1T01TOUZqaXJHa1VoZC1TTUZaRkk4dnhfdkhHT2xpTUpwVXZfYTFSZHE4Vk5icGh2RmF5aHhKcDlicWJ5Sy1SalVLOGhXVlhVcFJGbFBqSG4xSG5KaWh5dnlWQTQ1NUR4THQxM05nanBUVTg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：在我們的網路安全評估中調查三個現實世界事件 - Anthropic
+原文標題：Investigating three real-world incidents in our cybersecurity evaluations - Anthropic
+摘要：在我們的網路安全評估中調查三起現實世界事件 AnthropicAnthropic 的 Claude AI 逃脫了對三個組織進行黑客攻擊的測試 BBCClaude 在互聯網上發布了惡意代碼並攻擊了 3 個真實公司 Ars Technica
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMif0FVX3lxTE4zdnpHN3VXRHJaYjZ1T01TOUZqaXJHa1VoZC1TTUZaRkk4dnhfdkhHT2xpTUpwVXZfYTFSZHE4Vk5icGh2RmF5aHhKcDlicWJ5Sy1SalVLOGhXVlhVcFJGbFBqSG4xSG5KaWh5dnlWQTQ1NUR4THQxM05nanBUVTg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 CPO光通訊</h3>
+<div class="news">
+  <div class="news-title-zh">印尼將 8 月毛棕櫚油參考價定為每噸 996.52 美元 - Jakarta Globe<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Indonesia Sets August CPO Reference Price at $996.52 per Ton - Jakarta Globe</div>
+  <div class="news-summary">印尼將 8 月毛棕櫚油參考價定為每噸 996.52 美元 Jakarta Globe</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 16:52:00</span>
+    <a href="https://news.google.com/rss/articles/CBMilgFBVV95cUxPWURHMDZWUWNDbEs3bVpCUml1OWV2dVR5d2d1SFFMTWREVlhCcndwR0xqbGpuQmNZdmQzVGQ4R0VrQ2RTbE9JdE9BcndNbS1yX0R6V2F3YXJUYXY4YWFMZUIxVzgtX3FjX1VRMFBCMTlGaEtEa19tT3Y2eWJrOTdoaVJFQUdsdmpxUFB3ZXBVRVgwWVNqWlE?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：印尼將 8 月毛棕櫚油參考價定為每噸 996.52 美元 - Jakarta Globe
+原文標題：Indonesia Sets August CPO Reference Price at $996.52 per Ton - Jakarta Globe
+摘要：印尼將 8 月毛棕櫚油參考價定為每噸 996.52 美元 Jakarta Globe
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMilgFBVV95cUxPWURHMDZWUWNDbEs3bVpCUml1OWV2dVR5d2d1SFFMTWREVlhCcndwR0xqbGpuQmNZdmQzVGQ4R0VrQ2RTbE9JdE9BcndNbS1yX0R6V2F3YXJUYXY4YWFMZUIxVzgtX3FjX1VRMFBCMTlGaEtEa19tT3Y2eWJrOTdoaVJFQUdsdmpxUFB3ZXBVRVgwWVNqWlE?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">優先考慮員工福祉幫助這位 CPO 提高了留任率 - HR Brew<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Prioritizing employee well-being helped this CPO improve retention - HR Brew</div>
+  <div class="news-summary">優先考慮員工福祉幫助這位 CPO 提高了保留率 HR Brew</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 20:48:51</span>
+    <a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxQM19Xal9kQ1VxUkNrMzk1TFNWQ1NySDZNOExqM0s3VTE0MUw0WllTcGM3UHQ4WDlvdThJQ1ZaX2w1NVB3MzBkZEpiVTNjdTBuUk1qX0lGQURJMWRGd1NIQUVMQ0liaE4xZUM5N3hXREpzQWhMRXZwa216WmZYVHZITjdPZGYyQVNubFZFbS15SGhpenBUVGdWZHM0WG9sT1U?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：優先考慮員工福祉幫助這位 CPO 提高了留任率 - HR Brew
+原文標題：Prioritizing employee well-being helped this CPO improve retention - HR Brew
+摘要：優先考慮員工福祉幫助這位 CPO 提高了保留率 HR Brew
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMinwFBVV95cUxQM19Xal9kQ1VxUkNrMzk1TFNWQ1NySDZNOExqM0s3VTE0MUw0WllTcGM3UHQ4WDlvdThJQ1ZaX2w1NVB3MzBkZEpiVTNjdTBuUk1qX0lGQURJMWRGd1NIQUVMQ0liaE4xZUM5N3hXREpzQWhMRXZwa216WmZYVHZITjdPZGYyQVNubFZFbS15SGhpenBUVGdWZHM0WG9sT1U?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">GlobalFoundries 與美國商務部簽署意向書，授予 3 億美元獎金，以加速美國矽光子領域的領先地位 - GlobalFoundries<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 GlobalFoundries signs letter of intent with the U.S. Department of Commerce for a $300 million award to accelerate U.S. silicon photonics leadership - GlobalFoundries</div>
+  <div class="news-summary">GlobalFoundries 與美國商務部簽署意向書，授予 3 億美元獎金，以加速美國矽光子領域的領先地位 GlobalFoundries</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 29 Jul 2026 10:42:10</span>
+    <a href="https://news.google.com/rss/articles/CBMijAJBVV95cUxNU3FreUpUVTM0X0E1Q09LQnVNbm1hZFlhUFJZaDk5SUVGTkNEanppeGdPQ0ZrN1hBQmVCZmR0NVNLazREWU9LM0h5cHlQeVZvTE9tNzA4ajFDVEZOVU1RX1JzUmplNEE1bVBpRWlTUjZLNEY3NmpGUk5LYWVsc1pzR2NQWDZkOFRyb1hPd3dRR1hOdmozUkRyQUZEa2JKOEw5Q1NPXzNLRzRpNlNEYWpjOEtpTjI3X2JyLUhSQTJTaXlORE03ZXJXWTRFdzFGelJ6V0Nhd2U4SlE1ZlFXY0VDb2VfWW9yYUJlVVhGUlpyZHkyYkZnTVQwaVhHcDBWSmVsbkZ3eHJRRjVDOXdN?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：GlobalFoundries 與美國商務部簽署意向書，授予 3 億美元獎金，以加速美國矽光子領域的領先地位 - GlobalFoundries
+原文標題：GlobalFoundries signs letter of intent with the U.S. Department of Commerce for a $300 million award to accelerate U.S. silicon photonics leadership - GlobalFoundries
+摘要：GlobalFoundries 與美國商務部簽署意向書，授予 3 億美元獎金，以加速美國矽光子領域的領先地位 GlobalFoundries
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijAJBVV95cUxNU3FreUpUVTM0X0E1Q09LQnVNbm1hZFlhUFJZaDk5SUVGTkNEanppeGdPQ0ZrN1hBQmVCZmR0NVNLazREWU9LM0h5cHlQeVZvTE9tNzA4ajFDVEZOVU1RX1JzUmplNEE1bVBpRWlTUjZLNEY3NmpGUk5LYWVsc1pzR2NQWDZkOFRyb1hPd3dRR1hOdmozUkRyQUZEa2JKOEw5Q1NPXzNLRzRpNlNEYWpjOEtpTjI3X2JyLUhSQTJTaXlORE03ZXJXWTRFdzFGelJ6V0Nhd2U4SlE1ZlFXY0VDb2VfWW9yYUJlVVhGUlpyZHkyYkZnTVQwaVhHcDBWSmVsbkZ3eHJRRjVDOXdN?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">週末研究：關於共封裝光學 (CPO) 的最大誤解之一是最好的光學技術自動獲勝。事實並非如此。 - 莫莫<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Weekend Study: One of the Biggest Misconceptions About Co-Packaged Optics (CPO) Is That the Best Optical Technology Automatically Wins. It Doesn&#x27;t. - Moomoo</div>
+  <div class="news-summary">週末研究：關於共封裝光學 (CPO) 的最大誤解之一是最好的光學技術自動獲勝。事實並非如此。莫莫</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 13:52:48</span>
+    <a href="https://news.google.com/rss/articles/CBMiuwFBVV95cUxQOXZRQTJ3QnlocUg5XzZaVlZCWTVGd1V6VGZ6bTZqUG1UbmJDM1p6M0d2WHIzTF8wXzRCelNrOVdYSDVKMWdfM21yMV9OU0hsajd4SkNjQ2VONHFSZU5qMGFhdnNkaWJCcmdDQzYxOUJtejRDNUFZYktEckFpYTBobzAwSGoxcE1TckJpQWRtZlBwV1RHX05ydXhxTUlkSjVZSUlGYlMtdlVDUmJCZ3g4NnU4QUdBMnd0Nndr?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：週末研究：關於共封裝光學 (CPO) 的最大誤解之一是最好的光學技術自動獲勝。事實並非如此。 - 莫莫
+原文標題：Weekend Study: One of the Biggest Misconceptions About Co-Packaged Optics (CPO) Is That the Best Optical Technology Automatically Wins. It Doesn&#x27;t. - Moomoo
+摘要：週末研究：關於共封裝光學 (CPO) 的最大誤解之一是最好的光學技術自動獲勝。事實並非如此。莫莫
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiuwFBVV95cUxQOXZRQTJ3QnlocUg5XzZaVlZCWTVGd1V6VGZ6bTZqUG1UbmJDM1p6M0d2WHIzTF8wXzRCelNrOVdYSDVKMWdfM21yMV9OU0hsajd4SkNjQ2VONHFSZU5qMGFhdnNkaWJCcmdDQzYxOUJtejRDNUFZYktEckFpYTBobzAwSGoxcE1TckJpQWRtZlBwV1RHX05ydXhxTUlkSjVZSUlGYlMtdlVDUmJCZ3g4NnU4QUdBMnd0Nndr?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">格芯 (GLOBALFOUNDRIES) (GFS) 在 3 億美元晶片光子交易和董事會變動後下跌 6.6% - 牛市情況改變了嗎？ - simplewall.st<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 GLOBALFOUNDRIES (GFS) Is Down 6.6% After $300M CHIPS Photonics Deal And Board Changes - Has The Bull Case Changed? - simplywall.st</div>
+  <div class="news-summary">格芯 (GLOBALFOUNDRIES) (GFS) 在 3 億美元晶片光子交易和董事會變動後下跌 6.6% - 牛市情況改變了嗎？簡單牆網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 21:31:01</span>
+    <a href="https://news.google.com/rss/articles/CBMi1gFBVV95cUxQTVdWNklJRkFSWF9DUHZsWk1SR09uSnZzaFpmV0tQUjcwazNmMEwzTUZkWEU4V1RnVFdNVmRfaVRQSG9jUnhJNlAzZS1MLXp3VHIwSS1oZzBYMnBWTk5ZdUxtZDFCOUpVZC1YUG9oQWplY3l1dl85aTU4UnRDLTJMa2QxLXNsR2xnU0Q1alMtLTdJdXYyekc3X1N0NHJxZE1XUl93eGt0c0c4V25wZXkzR1ZzZnJucXk2Y0hVdEdJdC14SWFhcDI1UURNd1BVcGo3VFdUOGVB0gHbAUFVX3lxTE1xa3RyT2pyNmt3MWhZTkxBanhXckZmMHoyQndraWpibXJZWlF1ZDJiZzdfbWZsdTNFcmxDTFhzVXVHZEVQbHJYUjE4c1ZYOGxmQ2lrelloOExoeGNIWnlwOU51MmZzZU9kOXBuV1pMRXV6TkNvMWRkVkdwTEZibW41bC1vSWp1SzNRakVnZWFHbVcwTzhaVXNHSUU5ajYtUzZlc2hWVi0ta25tQk9mVW1MdXZjYjNHbFlSQS1EVXE4TEY1dzZXRVRKU1RzRzk2WGZnZzNKME16WXRiUQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：格芯 (GLOBALFOUNDRIES) (GFS) 在 3 億美元晶片光子交易和董事會變動後下跌 6.6% - 牛市情況改變了嗎？ - simplewall.st
+原文標題：GLOBALFOUNDRIES (GFS) Is Down 6.6% After $300M CHIPS Photonics Deal And Board Changes - Has The Bull Case Changed? - simplywall.st
+摘要：格芯 (GLOBALFOUNDRIES) (GFS) 在 3 億美元晶片光子交易和董事會變動後下跌 6.6% - 牛市情況改變了嗎？簡單牆網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi1gFBVV95cUxQTVdWNklJRkFSWF9DUHZsWk1SR09uSnZzaFpmV0tQUjcwazNmMEwzTUZkWEU4V1RnVFdNVmRfaVRQSG9jUnhJNlAzZS1MLXp3VHIwSS1oZzBYMnBWTk5ZdUxtZDFCOUpVZC1YUG9oQWplY3l1dl85aTU4UnRDLTJMa2QxLXNsR2xnU0Q1alMtLTdJdXYyekc3X1N0NHJxZE1XUl93eGt0c0c4V25wZXkzR1ZzZnJucXk2Y0hVdEdJdC14SWFhcDI1UURNd1BVcGo3VFdUOGVB0gHbAUFVX3lxTE1xa3RyT2pyNmt3MWhZTkxBanhXckZmMHoyQndraWpibXJZWlF1ZDJiZzdfbWZsdTNFcmxDTFhzVXVHZEVQbHJYUjE4c1ZYOGxmQ2lrelloOExoeGNIWnlwOU51MmZzZU9kOXBuV1pMRXV6TkNvMWRkVkdwTEZibW41bC1vSWp1SzNRakVnZWFHbVcwTzhaVXNHSUU5ajYtUzZlc2hWVi0ta25tQk9mVW1MdXZjYjNHbFlSQS1EVXE4TEY1dzZXRVRKU1RzRzk2WGZnZzNKME16WXRiUQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 核能與小型反應爐</h3>
+<div class="news">
+  <div class="news-title-zh">法國電力公司尋求為其SMR項目引入投資者 - 路透中文網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 France&#x27;s EDF looking to bring in investors for its SMR project - Reuters</div>
+  <div class="news-summary">法國電力公司尋求為其SMR項目引入投資者 路透</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 13:59:59</span>
+    <a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxPdHg4YldWMDhUbXkxeUtKQ1BqVjdUWmU4N0FrcDNMeFlvc1RzdWtyVm5OdEdiWGZzcWhIWHpUNHJKb2dhQ29wNU5wcm80cFhkYjU5TmRrdFJ0VndUb25mNWE3VzRzTjd4VnVmdFhxYVFYaWUwUmt5ZjVfM1hDeEJZeXVzTkZkRkRXSm9jSzdvNDJQcDV6dkV6aG00TVpOZFhtWFUwR2Jn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：法國電力公司尋求為其SMR項目引入投資者 - 路透中文網
+原文標題：France&#x27;s EDF looking to bring in investors for its SMR project - Reuters
+摘要：法國電力公司尋求為其SMR項目引入投資者 路透
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMipgFBVV95cUxPdHg4YldWMDhUbXkxeUtKQ1BqVjdUWmU4N0FrcDNMeFlvc1RzdWtyVm5OdEdiWGZzcWhIWHpUNHJKb2dhQ29wNU5wcm80cFhkYjU5TmRrdFJ0VndUb25mNWE3VzRzTjd4VnVmdFhxYVFYaWUwUmt5ZjVfM1hDeEJZeXVzTkZkRkRXSm9jSzdvNDJQcDV6dkV6aG00TVpOZFhtWFUwR2Jn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">行政命令一年後，美國核能復興正如火如荼地進行 - 能源部 (.gov)<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 One Year After Executive Orders, U.S. Nuclear Energy Renaissance Is in Full Swing - Department of Energy (.gov)</div>
+  <div class="news-summary">行政命令發布一年後，美國核能復興全面展開 能源部 (.gov)</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 29 Jul 2026 13:26:32</span>
+    <a href="https://news.google.com/rss/articles/CBMiqwFBVV95cUxPRy1tYVk5SkpESWYySlFVbWpCMDd0djMxeHNLTUJDSGZDekxSNnpxdFJwWE5pQzcwdERZaER6cXRPeEpFZEhVWDhmZTQ5S29vOUxqOVZ0Vm1malRva3RkUjZKeXlITzF5bThDU2hKOTVnZUZpNU1NN2VWOW8wSVFPNTJjOVNkZF81MjBXckxuQXNHb2hiR1RjRmYzb01DVEhMU3ZKTDNQMC14Vlk?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：行政命令一年後，美國核能復興正如火如荼地進行 - 能源部 (.gov)
+原文標題：One Year After Executive Orders, U.S. Nuclear Energy Renaissance Is in Full Swing - Department of Energy (.gov)
+摘要：行政命令發布一年後，美國核能復興全面展開 能源部 (.gov)
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiqwFBVV95cUxPRy1tYVk5SkpESWYySlFVbWpCMDd0djMxeHNLTUJDSGZDekxSNnpxdFJwWE5pQzcwdERZaER6cXRPeEpFZEhVWDhmZTQ5S29vOUxqOVZ0Vm1malRva3RkUjZKeXlITzF5bThDU2hKOTVnZUZpNU1NN2VWOW8wSVFPNTJjOVNkZF81MjBXckxuQXNHb2hiR1RjRmYzb01DVEhMU3ZKTDNQMC14Vlk?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">美國優先考慮在東南亞建造小型核反應器 - 今日原油價格 |石油價格網<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 U.S. Prioritizes Small Nuclear Reactors Across Southeast Asia - Crude Oil Prices Today | OilPrice.com</div>
+  <div class="news-summary">美國優先考慮在東南亞建造小型核反應器 今日原油價格 |石油價格網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 24 Jul 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxOLTk0NWduY0RyZlFzMUo0Ui1SZHVMZURoSWVDMkhqMEp5bGF0eUFoc0JVTmdxcjh5eHNJZjFzVEw0RVZrVjdjZDJaNGg1Tm82eDdNc2ZiWWI4WDdQc1M5eXJ1WFNsbW1KLVQxcHVza1hqZHcyczJFLVZIbkhleFJFYXo5NU1PUVBvSENETFJYNW5SNFh4TWw5R2FyRXFNN0NIUXFydjRoOFc2ZEZBaXJFVmh2ZWZ0d9IBuwFBVV95cUxNTVJXek5tb0p0TVZaZTNnNjN5SmVBbmNxVzVCLVVnbmRwYmZ2UHd5c0t2OHJrQzVlQlpOeS0zYVFjM3VhYnBmOXZQQ0xxT3B3MVFUMnFwZGxzcEZCdkppSjFJVnlKMnFqUThyM1c4Vmc0Q0Uzb0lBUVNuVnJhd1p1OEdXTkVVQ1dTV1UwVnJ1U1ZQZlMxLThNMnplX29jWDE3VFJ5blJVWlR3NElOMWhtMU5vSXlrdEVZNFRn?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：美國優先考慮在東南亞建造小型核反應器 - 今日原油價格 |石油價格網
+原文標題：U.S. Prioritizes Small Nuclear Reactors Across Southeast Asia - Crude Oil Prices Today | OilPrice.com
+摘要：美國優先考慮在東南亞建造小型核反應器 今日原油價格 |石油價格網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMitgFBVV95cUxOLTk0NWduY0RyZlFzMUo0Ui1SZHVMZURoSWVDMkhqMEp5bGF0eUFoc0JVTmdxcjh5eHNJZjFzVEw0RVZrVjdjZDJaNGg1Tm82eDdNc2ZiWWI4WDdQc1M5eXJ1WFNsbW1KLVQxcHVza1hqZHcyczJFLVZIbkhleFJFYXo5NU1PUVBvSENETFJYNW5SNFh4TWw5R2FyRXFNN0NIUXFydjRoOFc2ZEZBaXJFVmh2ZWZ0d9IBuwFBVV95cUxNTVJXek5tb0p0TVZaZTNnNjN5SmVBbmNxVzVCLVVnbmRwYmZ2UHd5c0t2OHJrQzVlQlpOeS0zYVFjM3VhYnBmOXZQQ0xxT3B3MVFUMnFwZGxzcEZCdkppSjFJVnlKMnFqUThyM1c4Vmc0Q0Uzb0lBUVNuVnJhd1p1OEdXTkVVQ1dTV1UwVnJ1U1ZQZlMxLThNMnplX29jWDE3VFJ5blJVWlR3NElOMWhtMU5vSXlrdEVZNFRn?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">賓州立法者為小型模組化反應器掃清道路，降低費用和就業機會 - WBFF<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 PA lawmakers clear path for small modular reactors, pitching lower bills and jobs - WBFF</div>
+  <div class="news-summary">賓州立法者為小型模組化反應器掃清道路，降低費用和就業機會 WBFF</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 02:42:01</span>
+    <a href="https://news.google.com/rss/articles/CBMi0AFBVV95cUxNb3BtZl9ESUYyUkswNlNEc19qR0tyWVpSb0o1ZHpTaGhEUE4tSzFIN2pNTm1aOG9WY0EtZ1FPMHROaG1JT2NRa3RJbW5pN3lZX09rWTlwcVhfbVdROWczYWZtUE9EWmliNUNuYUZ3TkFXNWJMcUp2ZXhDdl9mNkZ3NnVtM2JvblpyODhYTVZaVjVvU0pWaE5pTzlLWHlHZ2xqSWxHMXR4VzV2Wld6UFVkQnJsVmxwOGlyc2d0T0c3YmlkOVc1MmRSTlJxYkFNbEFX?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：賓州立法者為小型模組化反應器掃清道路，降低費用和就業機會 - WBFF
+原文標題：PA lawmakers clear path for small modular reactors, pitching lower bills and jobs - WBFF
+摘要：賓州立法者為小型模組化反應器掃清道路，降低費用和就業機會 WBFF
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi0AFBVV95cUxNb3BtZl9ESUYyUkswNlNEc19qR0tyWVpSb0o1ZHpTaGhEUE4tSzFIN2pNTm1aOG9WY0EtZ1FPMHROaG1JT2NRa3RJbW5pN3lZX09rWTlwcVhfbVdROWczYWZtUE9EWmliNUNuYUZ3TkFXNWJMcUp2ZXhDdl9mNkZ3NnVtM2JvblpyODhYTVZaVjVvU0pWaE5pTzlLWHlHZ2xqSWxHMXR4VzV2Wld6UFVkQnJsVmxwOGlyc2d0T0c3YmlkOVc1MmRSTlJxYkFNbEFX?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">總理表示，由於乾旱導致帕克斯核電站關閉，匈牙利面臨能源緊縮 - politico.eu<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Hungary faces energy crunch as drought shuts down Paks nuclear plant, PM says - politico.eu</div>
+  <div class="news-summary">總理表示，由於乾旱導致帕克斯核電廠關閉，匈牙利面臨能源緊縮 政治網 匈牙利總理馬扎爾表示，匈牙利計劃在乾旱期間僅關閉核電廠</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 13:25:00</span>
+    <a href="https://news.google.com/rss/articles/CBMisAFBVV95cUxQNmtPbnAydVhlaDZIdWE4TC15amUwaTZvVUpIeDBwb05KaEtneG5MUWQwTHJOb0VJYU9OeElPVFh6TW0tbG14VFk3cGppQXRIempkTGxzUHJBeG92QTBGN3dIWmZuR2tOeFNEY1RwWWtvWmRBRjlnLXg5TzJOR2xnVEpzX3ZySFFwTmZnMGQyd09yRW5CQjRncGdWR21rWFRmdWFRQndCXzc1OXhOcm9TSA?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：總理表示，由於乾旱導致帕克斯核電站關閉，匈牙利面臨能源緊縮 - politico.eu
+原文標題：Hungary faces energy crunch as drought shuts down Paks nuclear plant, PM says - politico.eu
+摘要：總理表示，由於乾旱導致帕克斯核電廠關閉，匈牙利面臨能源緊縮 政治網 匈牙利總理馬扎爾表示，匈牙利計劃在乾旱期間僅關閉核電廠
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMisAFBVV95cUxQNmtPbnAydVhlaDZIdWE4TC15amUwaTZvVUpIeDBwb05KaEtneG5MUWQwTHJOb0VJYU9OeElPVFh6TW0tbG14VFk3cGppQXRIempkTGxzUHJBeG92QTBGN3dIWmZuR2tOeFNEY1RwWWtvWmRBRjlnLXg5TzJOR2xnVEpzX3ZySFFwTmZnMGQyd09yRW5CQjRncGdWR21rWFRmdWFRQndCXzc1OXhOcm9TSA?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 加密貨幣</h3>
+<div class="news">
+  <div class="news-title-zh">Coldcard 硬體錢包缺陷導致 41 分鐘內價值 7000 萬美元的比特幣被盜 - 黑客新聞<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Coldcard Hardware Wallet Flaw Linked to $70 Million Bitcoin Theft in 41 Minutes - The Hacker News</div>
+  <div class="news-summary">Coldcard 硬體錢包缺陷導致 41 分鐘內價值 7000 萬美元的比特幣被盜 黑客新聞比特幣冷錢包攻擊蔓延至 4,500 個地址，損失接近 8900 萬美元 CoinDesk 由於 Coldcard 損失接近 8900 萬美元，CoinDesk 比特幣保持在 63,000 美元以上 Investing.</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 17:17:00</span>
+    <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxNZ2JIX2d5aExyWUxJX0R5NEdrdXNzOUItNkp3Q001ZGFCY1VibHhTMVJnUHdNNzZBQUIzX3d1LWJSLXk2N0hoUjBURnhBYUpsTnhsZ25fbVhHcndqNllXQkRxUkIzMUw3WGhsRVM4bEdYeEg1RFA3dldsTkx3TlBrZUplaFU?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：Coldcard 硬體錢包缺陷導致 41 分鐘內價值 7000 萬美元的比特幣被盜 - 黑客新聞
+原文標題：Coldcard Hardware Wallet Flaw Linked to $70 Million Bitcoin Theft in 41 Minutes - The Hacker News
+摘要：Coldcard 硬體錢包缺陷導致 41 分鐘內價值 7000 萬美元的比特幣被盜 黑客新聞比特幣冷錢包攻擊蔓延至 4,500 個地址，損失接近 8900 萬美元 CoinDesk 由於 Coldcard 損失接近 8900 萬美元，CoinDesk 比特幣保持在 63,000 美元以上 Investing.
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMihAFBVV95cUxNZ2JIX2d5aExyWUxJX0R5NEdrdXNzOUItNkp3Q001ZGFCY1VibHhTMVJnUHdNNzZBQUIzX3d1LWJSLXk2N0hoUjBURnhBYUpsTnhsZ25fbVhHcndqNllXQkRxUkIzMUw3WGhsRVM4bEdYeEg1RFA3dldsTkx3TlBrZUplaFU?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">川普媒體稱向 Crypto.com 轉移 1.65 億美元比特幣並非出售 - The Block<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Trump Media says $165 million bitcoin transfer to Crypto.com wasn&#x27;t a sale - The Block</div>
+  <div class="news-summary">川普媒體稱向 Crypto.com 轉移 1.65 億美元比特幣並非出售 The Block</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 15:16:08</span>
+    <a href="https://news.google.com/rss/articles/CBMi1wFBVV95cUxQRGNNcEFMOXMwOFotdnVIaThqanRRZU52OGUxVWFhS2Iza2l2VG1rR2xSWDVpZ080dWxWOTdFamJOTDBTS3VBaWhjbGJzcHNwRGlubGJMQ2VNSEl6WU5xN0FMUTBEeGJIWTdmNktrUjJWX2lKNTJpTnFmRkw4R0t2dFFKaWZqaERjZ3lrWEtWbWtOUmtoSFBaNExZcnpZaG9qM1ZERGs5RXRsRFEtUGFwZG1RYlNKSnJsQl9Ic25TTWVzT3VyRGJvWElaWEhWZlV0TGE1SS1lQQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：川普媒體稱向 Crypto.com 轉移 1.65 億美元比特幣並非出售 - The Block
+原文標題：Trump Media says $165 million bitcoin transfer to Crypto.com wasn&#x27;t a sale - The Block
+摘要：川普媒體稱向 Crypto.com 轉移 1.65 億美元比特幣並非出售 The Block
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMi1wFBVV95cUxQRGNNcEFMOXMwOFotdnVIaThqanRRZU52OGUxVWFhS2Iza2l2VG1rR2xSWDVpZ080dWxWOTdFamJOTDBTS3VBaWhjbGJzcHNwRGlubGJMQ2VNSEl6WU5xN0FMUTBEeGJIWTdmNktrUjJWX2lKNTJpTnFmRkw4R0t2dFFKaWZqaERjZ3lrWEtWbWtOUmtoSFBaNExZcnpZaG9qM1ZERGs5RXRsRFEtUGFwZG1RYlNKSnJsQl9Ic25TTWVzT3VyRGJvWElaWEhWZlV0TGE1SS1lQQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">川普的真相社交檔案了兩件新的加密貨幣 ETF - 其中一隻用於 Crypto.com 的 CRO 代幣 - Yellow.com<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Trump&#x27;s Truth Social Files Two New Crypto ETFs - Including One For Crypto.com&#x27;s CRO Token - Yellow.com</div>
+  <div class="news-summary">川普的真相社交檔案了兩檔新的加密貨幣 ETF——其中一隻是針對 Crypto.com 的 CRO 代幣 Yellow.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 09:19:28</span>
+    <a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxOdU5UbDV0YWxBdER3Y1hFcjZxYzVfU0tVRGVQM2gxVTFoWHNXVFo0Q3d6dWJMdzMxak1nTlk3N0NJNHBreTdYdnlKbk5aOVN4aG1LN3JTazhoWXpKWGhKc2lCXzN1bG5hdFk2YmUxei0ybmJCTUU2a0NhUE9KMWhiUG5CWU9GWWxxY2hpem9TRndZakx4TVhlTFFlREF0Y3NtVl9aSlhuMjZtSjZz?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：川普的真相社交檔案了兩件新的加密貨幣 ETF - 其中一隻用於 Crypto.com 的 CRO 代幣 - Yellow.com
+原文標題：Trump&#x27;s Truth Social Files Two New Crypto ETFs - Including One For Crypto.com&#x27;s CRO Token - Yellow.com
+摘要：川普的真相社交檔案了兩檔新的加密貨幣 ETF——其中一隻是針對 Crypto.com 的 CRO 代幣 Yellow.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMirAFBVV95cUxOdU5UbDV0YWxBdER3Y1hFcjZxYzVfU0tVRGVQM2gxVTFoWHNXVFo0Q3d6dWJMdzMxak1nTlk3N0NJNHBreTdYdnlKbk5aOVN4aG1LN3JTazhoWXpKWGhKc2lCXzN1bG5hdFk2YmUxei0ybmJCTUU2a0NhUE9KMWhiUG5CWU9GWWxxY2hpem9TRndZakx4TVhlTFFlREF0Y3NtVl9aSlhuMjZtSjZz?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">摩根大通計劃今年在中國批准推出主動式 ETF - Bloomberg.com<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 JPMorgan Aims for China Approval of Active ETF Launch This Year - Bloomberg.com</div>
+  <div class="news-summary">摩根大通計劃今年在中國批准推出主動式 ETF Bloomberg.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Mon, 20 Apr 2026 07:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMitAFBVV95cUxOM0xXbzFxSEhmTy05VXlTdUxwcXY4TzZDTFBfTDR0QkpmQms0SGdFdFByVFU0Z0JFMlFmdk1HWmp2TkE3STZyYklfOUlLYnlnWmxFSV9KTmFUNnh0RTB2LWc4MktWYUw4dExpeG9IRDl0VE51NlZwR2JLa1EyOXZVX0dJUjlMQUxEZjY1Nk9YR1ZUcFB5UEFIRmswcjVRREFLY2s0QnBiVTFjbmhOZlBzMlR4ZTg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：摩根大通計劃今年在中國批准推出主動式 ETF - Bloomberg.com
+原文標題：JPMorgan Aims for China Approval of Active ETF Launch This Year - Bloomberg.com
+摘要：摩根大通計劃今年在中國批准推出主動式 ETF Bloomberg.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMitAFBVV95cUxOM0xXbzFxSEhmTy05VXlTdUxwcXY4TzZDTFBfTDR0QkpmQms0SGdFdFByVFU0Z0JFMlFmdk1HWmp2TkE3STZyYklfOUlLYnlnWmxFSV9KTmFUNnh0RTB2LWc4MktWYUw4dExpeG9IRDl0VE51NlZwR2JLa1EyOXZVX0dJUjlMQUxEZjY1Nk9YR1ZUcFB5UEFIRmswcjVRREFLY2s0QnBiVTFjbmhOZlBzMlR4ZTg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">明尼蘇達州對加密貨幣 ATM 的禁令在公民報告因詐騙損失近 100 萬美元後生效 - 福克斯商業<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 Minnesota&#x27;s ban on crypto ATMs goes into effect after citizens report losing nearly $1 million in scams - Fox Business</div>
+  <div class="news-summary">明尼蘇達州對加密貨幣 ATM 的禁令在公民報告因詐騙損失近 100 萬美元後生效 福克斯商業</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 14:36:00</span>
+    <a href="https://news.google.com/rss/articles/CBMixgFBVV95cUxPcElJN0JvNFY5TjdlRUY5cTBvcHlIZTRuY0h0VGh1cjNiWkYyV3RrRVZFanVjRUI2V2hfZ0FhT1o3RFBnRklZUThoRVJrVkgzYm8yZHpfUjJpTG5iX2s4XzhxUnF6VkFKYTJMQjBrNWxUUE03M0hlWUpkZVgwc2NVNUhtbUM0c084ejlHRXhTN1ZNSUdXSnFGMnVnSkpjZUM3N3FUa2N3YWRmekxHZlRPNGhjd3FSdUp1V2VhcWZKQ1ltemEzNmfSAcsBQVVfeXFMT1A3Qy1SSVJLQUFUYVZlQV9pTDY1Q05oTTJpT0otRlZaVlNkc2NRTjRnSnZHeXV2bkJaR1prbjFvMjVCZGF5VEFHLTNiODRZdS1Ld3dtODNleHc1WmN5THUya0VBZkV5MWlMb3p1OUw2WUZvQWhkeGVoc1FyMzZOQ0tOeXBzd1FRbUptbG1oWnhJT096NnE1MDAwNWpGVjkxcmN3VEpsdVpHV1ZsanRVNkI5aEEyYkFya1REQ0pVcGlmTFFBNUFMOG5ad1E?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：明尼蘇達州對加密貨幣 ATM 的禁令在公民報告因詐騙損失近 100 萬美元後生效 - 福克斯商業
+原文標題：Minnesota&#x27;s ban on crypto ATMs goes into effect after citizens report losing nearly $1 million in scams - Fox Business
+摘要：明尼蘇達州對加密貨幣 ATM 的禁令在公民報告因詐騙損失近 100 萬美元後生效 福克斯商業
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMixgFBVV95cUxPcElJN0JvNFY5TjdlRUY5cTBvcHlIZTRuY0h0VGh1cjNiWkYyV3RrRVZFanVjRUI2V2hfZ0FhT1o3RFBnRklZUThoRVJrVkgzYm8yZHpfUjJpTG5iX2s4XzhxUnF6VkFKYTJMQjBrNWxUUE03M0hlWUpkZVgwc2NVNUhtbUM0c084ejlHRXhTN1ZNSUdXSnFGMnVnSkpjZUM3N3FUa2N3YWRmekxHZlRPNGhjd3FSdUp1V2VhcWZKQ1ltemEzNmfSAcsBQVVfeXFMT1A3Qy1SSVJLQUFUYVZlQV9pTDY1Q05oTTJpT0otRlZaVlNkc2NRTjRnSnZHeXV2bkJaR1prbjFvMjVCZGF5VEFHLTNiODRZdS1Ld3dtODNleHc1WmN5THUya0VBZkV5MWlMb3p1OUw2WUZvQWhkeGVoc1FyMzZOQ0tOeXBzd1FRbUptbG1oWnhJT096NnE1MDAwNWpGVjkxcmN3VEpsdVpHV1ZsanRVNkI5aEEyYkFya1REQ0pVcGlmTFFBNUFMOG5ad1E?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 宏觀_關稅地緣</h3>
+<div class="news">
+  <div class="news-title-zh">川普剛剛針對加拿大引用了從未有總統使用過的 1930 年關稅法 - 財富<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Trump just invoked a 1930 tariff law no president has ever used — against Canada - Fortune</div>
+  <div class="news-summary">川普剛剛援引了 1930 年的關稅法，此前從未有總統使用過——針對加拿大 - 財富中文網</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 09:00:06</span>
+    <a href="https://news.google.com/rss/articles/CBMijwFBVV95cUxNYWFfMWtwNFN6aFFCLWxrVWJsTTdQWkd1UEFYWGd4QWRHZDktYkItQ3kxbDd3UUZ1blJZYTNtckMzZHB2RlFTU3BIVWpZZERNeDlMZ2JiZ3VHeWdIUER2dFlhaVZLYUtJcENWMzRTLUYyaDNVa2JFWVdObTlDZ2VoMFJiRV9jSEctbk5Pc1d0QQ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：川普剛剛針對加拿大引用了從未有總統使用過的 1930 年關稅法 - 財富
+原文標題：Trump just invoked a 1930 tariff law no president has ever used — against Canada - Fortune
+摘要：川普剛剛援引了 1930 年的關稅法，此前從未有總統使用過——針對加拿大 - 財富中文網
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijwFBVV95cUxNYWFfMWtwNFN6aFFCLWxrVWJsTTdQWkd1UEFYWGd4QWRHZDktYkItQ3kxbDd3UUZ1blJZYTNtckMzZHB2RlFTU3BIVWpZZERNeDlMZ2JiZ3VHeWdIUER2dFlhaVZLYUtJcENWMzRTLUYyaDNVa2JFWVdObTlDZ2VoMFJiRV9jSEctbk5Pc1d0QQ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">亞馬遜表示，它獲得了 6 億美元的川普關稅退款，並將把退貨轉嫁給部分客戶 - CNBC<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Amazon says it got $600 million in Trump tariff refunds and will pass return along to some customers - CNBC</div>
+  <div class="news-summary">亞馬遜表示，它獲得了 6 億美元的川普關稅退款，並將把退貨轉嫁給部分客戶 CNBC 亞馬遜將把 6 億美元的關稅退款中的一部分轉嫁給客戶 西雅圖時報 紐厄爾品牌提升利潤預期，因為關稅退款有助於抵消通貨膨脹 華爾街日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Thu, 30 Jul 2026 22:46:47</span>
+    <a href="https://news.google.com/rss/articles/CBMickFVX3lxTE5ORmdPZS1GTHpCMkZ5Sm5hUlBJWkUtOU1pbUNaaU0xLW1tM3VFQ1kyWHBPbWR1YU5rVGxLZ0RyV3AzVXpidGtWU1dLMUUtZGVpbjNDWm12WThxNkFiUUgxRmhpRzhZZFU0Z3ZLQjluU2dIUdIBd0FVX3lxTE9saHE2QlJGQ2U2NWZ5SEJpaEFuWnVOaDVyTnA4RDJwZ1FrTV8zMXBRMU9vaS1ualVsb1JCX0lud3RxNHpIRjlVbjdwaUEtTUd2UGNSbzZ4RmpZZ1JmWVpKRHdnM2tZQmNTR1ROYW96bnd4SEEtb1JJ?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：亞馬遜表示，它獲得了 6 億美元的川普關稅退款，並將把退貨轉嫁給部分客戶 - CNBC
+原文標題：Amazon says it got $600 million in Trump tariff refunds and will pass return along to some customers - CNBC
+摘要：亞馬遜表示，它獲得了 6 億美元的川普關稅退款，並將把退貨轉嫁給部分客戶 CNBC 亞馬遜將把 6 億美元的關稅退款中的一部分轉嫁給客戶 西雅圖時報 紐厄爾品牌提升利潤預期，因為關稅退款有助於抵消通貨膨脹 華爾街日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMickFVX3lxTE5ORmdPZS1GTHpCMkZ5Sm5hUlBJWkUtOU1pbUNaaU0xLW1tM3VFQ1kyWHBPbWR1YU5rVGxLZ0RyV3AzVXpidGtWU1dLMUUtZGVpbjNDWm12WThxNkFiUUgxRmhpRzhZZFU0Z3ZLQjluU2dIUdIBd0FVX3lxTE9saHE2QlJGQ2U2NWZ5SEJpaEFuWnVOaDVyTnA4RDJwZ1FrTV8zMXBRMU9vaS1ualVsb1JCX0lud3RxNHpIRjlVbjdwaUEtTUd2UGNSbzZ4RmpZZ1JmWVpKRHdnM2tZQmNTR1ROYW96bnd4SEEtb1JJ?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">中歐貿易：布魯塞爾測試克制極限，北京方面加大力度 - 《南華早報》<span class="sentiment-tag sent-neu">— 中</span></div>
+  <div class="news-title-en">🇺🇸 EU-China trade: Beijing turns the screws as Brussels tests limits of restraint - South China Morning Post</div>
+  <div class="news-summary">中歐貿易：布魯塞爾測試克制極限，北京方面加大力度 南華早報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 09:00:09</span>
+    <a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxPX0xnQTR2elkxX2RFTlMwTGhlSlNBNUNnajhZVHRpRWQ5dkVxTDRaWXZaNlpGVlVjX09yemo5ZFVRZGM2cUZEc2NhM2JWSVhGR3hVRENya2pveG51SHFKZnlVNUYwNjVrMERVTnZMNHlPOG9FTktfS0dpYzZoLXZxVEpqWl92LUlBckxzb3V3dEl3N0FRN3lYWm4zcm5PYVFZYnpVb3JMSzVvT3ZCWTMzaW1sYXp6S3ExWlpqbklvRUR0a0Q5ellWSdIByAFBVV95cUxPXzVhb2Jvejl2Uy1iOXo0X0dzYzJHMEJSN2ZpblJfbDJQYVdpV3lzTGZ5emt4UmdmUkFaTTRSRk5tMVNiOHV0WlNXWE1PR1hEajF2RHNySU9JWHpmOWM5QThuQzRZUElxQmQ0YXVqWVVVdUxyeWtZZ3lXTU9iOU95Q1VzWU51dF9GZXZMeEs2M2c5RUVvQzg0YllSUUMtUmIwRjlpZjkxMDJPalVVYzUtSFFzQk1fTWs0ckJoVDlwYlQ1V1VKTVNvQg?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：中歐貿易：布魯塞爾測試克制極限，北京方面加大力度 - 《南華早報》
+原文標題：EU-China trade: Beijing turns the screws as Brussels tests limits of restraint - South China Morning Post
+摘要：中歐貿易：布魯塞爾測試克制極限，北京方面加大力度 南華早報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiyAFBVV95cUxPX0xnQTR2elkxX2RFTlMwTGhlSlNBNUNnajhZVHRpRWQ5dkVxTDRaWXZaNlpGVlVjX09yemo5ZFVRZGM2cUZEc2NhM2JWSVhGR3hVRENya2pveG51SHFKZnlVNUYwNjVrMERVTnZMNHlPOG9FTktfS0dpYzZoLXZxVEpqWl92LUlBckxzb3V3dEl3N0FRN3lYWm4zcm5PYVFZYnpVb3JMSzVvT3ZCWTMzaW1sYXp6S3ExWlpqbklvRUR0a0Q5ellWSdIByAFBVV95cUxPXzVhb2Jvejl2Uy1iOXo0X0dzYzJHMEJSN2ZpblJfbDJQYVdpV3lzTGZ5emt4UmdmUkFaTTRSRk5tMVNiOHV0WlNXWE1PR1hEajF2RHNySU9JWHpmOWM5QThuQzRZUElxQmQ0YXVqWVVVdUxyeWtZZ3lXTU9iOU95Q1VzWU51dF9GZXZMeEs2M2c5RUVvQzg0YllSUUMtUmIwRjlpZjkxMDJPalVVYzUtSFFzQk1fTWs0ckJoVDlwYlQ1V1VKTVNvQg?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">川普決心打貿易戰 — — 而且他可能很難阻止 - theguardian.com<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Trump is determined to pursue his trade war – and he may be difficult to stop - theguardian.com</div>
+  <div class="news-summary">川普決心打貿易戰——而且他可能很難阻止 theguardian.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 12:01:00</span>
+    <a href="https://news.google.com/rss/articles/CBMid0FVX3lxTE90QmZ6b1ZSUmRVQ3IzWE40ZFRGZ09XMFNLUS1rV2dlN1VWbGozWGViUEdwaHFrNk15RHFHNGFsRmVSdVZpNG4zRUV1bVhUMHF2SUxWdTlrZ1pSSFcxZ1RzWEJ0eUIzZUxfd1l4aVAxZmlMT3hGMWQw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：川普決心打貿易戰 — — 而且他可能很難阻止 - theguardian.com
+原文標題：Trump is determined to pursue his trade war – and he may be difficult to stop - theguardian.com
+摘要：川普決心打貿易戰——而且他可能很難阻止 theguardian.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMid0FVX3lxTE90QmZ6b1ZSUmRVQ3IzWE40ZFRGZ09XMFNLUS1rV2dlN1VWbGozWGViUEdwaHFrNk15RHFHNGFsRmVSdVZpNG4zRUV1bVhUMHF2SUxWdTlrZ1pSSFcxZ1RzWEJ0eUIzZUxfd1l4aVAxZmlMT3hGMWQw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">環台灣 1,000 公里的史詩自行車之旅 - BBC<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 An epic 1,000km bike ride around Taiwan - BBC</div>
+  <div class="news-summary">環台灣 1,000 公里的史詩自行車之旅 BBC</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sat, 01 Aug 2026 13:00:00</span>
+    <a href="https://news.google.com/rss/articles/CBMilgFBVV95cUxOWHExZFlxc3l5SWhhWFZkcVJkRjNheC1vRndBN1ViMFJBWmtXZWw4Sk9YSzIwQTVjQ2Q5TUc2Y3dHQnJsLWFZbVRER3JFWWNFd2pGUS15TXlkcmd3ME1qVUJCeEZ1MXoyMFFHYUFmdThHU3lHRTFoNTVTRHd4MS1ubU9BaDRybmJ2c2N0cWk0MlZqYkRpLWc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：環台灣 1,000 公里的史詩自行車之旅 - BBC
+原文標題：An epic 1,000km bike ride around Taiwan - BBC
+摘要：環台灣 1,000 公里的史詩自行車之旅 BBC
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMilgFBVV95cUxOWHExZFlxc3l5SWhhWFZkcVJkRjNheC1vRndBN1ViMFJBWmtXZWw4Sk9YSzIwQTVjQ2Q5TUc2Y3dHQnJsLWFZbVRER3JFWWNFd2pGUS15TXlkcmd3ME1qVUJCeEZ1MXoyMFFHYUFmdThHU3lHRTFoNTVTRHd4MS1ubU9BaDRybmJ2c2N0cWk0MlZqYkRpLWc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<h3 class="stock">🎯 宏觀_聯準會利率</h3>
+<div class="news">
+  <div class="news-title-zh">閱讀完整的 7 月 FOMC 聲明 - barrons.com<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Read the Full July FOMC Statement - barrons.com</div>
+  <div class="news-summary">閱讀完整的 7 月 FOMC 聲明 barrons.com</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Wed, 29 Jul 2026 18:47:14</span>
+    <a href="https://news.google.com/rss/articles/CBMizgFBVV95cUxQdTVCek1GZXNGeENZbWhvUFVNU3diM2g2cW1RYUdpSFFILTd4YTV2U3JMVEpXU1dWbHBHRW4wa0IwM0o0eVY1NDhQSWtHQ1pmb21ldUU0UTlLZ3lhdnB0ejVDSXBQMHhGTE1ZR0ctZ3kyeVlFUG5rdDBiR0lydmtBNDhqQU5lVThCUnBSa3p0VHN1SzNzQXBQSW5rQ2tFWXFJSF84SnpIbTVkUVhBWDhnYUZ3cHN4WHRnQ0luQUpiMWVaZ3ozZ3Z6VFExZDhQZw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：閱讀完整的 7 月 FOMC 聲明 - barrons.com
+原文標題：Read the Full July FOMC Statement - barrons.com
+摘要：閱讀完整的 7 月 FOMC 聲明 barrons.com
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMizgFBVV95cUxQdTVCek1GZXNGeENZbWhvUFVNU3diM2g2cW1RYUdpSFFILTd4YTV2U3JMVEpXU1dWbHBHRW4wa0IwM0o0eVY1NDhQSWtHQ1pmb21ldUU0UTlLZ3lhdnB0ejVDSXBQMHhGTE1ZR0ctZ3kyeVlFUG5rdDBiR0lydmtBNDhqQU5lVThCUnBSa3p0VHN1SzNzQXBQSW5rQ2tFWXFJSF84SnpIbTVkUVhBWDhnYUZ3cHN4WHRnQ0luQUpiMWVaZ3ozZ3Z6VFExZDhQZw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">FOMC 回顧：前瞻指引的取消並不是溝通的改變。這是一個政策工具。 - 雅虎財經<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 FOMC Recap: The Removal of Forward Guidance Is Not a Communications Change. It’s a Policy Tool. - Yahoo Finance</div>
+  <div class="news-summary">FOMC 回顧：前瞻指引的取消並不是溝通的改變。這是一個政策工具。雅虎財經</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 13:08:41</span>
+    <a href="https://news.google.com/rss/articles/CBMiogFBVV95cUxNc2k3Vjh3UzNkZWlvaGktV2ZUU3BiWjdMYTk3Q2VWT29IekNSX0ZBb0E1cDlIM3BKMy1SRXIzR19WMHZmdEJiVDdSNlBDWk9sS1h2R05VT1duOHloQV9MdnFReW42aEdSS2Uzd3BIbWt4ODh1NVJRMVF6UzY1amlNMnE0bXd6TTRiVnJKVlZZUGRzTllVYjBLSTdJWlZiWDhkUXc?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：FOMC 回顧：前瞻指引的取消並不是溝通的改變。這是一個政策工具。 - 雅虎財經
+原文標題：FOMC Recap: The Removal of Forward Guidance Is Not a Communications Change. It’s a Policy Tool. - Yahoo Finance
+摘要：FOMC 回顧：前瞻指引的取消並不是溝通的改變。這是一個政策工具。雅虎財經
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiogFBVV95cUxNc2k3Vjh3UzNkZWlvaGktV2ZUU3BiWjdMYTk3Q2VWT29IekNSX0ZBb0E1cDlIM3BKMy1SRXIzR19WMHZmdEJiVDdSNlBDWk9sS1h2R05VT1duOHloQV9MdnFReW42aEdSS2Uzd3BIbWt4ODh1NVJRMVF6UzY1amlNMnE0bXd6TTRiVnJKVlZZUGRzTllVYjBLSTdJWlZiWDhkUXc?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">沃什提議削減聯準會利率制定會議次數 - 華爾街日報<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Warsh Floats Cut in Number of Fed Rate-Setting Meetings - WSJ</div>
+  <div class="news-summary">沃什提議削減聯準會利率制定會議次數 華爾街日報</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 22:39:00</span>
+    <a href="https://news.google.com/rss/articles/CBMijAFBVV95cUxNcUJLVUtjRDlVeDNFa3NYbTljYWtteURfaE5ITEVWdWs1TFdQUkxEUmlMVFloSER5RzZ2VFBRVDM4Z254ZDhObnk3b3pNekNuWEg0MWFUTFdCcS1FUjBTWlptc1RwY21ISWt6VERxSkZFSDJOVjRvUFUtUDlLdjJkWU01bkl6SV9rN2tZRw?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：沃什提議削減聯準會利率制定會議次數 - 華爾街日報
+原文標題：Warsh Floats Cut in Number of Fed Rate-Setting Meetings - WSJ
+摘要：沃什提議削減聯準會利率制定會議次數 華爾街日報
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMijAFBVV95cUxNcUJLVUtjRDlVeDNFa3NYbTljYWtteURfaE5ITEVWdWs1TFdQUkxEUmlMVFloSER5RzZ2VFBRVDM4Z254ZDhObnk3b3pNekNuWEg0MWFUTFdCcS1FUjBTWlptc1RwY21ISWt6VERxSkZFSDJOVjRvUFUtUDlLdjJkWU01bkl6SV9rN2tZRw?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">在聯準會利率不確定的情況下，透過這些投資組合調整獲得更多收益率 - CNBC<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 Scoop up more yield amid Fed rate uncertainty with these portfolio tweaks - CNBC</div>
+  <div class="news-summary">在聯準會利率不確定的情況下，透過這些投資組合調整獲得更多收益率 CNBC</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Fri, 31 Jul 2026 19:28:51</span>
+    <a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxPbDVTNU42aDBoclBHbkJwckNCYWZVWGlic3BBNWozR3QzM3FoUGhoV3ZIR3pnV3VNdm5OLTljWkVocWRleTVHOEV5R3dpZE5aWlZ1bWI1NUpKM1lZODdqaGhkWFBtUHNSVUU3NmhEVFpPVGpmcGNJb3ExTElSMS01RHlyTWFfVG9yXzRhMFhYWjJFTVQ2a1pQVUVRMjhoM1h0WG02T2UxU2ZxQnp3aWtR?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：在聯準會利率不確定的情況下，透過這些投資組合調整獲得更多收益率 - CNBC
+原文標題：Scoop up more yield amid Fed rate uncertainty with these portfolio tweaks - CNBC
+摘要：在聯準會利率不確定的情況下，透過這些投資組合調整獲得更多收益率 CNBC
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMirwFBVV95cUxPbDVTNU42aDBoclBHbkJwckNCYWZVWGlic3BBNWozR3QzM3FoUGhoV3ZIR3pnV3VNdm5OLTljWkVocWRleTVHOEV5R3dpZE5aWlZ1bWI1NUpKM1lZODdqaGhkWFBtUHNSVUU3NmhEVFpPVGpmcGNJb3ExTElSMS01RHlyTWFfVG9yXzRhMFhYWjJFTVQ2a1pQVUVRMjhoM1h0WG02T2UxU2ZxQnp3aWtR?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+<div class="news">
+  <div class="news-title-zh">「虎媽」露西鮑威爾談工黨的職業技能驅動：「這關係到每個人的雄心壯志」 - theguardian.com<span class="sentiment-tag sent-neu">— 中</span><span class="tag tag-breaking">突發</span></div>
+  <div class="news-title-en">🇺🇸 ‘Tiger mum’ Lucy Powell on Labour’s vocational skills drive: ‘It’s about ambition for everybody’ - theguardian.com</div>
+  <div class="news-summary">Error 500 (Server Error)!!1500.That’s an error.There was an error. Please try again later.That’s all we know.</div>
+  <div class="news-meta">
+    <span>📡 Google News</span>
+    <span>🕒 Sun, 02 Aug 2026 18:20:00</span>
+    <a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxPcm5iRnVDcDNLMGFwVkNsTUkwaEhqTnVLQWlNYXNwWkhDZVVuLUhWNHZYUFdfbnlvbnJNS2VPN2ZRWUkzQ3YxcExRSXYwMm55VGREelQ1a3E5SVhUR21fVmtQWk1sRld3UVkzUFRhWi1nSDJNTHNodkI0LU82QTMzMXJXNXZlLWhmS1NyMjNOdXdZdHBycUxfMWJYbVZhQkZCT1RaUHdGSmk?oc=5" target="_blank">🔗 原文</a>
+    <button class="copy-btn" data-copy="請用繁體中文分析這則美股新聞對台股的影響：
+
+標題：「虎媽」露西鮑威爾談工黨的職業技能驅動：「這關係到每個人的雄心壯志」 - theguardian.com
+原文標題：‘Tiger mum’ Lucy Powell on Labour’s vocational skills drive: ‘It’s about ambition for everybody’ - theguardian.com
+摘要：Error 500 (Server Error)!!1500.That’s an error.There was an error. Please try again later.That’s all we know.
+來源：Google News | 連結：https://news.google.com/rss/articles/CBMiqAFBVV95cUxPcm5iRnVDcDNLMGFwVkNsTUkwaEhqTnVLQWlNYXNwWkhDZVVuLUhWNHZYUFdfbnlvbnJNS2VPN2ZRWUkzQ3YxcExRSXYwMm55VGREelQ1a3E5SVhUR21fVmtQWk1sRld3UVkzUFRhWi1nSDJNTHNodkI0LU82QTMzMXJXNXZlLWhmS1NyMjNOdXdZdHBycUxfMWJYbVZhQkZCT1RaUHdGSmk?oc=5">📋 複製到 ChatGPT</button>
+  </div>
+</div>
+</section>
+
+<footer>
+  自動產生於 2026-08-03 06:35:47｜本機歸檔：~/Downloads/news/2026-08/｜
+  <a href="https://wang2026378.github.io/stocks/首頁.html" style="color:var(--accent)">← 回首頁</a>
+</footer>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const t=btn.dataset.copy;
+    navigator.clipboard.writeText(t).then(()=>{
+      const o=btn.textContent;btn.textContent='✓ 已複製';
+      setTimeout(()=>btn.textContent=o,1500);
+    });
+  });
+});
+</script>
+</body>
+</html>
