@@ -296,10 +296,24 @@ const US_DEFAULTS=[
   {code:'GOOGL',name:'Alphabet',sector:'科技',shares:18,price:388.64,avg:298.5133,cost:5373.24,be:298.5133,note:''},
 ];
 
+const HOLDINGS_REVISION='2026-10-05-screenshot-1';
+const TW_SHARE_UPDATES=[{"code": "0050", "name": "元大台灣50", "shares": 5}, {"code": "1802", "name": "台玻", "shares": 1000}, {"code": "2301", "name": "光寶科", "shares": 3508}, {"code": "2308", "name": "台達電", "shares": 278}, {"code": "2312", "name": "金寶", "shares": 7000}, {"code": "2313", "name": "華通", "shares": 1000}, {"code": "2324", "name": "仁寶", "shares": 3000}, {"code": "2330", "name": "台積電", "shares": 3178}, {"code": "3037", "name": "欣興", "shares": 8}, {"code": "4908", "name": "前鼎", "shares": 4008}, {"code": "6285", "name": "啟碁", "shares": 9990}];
+function applyScreenshotShares(){
+  if(market!=='TW'||localStorage.getItem('tw_share_revision')===HOLDINGS_REVISION)return;
+  stocks=stocks.map(s=>({...s}));
+  for(const u of TW_SHARE_UPDATES){
+    const found=stocks.find(s=>s.code===u.code);
+    if(found){if(found.shares!==u.shares)found.costNeedsReview=true;found.shares=u.shares;found.name=u.name;}
+    else stocks.push({...u,price:0,avg:0,cost:0,be:0,sector:'其他',costNeedsReview:true});
+  }
+  localStorage.setItem(KEYS.TW.stocks,JSON.stringify(stocks));
+  localStorage.setItem('tw_share_revision',HOLDINGS_REVISION);
+}
 function loadMarket(){
   const k=KEYS[market];
   try{stocks=JSON.parse(localStorage.getItem(k.stocks))||(market==='TW'?TW_DEFAULTS:US_DEFAULTS);}catch{stocks=market==='TW'?TW_DEFAULTS:US_DEFAULTS;}
   try{lastPrices=JSON.parse(localStorage.getItem(k.prices))||{};}catch{lastPrices={};}
+  applyScreenshotShares();
   fxRate=parseFloat(localStorage.getItem(FX_KEY))||32.5;
   document.getElementById('fxInput').value=fxRate.toFixed(2);
   const user=localStorage.getItem(USER_KEY)||'';
@@ -559,6 +573,7 @@ function renderTab1(){
   const colors=Object.values(SECTOR_COLORS);
 
   document.getElementById('pageContent').innerHTML=`
+    ${stocks.some(s=>s.costNeedsReview)?'<div class="notice">已依截圖更新庫存股數。部分成本、均價尚未核對，下方損益僅供暫時參考；請點股票編輯補齊。</div>':''}
     <div class="metrics">${metricsHtml}</div>
     <div style="position:relative;height:200px;margin-bottom:11px;"><canvas id="pie1"></canvas></div>
     <div class="sec-title">持股明細（點欄位排序）</div>
