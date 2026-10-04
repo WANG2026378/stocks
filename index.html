@@ -399,22 +399,27 @@ async function fetchFxRate(){
 }
 
 let priceUpdate=null;
+let downloadedQuotes={}, downloadedAt=0;
 function buildProxies(sym){
-  const target='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1m&range=1d&_='+Date.now();
-  return ['https://api.allorigins.win/raw?url='+encodeURIComponent(target),target,target.replace('query1','query2')];
+  const target='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d&_='+Date.now();
+  return ['https://r.jina.ai/'+target,target,target.replace('query1','query2'),'https://api.allorigins.win/raw?url='+encodeURIComponent(target)];
 }
 async function fetchOnePrice(sym){
+  const saved=downloadedQuotes[sym];
+
   for(const url of buildProxies(sym)){
     try{
       const res=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(10000)});
       if(!res.ok) continue;
-      const meta=(await res.json())?.chart?.result?.[0]?.meta;
+      const payload=url.startsWith('https://r.jina.ai/')?await res.text():null;
+      const data=payload?JSON.parse(payload.slice(payload.indexOf('{'),payload.lastIndexOf('}')+1)):await res.json();
+      const meta=data?.chart?.result?.[0]?.meta;
       if(Number.isFinite(meta?.regularMarketPrice)&&meta.regularMarketPrice>0&&meta.regularMarketTime){
-        return {price:meta.regularMarketPrice,time:meta.regularMarketTime*1000,checkedAt:Date.now(),source:'Yahoo Finance'};
+        return {price:meta.regularMarketPrice,time:meta.regularMarketTime*1000,checkedAt:Date.now(),source:'Yahoo Finance',live:true};
       }
     }catch{}
   }
-  return null;
+  return saved&&Number.isFinite(saved.price)&&saved.price>0&&saved.time?saved:null;
 }
 async function fetchPrices(){return updatePrices(false);}
 async function fetchPricesQuiet(){return updatePrices(true);}
@@ -425,16 +430,24 @@ async function updatePrices(quiet){
   document.getElementById('syncBtn').disabled=true;
   setSyncStatus('loading','正在取得最新可用報價…');
   priceUpdate=(async()=>{
+    downloadedQuotes={};downloadedAt=0;
+    try{
+      const response=await fetch('./quotes.json?cb='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(5000)});
+      if(response.ok){const data=await response.json();downloadedQuotes=data.quotes||{};downloadedAt=Date.parse(data.downloadedAt)||0;}
+    }catch{}
     if(requestedMarket==='US'){const quote=await fetchOnePrice('USDTWD=X');if(quote&&market===requestedMarket&&stocks===requestedStocks&&quote.price>20&&quote.price<60){fxRate=quote.price;document.getElementById('fxInput').value=fxRate.toFixed(2);localStorage.setItem(FX_KEY,String(fxRate));}}
-    let next=0,ok=0;
+    let next=0,ok=0,cached=0;
     const changes=[];
     async function worker(){
       while(next<requestedStocks.length){
         const s=requestedStocks[next++];
-        let quote=await fetchOnePrice(requestedMarket==='TW'?s.code+'.TW':s.code.toUpperCase());
+        const base=requestedMarket==='TW'?s.code+'.TW':s.code.toUpperCase();
+        const sym=downloadedQuotes[base]?.symbol||base;
+        let quote=await fetchOnePrice(sym);
+        if(!quote&&downloadedQuotes[base])quote=downloadedQuotes[base];
         if(!quote&&requestedMarket==='TW') quote=await fetchOnePrice(s.code+'.TWO');
         if(market!==requestedMarket||stocks!==requestedStocks) return;
-        if(quote){changes.push([s.code,quote.price>s.price]);s.price=quote.price;lastPrices[s.code]=quote;ok++;}
+        if(quote){if(!quote.live)cached++;changes.push([s.code,quote.price>s.price]);s.price=quote.price;lastPrices[s.code]=quote;ok++;}
       }
     }
     await Promise.all([worker(),worker(),worker()]);
@@ -444,7 +457,7 @@ async function updatePrices(quiet){
       if(!quiet)saveSnapshot();
     }
     const fail=requestedStocks.length-ok;
-    setSyncStatus(ok&& !fail?'ok':'err',ok?'已取得 '+ok+' 檔報價'+(fail?'，'+fail+' 檔失敗，保留原價':'')+'。報價可能延遲；各檔顯示成交時間，休市顯示最後成交價。':'報價來源無法連線，已保留原價，請稍後重試。');
+    setSyncStatus(ok&&!fail&&!cached?'ok':'err',ok?'已取得 '+(ok-cached)+' 檔 Yahoo 報價'+(cached?'，'+cached+' 檔連線失敗，使用備用下載報價':'')+(fail?'，'+fail+' 檔失敗，保留原價':'')+'。各檔顯示實際成交時間；休市提供最後成交價。':'Yahoo 報價來源暫時無法連線，已保留原價，請稍後重試。');
   })().catch(()=>setSyncStatus('err','更新未完成，請重試。')).finally(()=>{
     priceUpdate=null;document.getElementById('syncBtn').disabled=false;
   });
@@ -1051,7 +1064,7 @@ function flashPrice(code, isUp){
 // 頁面開啟時若在開盤時間自動啟動
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
-    startLive();
+    updateLiveUI();
   },1500);
 });
 
