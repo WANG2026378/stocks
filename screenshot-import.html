@@ -1,71 +1,21 @@
-<!doctype html>
-<html lang="zh-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>截圖更新持股</title>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<style>body{font:16px system-ui;background:#f5f7f9;color:#182828;margin:0}main{max-width:850px;margin:auto;padding:24px}section{background:white;padding:20px;border-radius:12px;margin:16px 0}button,a,select,input{font:inherit}button{background:#1a6b6b;color:white;border:0;border-radius:6px;padding:10px 16px;cursor:pointer}button:disabled{opacity:.5;cursor:wait}input,select{padding:8px;max-width:100%;box-sizing:border-box}textarea{width:100%;box-sizing:border-box;height:180px;font:14px monospace}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:8px;border-bottom:1px solid #ddd}td input{width:100%}#preview{max-width:100%;max-height:360px}#status{white-space:pre-wrap}a{color:#1a6b6b}.scroll{overflow-x:auto}</style></head>
-<body><main><a href="index.html">← 回到損益追蹤器</a><h1>📷 截圖更新存股數</h1>
-<p>選擇券商持股截圖，辨識後確認股票代碼與股數。只更新勾選股票的股數，既有成本、均價及股價會保留。若交易成本也有改變，請回主頁編輯。</p>
-<section><label>市場 <select id="market"><option value="TW">台股</option><option value="US">美股</option></select></label><p><input id="file" type="file" accept="image/*"></p><img id="preview" alt="持股截圖預覽" hidden><p><button id="recognize" disabled>辨識截圖</button></p><p id="status" role="status" aria-live="polite">請選擇清晰的截圖。圖片在瀏覽器內辨識；首次使用需下載辨識模型。</p></section>
-<section><h2>辨識文字</h2><p>若辨識不完整，可修正文字後重新整理。每行格式例如「2330 台積電 2030」或「AAPL 10.5」。數量請用股，1 張＝1000 股。</p><textarea id="text" aria-label="辨識文字"></textarea><p><button id="parse">整理確認表格</button></p></section>
-<section><h2>確認後更新</h2><p>辨識可能有誤。股數不會自動推測，請對照截圖填入；未勾選的股票會保留。</p><div class="scroll"><table><thead><tr><th>套用</th><th>代碼</th><th>名稱</th><th>原股數</th><th>截圖股數（股）</th></tr></thead><tbody id="rows"></tbody></table></div><p><button id="apply" disabled>確認更新股數</button></p></section>
-<script>
-const keys={TW:'tw_stocks_v5',US:'us_stocks_v1'};
-const el=id=>document.getElementById(id);
-let imageURL=null,rows=[],busy=false;
-function load(){try{return JSON.parse(localStorage.getItem(keys[el('market').value]))||[];}catch{throw Error('本機持股資料無法讀取，請先回主頁確認。');}}
-function status(s){el('status').textContent=s;}
-function reset(){rows=[];el('rows').replaceChildren();el('apply').disabled=true;}
-el('market').onchange=()=>{reset();status('市場已變更，請重新整理確認表格。');};
-el('file').onchange=()=>{
- reset();el('text').value='';if(imageURL)URL.revokeObjectURL(imageURL);
- const f=el('file').files[0];el('recognize').disabled=!f;
- el('preview').hidden=!f;if(f){imageURL=URL.createObjectURL(f);el('preview').src=imageURL;status('截圖已載入，點擊「辨識截圖」。');}
-};
-el('recognize').onclick=async()=>{
- if(busy||!el('file').files[0])return;
- busy=true;el('recognize').disabled=true;el('market').disabled=true;el('file').disabled=true;reset();let worker;
- try{
-  if(!window.Tesseract)throw Error('辨識程式未載入，請檢查網路後重新整理。');
-  worker=await Tesseract.createWorker('chi_tra+eng',1,{logger:m=>status('辨識中：'+Math.round((m.progress||0)*100)+'%（'+m.status+'）')});
-  const result=await worker.recognize(el('file').files[0]);el('text').value=result.data.text;
-  parse();status('辨識完成。請對照截圖，確認每檔股數後勾選套用。');
- }catch(e){status('辨識失敗：'+e.message+'\n你仍可在辨識文字欄輸入代碼與股數。');}
- finally{if(worker)await worker.terminate();busy=false;el('recognize').disabled=false;el('market').disabled=false;el('file').disabled=false;}
-};
-function parse(){
- reset();const holdings=load(),tw=el('market').value==='TW';
- for(const line of el('text').value.split(/\n/)){
-  const tokens=line.toUpperCase().match(tw?/\b\d{4,6}[A-Z]?\b/g:/\b[A-Z][A-Z0-9.-]{0,9}\b/g)||[];
-  const code=tokens.find(c=>holdings.some(s=>s.code.toUpperCase()===c))||tokens[0];
-  if(!code||rows.some(r=>r.code===code))continue;
-  const old=holdings.find(s=>s.code.toUpperCase()===code);
-  // Only prefill an unambiguous code + single quantity line.
-  const clean=line.replace(code,'').trim();
-  const numeric=clean.match(/^(?:[^\d]+\s+)?([\d,]+(?:\.\d+)?)\s*(股|張)?$/);
-  const quantity=numeric?Number(numeric[1].replace(/,/g,''))*(numeric[2]==='張'?1000:1):null;
-  const tr=document.createElement('tr');const cells=Array.from({length:5},()=>tr.appendChild(document.createElement('td')));
-  const check=document.createElement('input');check.type='checkbox';check.setAttribute('aria-label','套用 '+code);cells[0].append(check);
-  cells[1].textContent=code;
-  const name=document.createElement('input');name.value=old?.name||'';name.placeholder='新股票需填名稱';name.setAttribute('aria-label',code+' 名稱');cells[2].append(name);
-  cells[3].textContent=old?.shares??'新股票';
-  const input=document.createElement('input');input.type='number';input.min='0';input.step='any';input.value=quantity??'';input.placeholder='請對照截圖填股數';input.setAttribute('aria-label',code+' 股數');cells[4].append(input);
-  el('rows').append(tr);rows.push({code,check,input,name});
- }
- el('apply').disabled=!rows.length;
- if(!rows.length)status('沒有找到股票代碼，請在文字欄補上代碼與股數。');
+<!doctype html><html lang="zh-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>持股追蹤器 · 密碼登入</title><style>body{margin:0;background:#f3f7f7;color:#173b3b;font:16px system-ui;display:grid;place-items:center;min-height:100vh}.card{background:white;max-width:360px;width:calc(100% - 64px);padding:28px;border-radius:16px;box-shadow:0 8px 35px #00333318}h1{font-size:24px}input,button{box-sizing:border-box;width:100%;font:inherit;padding:12px;border-radius:8px;margin-top:12px}input{border:1px solid #bcc}button{background:#1a6b6b;color:white;border:0;cursor:pointer}button:disabled{opacity:.5}#message{min-height:24px;color:#a32121;font-size:14px}</style></head><body><main class="card"><h1>🔒 持股追蹤器</h1><p>請輸入密碼後進入。</p><form id="unlock"><label for="password">密碼</label><input id="password" type="password" autocomplete="current-password" required autofocus><button id="submit" type="submit">解鎖進入</button></form><p id="message" role="status" aria-live="polite"></p></main><script>
+const salt='dJxpm4yjuwcPZueK/aIFOXR/b4K7p9SR',iv='HT2olu8vbcEXFOI6',data='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',storageKey='stocks_unlock_'+salt;
+const bytes=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const base64=b=>btoa(String.fromCharCode(...new Uint8Array(b)));
+async function openPage(raw){
+ const key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);
+ const decrypted=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(iv)},key,bytes(data));
+ sessionStorage.setItem(storageKey,base64(raw));
+ document.open();document.write(new TextDecoder().decode(decrypted));document.close();
 }
-el('parse').onclick=()=>{try{parse();}catch(e){status(e.message);}};
-el('apply').onclick=()=>{
+document.getElementById('unlock').addEventListener('submit',async event=>{
+ event.preventDefault();const button=document.getElementById('submit'),message=document.getElementById('message');button.disabled=true;message.textContent='正在解鎖…';
  try{
-  const chosen=rows.filter(r=>r.check.checked);if(!chosen.length)throw Error('請勾選要更新的股票。');
-  for(const r of chosen)if(r.input.value.trim()===''||!Number.isFinite(Number(r.input.value))||Number(r.input.value)<0||!r.name.value.trim())throw Error(r.code+'：請填寫有效股數與名稱。');
-  const holdings=load();
-  for(const r of chosen){const shares=Number(r.input.value),old=holdings.find(s=>s.code.toUpperCase()===r.code);
-   if(old)old.shares=shares;
-   else holdings.push({code:r.code,name:r.name.value.trim(),shares,price:0,avg:0,cost:0,be:0,sector:'其他',note:''});
-  }
-  localStorage.setItem(keys[el('market').value],JSON.stringify(holdings));
-  el('apply').disabled=true;status('已更新 '+chosen.length+' 檔股數。回到損益追蹤器即可查看，再點「更新股價」取得報價。新股票的成本與均價請在主頁補齊。');
- }catch(e){status(e.message);}
-};
-</script></main></body></html>
-
+  const password=document.getElementById('password').value;
+  const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
+  const raw=await crypto.subtle.deriveBits({name:'PBKDF2',salt:bytes(salt),iterations:310000,hash:'SHA-256'},material,256);
+  await openPage(raw);
+ }catch{message.textContent='密碼錯誤或無法解鎖，請重試。';button.disabled=false;}
+});
+const existing=sessionStorage.getItem(storageKey);if(existing)openPage(bytes(existing)).catch(()=>{sessionStorage.removeItem(storageKey);});
+</script></body></html>
